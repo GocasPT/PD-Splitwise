@@ -10,4 +10,4 @@ Nota:
 
 Funções em falta:
 
--   [] Nada :)
+-   [ ] Nada :)
