@@ -2,6 +2,9 @@
 
 echo Compiling java files...
 
-javac -d ../out ../src/*.java
+javac -d ../out/ ^
+    ../src/*.java ^
+    ../src/Message/Request/*.java ^
+    ../src/Message/Response/*.java
 
-echo Done
+echo Compilation finished

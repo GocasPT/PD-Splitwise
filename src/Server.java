@@ -1,7 +1,7 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintStream;
+import Message.Request.Login;
+import Message.Request.Request;
+
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
@@ -27,6 +27,19 @@ public class Server {
 					PrintStream out = new PrintStream(clientSocket.getOutputStream());
 					out.println("Bem-vindo :P");
 					out.flush();
+
+					// Reciver data/messages from client
+					ObjectInputStream oin = new ObjectInputStream(clientSocket.getInputStream());
+					Request request = (Request) oin.readObject();
+					if (request instanceof Login) {
+						Login login = (Login) request;
+						System.out.println("Login: " + login.getUsername() + " " + login.getPassword());
+					} else {
+						System.out.println("Request desconhecido.");
+					}
+
+				} catch (ClassNotFoundException e) {
+					throw new RuntimeException(e);
 				}
 			}
 		} catch (NumberFormatException e) {
