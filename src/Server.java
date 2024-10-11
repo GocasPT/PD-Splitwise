@@ -1,4 +1,4 @@
-import Message.Request.Login;
+import Message.Request.User.Login;
 import Message.Request.Request;
 
 import java.io.*;
