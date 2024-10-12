@@ -2,6 +2,6 @@
 
 echo Deleting compiled files...
 
-rmdir /S /Q ../out
+rmdir /s /q ..\out\
 
 echo Done
