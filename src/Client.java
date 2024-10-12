@@ -1,48 +1,86 @@
+import Message.Request.Request;
 import Message.Request.User.Login;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.*;
+import java.util.Scanner;
 
 public class Client {
-	public static final int TIMEOUT = 10;
+	public static final int TIMEOUT = 5;
+	private static boolean exit = false;
 
 	public static void main(String[] args) {
-		InetAddress serverAddr = null;
-		int port = -1;
-
 		if (args.length != 2) {
 			System.out.println("Usage: java Client <server> <port>");
 			return;
 		}
 
 		try {
-			serverAddr = InetAddress.getByName(args[0]);
-			port = Integer.parseInt(args[1]);
+			InetAddress serverAddr = InetAddress.getByName(args[0]);
+			int port = Integer.parseInt(args[1]);
 
-			try (Socket serverSocket = new Socket(serverAddr, port)) {
-				serverSocket.setSoTimeout(TIMEOUT * 1000);
+			try (
+					Socket serverSocket = new Socket(serverAddr, port);
+					ObjectOutputStream out = new ObjectOutputStream(serverSocket.getOutputStream());
+					Scanner scanner = new Scanner(System.in)
+			) {
+				//serverSocket.setSoTimeout(TIMEOUT * 1000); //TODO: I need this?
 
-				PrintStream out = new PrintStream(serverSocket.getOutputStream());
-				out.println("Sou uma batata feliz :D");
+				Thread responseThread = new Thread(new ResponseHandler(serverSocket));
+				responseThread.start();
 
-				ObjectOutputStream bout = new ObjectOutputStream(serverSocket.getOutputStream());
-				bout.writeObject(new Login("batata", "batata"));
+				while (!exit) {
+					scanner.next();
+					out.writeObject(new Login("batata", "batata")); //PLACE_HOLDER
+				}
 
-				BufferedReader in = new BufferedReader(new InputStreamReader(serverSocket.getInputStream()));
-				String response = in.readLine();
-				System.out.println("Response: " + response);
+				responseThread.join();
 			}
-
 		} catch (UnknownHostException e) {
-			System.out.println("Destino desconhecido:\n\t" + e);
+			System.out.println("[MainThread] Destino desconhecido:\n\t" + e);
 		} catch (NumberFormatException e) {
-			System.out.println("O porto do servidor deve ser um inteiro positivo.");
+			System.out.println("[MainThread] O porto do servidor deve ser um inteiro positivo.");
 		} catch (SocketTimeoutException e) {
-			System.out.println("Nao foi recebida qualquer resposta:\n\t" + e);
+			System.out.println("[MainThread] Nao foi recebida qualquer resposta:\n\t" + e);
 		} catch (SocketException e) {
-			System.out.println("Ocorreu um erro ao nivel do socket TCP:\n\t" + e);
+			System.out.println("[MainThread] Ocorreu um erro ao nivel do socket TCP:\n\t" + e);
 		} catch (IOException e) {
-			System.out.println("Ocorreu um erro no acesso ao socket:\n\t" + e);
+			System.out.println("[MainThread] Ocorreu um erro no acesso ao socket:\n\t" + e);
+		} catch (InterruptedException e) {
+			System.out.println("[MainThread] Ocorreu um erro ao esperar pelo termino do thread de resposta:\n\t" + e);
+		}
+	}
+
+	static class ResponseHandler implements Runnable {
+		private final Socket socket;
+
+		public ResponseHandler(Socket socket) {
+			this.socket = socket;
+		}
+
+		@Override
+		public void run() {
+			try (ObjectInputStream in = new ObjectInputStream(socket.getInputStream())) {
+				Request response;
+
+				while ((response = (Request) in.readObject()) != null) {
+					System.out.println("Response: " + response);
+
+					if (response.toString().equals("exit")) {
+						exit = false;
+						System.out.println("Server have been close...");
+						break;
+					}
+				}
+			} catch (SocketException e) {
+				System.out.println("[ResponseThread] Ocorreu um erro ao nivel do socket TCP:\n\t" + e);
+			} catch (IOException e) {
+				System.out.println("[ResponseThread] Ocorreu um erro no acesso ao socket:\n\t" + e);
+			} catch (ClassNotFoundException e) {
+				System.out.println("[ResponseThread] Ocorreu um erro ao ler o objeto recebido:\n\t" + e);
+			}
 		}
 	}
 }
