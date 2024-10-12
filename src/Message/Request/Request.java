@@ -4,4 +4,9 @@ import java.io.Serializable;
 
 public abstract class Request implements Serializable {
 	long serialVersionUID = 1L;
+
+	@Override
+	public String toString() {
+		return "";
+	}
 }
