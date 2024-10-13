@@ -1,5 +1,5 @@
 import Message.Request.Request;
-import Message.Request.User.Login;
+import Message.Response.Response;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -15,9 +15,9 @@ public class Server {
 			return;
 		}
 
-		try {
-			int listeningPort = Integer.parseInt(args[0]);
-			ServerSocket serverSocket = new ServerSocket(listeningPort);
+		int listeningPort = Integer.parseInt(args[0]);
+
+		try (ServerSocket serverSocket = new ServerSocket(listeningPort)) {
 			//TODO: parse database path + check
 
 			System.out.println("Server ready to receive clients...");
@@ -53,24 +53,19 @@ public class Server {
 			     ObjectInputStream in = new ObjectInputStream(clientSocket.getInputStream())) {
 				Request request;
 
-				while ((request = (Request) in.readObject()) != null) {
-					if (request instanceof Login login) {
-						System.out.println("Login: " + login.getUsername() + " " + login.getPassword());
-
-						Login response = new Login("test", "test");
-						System.out.println("Seding response: " + response.getUsername() + " " + response.getPassword());
+				try {
+					while ((request = (Request) in.readObject()) != null) {
+						Response response = request.execute();
 						out.writeObject(response);
-						out.flush();
-					} else {
-						System.out.println("Request desconhecido.");
 					}
+				} catch (ClassNotFoundException e) {
+					System.out.println("[ClientThread] Ocorreu um erro ao ler o objeto recebido:\n\t" + e);
 				}
+
 			} catch (SocketException e) {
 				System.out.println("[ClientThread] Ocorreu um erro ao nivel do socket TCP:\n\t" + e);
 			} catch (IOException e) {
 				System.out.println("[ClientThread] Ocorreu um erro no acesso ao socket:\n\t" + e);
-			} catch (ClassNotFoundException e) {
-				System.out.println("[ClientThread] Ocorreu um erro ao ler o objeto recebido:\n\t" + e);
 			} finally {
 				System.out.println("Client '" + name + "' disconnected");
 			}

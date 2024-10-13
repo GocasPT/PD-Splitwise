@@ -1,21 +1,16 @@
 package Message.Request.Group;
 
-import Message.Request.EComands;
 import Message.Request.Request;
+import Message.Response.Response;
 
-public class ExitGroup extends Request {
-	private int groupId;
-
-	public ExitGroup(int groupId) {
-		this.groupId = groupId;
-	}
-
-	public int getGroupId() {
-		return groupId;
+public record ExitGroup(int groupId) implements Request {
+	@Override
+	public Response execute() {
+		return null;
 	}
 
 	@Override
 	public String toString() {
-		return EComands.EXIT_GROUP + " " + groupId;
+		return "EXIT_GROUP" + " " + groupId;
 	}
 }

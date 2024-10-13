@@ -1,11 +1,16 @@
 package Message.Request.Group;
 
-import Message.Request.EComands;
 import Message.Request.Request;
+import Message.Response.Response;
 
-public class GetInvites extends Request {
+public class GetInvites implements Request {
+	@Override
+	public Response execute() {
+		return null;
+	}
+
 	@Override
 	public String toString() {
-		return EComands.GET_INVITATIONS.toString();
+		return "GET_INVITATIONS";
 	}
 }

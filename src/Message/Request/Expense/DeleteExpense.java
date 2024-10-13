@@ -1,21 +1,19 @@
 package Message.Request.Expense;
 
-import Message.Request.EComands;
 import Message.Request.Request;
+import Message.Response.Response;
 
-public class DeleteExpense extends Request {
-	private int expenseID; //TODO: groupId on client side or server side?
-
-	public DeleteExpense(int expenseID) {
-		this.expenseID = expenseID;
-	}
-
-	public int getExpenseID() {
-		return expenseID;
+/**
+ * @param expenseID TODO: groupId on client side or server side?
+ */
+public record DeleteExpense(int expenseID) implements Request {
+	@Override
+	public Response execute() {
+		return null;
 	}
 
 	@Override
 	public String toString() {
-		return EComands.DELETE_EXPENSE + " " + expenseID;
+		return "DELETE_EXPENSE " + expenseID;
 	}
 }

@@ -1,11 +1,16 @@
 package Message.Request.User;
 
-import Message.Request.EComands;
 import Message.Request.Request;
+import Message.Response.Response;
 
-public class Logout extends Request {
+public class Logout implements Request {
+	@Override
+	public Response execute() {
+		return null;
+	}
+
 	@Override
 	public String toString() {
-		return EComands.LOGOUT.toString();
+		return "LOGOUT";
 	}
 }

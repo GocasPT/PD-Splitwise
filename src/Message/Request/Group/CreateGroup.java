@@ -1,21 +1,16 @@
 package Message.Request.Group;
 
-import Message.Request.EComands;
 import Message.Request.Request;
+import Message.Response.Response;
 
-public class CreateGroup extends Request {
-	private String name;
-
-	public CreateGroup(String name) {
-		this.name = name;
-	}
-
-	public String getName() {
-		return name;
+public record CreateGroup(String name) implements Request {
+	@Override
+	public Response execute() {
+		return null;
 	}
 
 	@Override
 	public String toString() {
-		return EComands.CREATE_GROUP + " '" + name + "'";
+		return "CREATE_GROUP" + " '" + name + "'";
 	}
 }

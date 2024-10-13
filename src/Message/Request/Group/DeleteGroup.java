@@ -1,21 +1,16 @@
 package Message.Request.Group;
 
-import Message.Request.EComands;
 import Message.Request.Request;
+import Message.Response.Response;
 
-public class DeleteGroup extends Request {
-	private int groupId;
-
-	public DeleteGroup(int groupId) {
-		this.groupId = groupId;
-	}
-
-	public int getGroupId() {
-		return groupId;
+public record DeleteGroup(int groupId) implements Request {
+	@Override
+	public Response execute() {
+		return null;
 	}
 
 	@Override
 	public String toString() {
-		return EComands.DELETE_GROUP + " " + groupId;
+		return "DELETE_GROUP" + " " + groupId;
 	}
 }

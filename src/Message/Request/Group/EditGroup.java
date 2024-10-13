@@ -1,27 +1,19 @@
 package Message.Request.Group;
 
-import Message.Request.EComands;
 import Message.Request.Request;
+import Message.Response.Response;
 
-public class EditGroup extends Request {
-	private int groupId; //TODO: groupId in client-side or server-side?
-	private String name;
-
-	public EditGroup(int groupId, String name) {
-		this.groupId = groupId;
-		this.name = name;
-	}
-
-	public int getGroupId() {
-		return groupId;
-	}
-
-	public String getName() {
-		return name;
+/**
+ * @param groupId TODO: groupId in client-side or server-side?
+ */
+public record EditGroup(int groupId, String name) implements Request {
+	@Override
+	public Response execute() {
+		return null;
 	}
 
 	@Override
 	public String toString() {
-		return EComands.EDIT_GROUP + " " + groupId + " " + name;
+		return "EDIT_GROUP" + " " + groupId + " " + name;
 	}
 }

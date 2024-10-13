@@ -1,21 +1,19 @@
 package Message.Request.Payment;
 
-import Message.Request.EComands;
 import Message.Request.Request;
+import Message.Response.Response;
 
-public class DeletePayment extends Request {
-	private int paymentID; //TODO: client-side or server-side?
-
-	public DeletePayment(int paymentID) {
-		this.paymentID = paymentID;
-	}
-
-	public int getPaymentID() {
-		return paymentID;
+/**
+ * @param paymentID TODO: client-side or server-side?
+ */
+public record DeletePayment(int paymentID) implements Request {
+	@Override
+	public Response execute() {
+		return null;
 	}
 
 	@Override
 	public String toString() {
-		return EComands.DELETE_PAYMENT + " " + paymentID;
+		return "DELETE_PAYMENT" + " " + paymentID;
 	}
 }

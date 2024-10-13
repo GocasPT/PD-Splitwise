@@ -1,27 +1,18 @@
 package Message.Request.User;
 
-import Message.Request.EComands;
 import Message.Request.Request;
+import Message.Response.Response;
 
-public class Login extends Request {
-	private String username;
-	private String password;
+public record Login(String username, String password) implements Request {
+	@Override
+	public Response execute() {
+		System.out.println("Login: " + this);
 
-	public Login(String username, String password) {
-		this.username = username;
-		this.password = password;
-	}
-
-	public String getUsername() {
-		return username;
-	}
-
-	public String getPassword() {
-		return password;
+		return new Response(true);
 	}
 
 	@Override
 	public String toString() {
-		return EComands.LOGIN + " " + username + " " + password;
+		return "LOGIN" + " " + username + " " + password;
 	}
 }

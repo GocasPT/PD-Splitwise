@@ -1,21 +1,19 @@
 package Message.Request.Expense;
 
-import Message.Request.EComands;
 import Message.Request.Request;
+import Message.Response.Response;
 
-public class GetTotalExpenses extends Request {
-	private int groupID; //TODO: groupId on client side or server side?
-
-	public GetTotalExpenses(int groupID) {
-		this.groupID = groupID;
-	}
-
-	public int getGroupID() {
-		return groupID;
+/**
+ * @param groupID TODO: groupId on client side or server side?
+ */
+public record GetTotalExpenses(int groupID) implements Request {
+	@Override
+	public Response execute() {
+		return null;
 	}
 
 	@Override
 	public String toString() {
-		return EComands.GET_TOTAL_EXPENSES + " " + groupID;
+		return "GET_TOTAL_EXPENSES" + " " + groupID;
 	}
 }

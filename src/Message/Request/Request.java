@@ -1,12 +1,12 @@
 package Message.Request;
 
+import Message.Response.Response;
+
 import java.io.Serializable;
 
-public abstract class Request implements Serializable {
-	long serialVersionUID = 1L;
+public interface Request extends Serializable {
+	Response execute(); //TODO: give server access to execute the request logic
 
 	@Override
-	public String toString() {
-		return "";
-	}
+	String toString();
 }

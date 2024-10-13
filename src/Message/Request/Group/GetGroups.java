@@ -1,11 +1,16 @@
 package Message.Request.Group;
 
-import Message.Request.EComands;
 import Message.Request.Request;
+import Message.Response.Response;
 
-public class GetGroups extends Request {
+public class GetGroups implements Request {
+	@Override
+	public Response execute() {
+		return null;
+	}
+
 	@Override
 	public String toString() {
-		return EComands.GET_GROUPS.toString();
+		return "GET_GROUPS";
 	}
 }

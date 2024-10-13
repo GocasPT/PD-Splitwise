@@ -1,14 +1,15 @@
 import Message.Request.Request;
-import Message.Request.User.Login;
+import Message.Response.Response;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.*;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 public class Client {
-	public static final int TIMEOUT = 5;
+	public static final int TIMEOUT = 10;
 	private static boolean exit = false;
 
 	public static void main(String[] args) {
@@ -32,8 +33,19 @@ public class Client {
 				responseThread.start();
 
 				while (!exit) {
-					scanner.next();
-					out.writeObject(new Login("batata", "batata")); //PLACE_HOLDER
+					try {
+						String cmd = scanner.nextLine();
+						String[] cmdArgs = cmd.split(" ");
+						Request request = ui.TUI.GetRequest.getRequest(cmdArgs);
+
+						if (request == null) continue;
+
+						out.writeObject(request);
+					} catch (NoSuchElementException e) {
+						break;
+					} catch (RuntimeException e) {
+						System.out.println(e.getMessage());
+					}
 				}
 
 				responseThread.join();
@@ -63,9 +75,9 @@ public class Client {
 		@Override
 		public void run() {
 			try (ObjectInputStream in = new ObjectInputStream(socket.getInputStream())) {
-				Request response;
+				Response response;
 
-				while ((response = (Request) in.readObject()) != null) {
+				while ((response = (Response) in.readObject()) != null) {
 					System.out.println("Response: " + response);
 
 					if (response.toString().equals("exit")) {
