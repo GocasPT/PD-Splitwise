@@ -3,9 +3,10 @@
 echo Compiling java files...
 
 javac -d ../out/ ^
-    ../src/*.java ^
     ../src/Data/*.java ^
-    ../src/ui/TUI/*.java ^
+    ../src/Client/*.java ^
+    ../src/Client/ui/TUI/*.java ^
+    ../src/Server/*.java ^
     ../src/Message/Request/*.java ^
     ../src/Message/Request/User/*.java ^
     ../src/Message/Request/Group/*.java ^

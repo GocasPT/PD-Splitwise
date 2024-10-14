@@ -1,5 +1,6 @@
 package Message.Request.Payment;
 
+import Data.DatabaseManager;
 import Message.Request.Request;
 import Message.Response.Response;
 
@@ -11,7 +12,7 @@ import java.util.Date;
 public record InserPayment(int groupID, int userBuyerID, int userReceiverID, Date date,
                            double amount) implements Request {
 	@Override
-	public Response execute() {
+	public Response execute(DatabaseManager context) {
 		return null;
 	}
 

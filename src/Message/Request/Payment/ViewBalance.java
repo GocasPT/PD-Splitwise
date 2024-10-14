@@ -1,5 +1,6 @@
 package Message.Request.Payment;
 
+import Data.DatabaseManager;
 import Message.Request.Request;
 import Message.Response.Response;
 
@@ -8,7 +9,7 @@ import Message.Response.Response;
  */
 public record ViewBalance(int groupID) implements Request {
 	@Override
-	public Response execute() {
+	public Response execute(DatabaseManager context) {
 		return null;
 	}
 

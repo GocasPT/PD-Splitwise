@@ -1,5 +1,6 @@
 package Message.Request.Expense;
 
+import Data.DatabaseManager;
 import Message.Request.Request;
 import Message.Response.Response;
 
@@ -11,7 +12,7 @@ import java.util.Date;
  */
 public record InsertExpense(int groupID, Date date, double amount, String userBuyer) implements Request {
 	@Override
-	public Response execute() {
+	public Response execute(DatabaseManager context) {
 		return null;
 	}
 

@@ -1,11 +1,12 @@
 package Message.Request;
 
+import Data.DatabaseManager;
 import Message.Response.Response;
 
 import java.io.Serializable;
 
 public interface Request extends Serializable {
-	Response execute(); //TODO: give server access to execute the request logic
+	Response execute(DatabaseManager context);
 
 	@Override
 	String toString();

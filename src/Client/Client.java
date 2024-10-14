@@ -1,3 +1,6 @@
+package Client;
+
+import Client.ui.TUI.GetRequest;
 import Message.Request.Request;
 import Message.Response.Response;
 
@@ -14,7 +17,7 @@ public class Client {
 
 	public static void main(String[] args) {
 		if (args.length != 2) {
-			System.out.println("Usage: java Client <server> <port>");
+			System.out.println("Usage: java Client.Client <server> <port>");
 			return;
 		}
 
@@ -36,7 +39,7 @@ public class Client {
 					try {
 						String cmd = scanner.nextLine();
 						String[] cmdArgs = cmd.split(" ");
-						Request request = ui.TUI.GetRequest.getRequest(cmdArgs);
+						Request request = GetRequest.getRequest(cmdArgs);
 
 						if (request == null) continue;
 
@@ -82,7 +85,7 @@ public class Client {
 
 					if (response.toString().equals("exit")) {
 						exit = false;
-						System.out.println("Server have been close...");
+						System.out.println("Server.Server have been close...");
 						break;
 					}
 				}

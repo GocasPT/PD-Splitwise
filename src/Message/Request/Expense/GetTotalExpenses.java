@@ -1,5 +1,6 @@
 package Message.Request.Expense;
 
+import Data.DatabaseManager;
 import Message.Request.Request;
 import Message.Response.Response;
 
@@ -8,7 +9,7 @@ import Message.Response.Response;
  */
 public record GetTotalExpenses(int groupID) implements Request {
 	@Override
-	public Response execute() {
+	public Response execute(DatabaseManager context) {
 		return null;
 	}
 

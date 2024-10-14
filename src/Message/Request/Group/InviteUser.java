@@ -1,12 +1,13 @@
 package Message.Request.Group;
 
+import Data.DatabaseManager;
 import Message.Request.Request;
 import Message.Response.Response;
 
 //TODO: how server know which group is for?
 public record InviteUser(int groupID, String email) implements Request {
 	@Override
-	public Response execute() {
+	public Response execute(DatabaseManager context) {
 		return null;
 	}
 
