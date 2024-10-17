@@ -2,10 +2,8 @@ package Server;
 
 import Data.DatabaseManager;
 
-import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.SocketException;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 public class Server {
 	private final int listeningPort;
@@ -25,30 +23,18 @@ public class Server {
 		int listeningPort = Integer.parseInt(args[0]);
 		String dbPath = args[1];
 
-		Server server = new Server(listeningPort, dbPath);
-		server.start();
+		new Server(listeningPort, dbPath).start();
+	}
+
+	public static String getTimeTag() {
+		return "<" + LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")) + "> ";
 	}
 
 	private void start() {
 		context.initializeDatabase();
-		new Thread(new HeartbeatSender(listeningPort, context)).start();
+		new Thread(new HeartbeatSender(context)).start();
+		new Thread(new ClientReciver(listeningPort, context)).start();
 
-		try (ServerSocket serverSocket = new ServerSocket(listeningPort)) {
-
-			System.out.println("Server.Server ready to receive clients...");
-
-			while (true) {
-				Socket clientSocket = serverSocket.accept();
-				System.out.println("Client.Client connected: " + clientSocket.getInetAddress().getHostAddress() + ":" + clientSocket.getPort() + " - " + clientSocket.getInetAddress().getHostName());
-
-				new Thread(new ClientHandler(clientSocket, context)).start();
-			}
-		} catch (NumberFormatException e) {
-			System.out.println("[MainThread] O porto de escuta deve ser um inteiro positivo.");
-		} catch (SocketException e) {
-			System.out.println("[MainThread] Ocorreu um erro ao nivel do serverSocket TCP:\n\t" + e);
-		} catch (IOException e) {
-			System.out.println("[MainThread] Ocorreu um erro no acesso ao serverSocket:\n\t" + e);
-		}
+		//TODO: what the main thread gonna do?
 	}
 }

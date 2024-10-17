@@ -54,6 +54,7 @@ public class DatabaseManager {
 		}
 	}
 
+	//TODO: check this
 	public void executeQuery(String sql) {
 		try (Connection conn = connect();
 		     Statement stmt = conn.createStatement()) {

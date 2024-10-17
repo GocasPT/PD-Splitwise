@@ -22,29 +22,52 @@ public class GetRequest {
 	public static Request getRequest(String[] cmdArgs) {
 		return switch (cmdArgs[0]) {
 			case "help" -> {
-				System.out.println("Commands:" +
-						"\nregister <username> <password> <name> <email>" +
-						"\nlogin <username> <password>" +
-						"\neditUser <username> <password> <name> <email>" +
-						"\nlogout" +
-						"\ncreateGroup <groupId>" +
-						"\ninviteUser <groupId> <username>" +
-						"\nviewInvites" +
-						"\nrespondInvite <inviteId> <accept|decline>" +
-						"\nlistGroups" +
-						"\neditgroupId <groupId> <newgroupId>" +
-						"\ndeleteGroup <groupId>" +
-						"\nleaveGroup <groupId>" +
-						"\naddExpense <groupId> <date> <amount> <description>" +
-						"\nviewTotal <groupId>" +
-						"\nexpenseHistory <groupId>" +
-						"\nexportToFile <groupId>" +
-						"\neditExpense <expenseId> <groupdId> <date> <amount> <description>" +
-						"\ndeleteExpense <expenseId>" +
-						"\naddPayment <groupId> <userId_buyer> <userId_receiver> <date> <amount>" +
-						"\nlistPayments <groupId>" +
-						"\ndeletePayment <paymentId>" +
-						"\nviewBalances <groupId>");
+				System.out.println("""
+						Commands:\
+						
+						register <username> <password> <name> <email>\
+						
+						login <username> <password>\
+						
+						editUser <username> <password> <name> <email>\
+						
+						logout\
+						
+						createGroup <groupId>\
+						
+						inviteUser <groupId> <username>\
+						
+						viewInvites\
+						
+						respondInvite <inviteId> <accept|decline>\
+						
+						listGroups\
+						
+						editgroupId <groupId> <newgroupId>\
+						
+						deleteGroup <groupId>\
+						
+						leaveGroup <groupId>\
+						
+						addExpense <groupId> <date> <amount> <description>\
+						
+						viewTotal <groupId>\
+						
+						expenseHistory <groupId>\
+						
+						exportToFile <groupId>\
+						
+						editExpense <expenseId> <groupdId> <date> <amount> <description>\
+						
+						deleteExpense <expenseId>\
+						
+						addPayment <groupId> <userId_buyer> <userId_receiver> <date> <amount>\
+						
+						listPayments <groupId>\
+						
+						deletePayment <paymentId>\
+						
+						viewBalances <groupId>""");
 
 				yield null;
 			}

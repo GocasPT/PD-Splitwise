@@ -2,6 +2,7 @@ package Client;
 
 import Client.ui.TUI.GetRequest;
 import Message.Request.Request;
+import Message.Request.User.Logout;
 import Message.Response.Response;
 
 import java.io.IOException;
@@ -12,7 +13,8 @@ import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 public class Client {
-	public static final int TIMEOUT = 10;
+	public static final int TIMEOUT = 60;
+	private static final boolean isLogged = false;
 	private static boolean exit = false;
 
 	public static void main(String[] args) {
@@ -30,16 +32,24 @@ public class Client {
 					ObjectOutputStream out = new ObjectOutputStream(serverSocket.getOutputStream());
 					Scanner scanner = new Scanner(System.in)
 			) {
-				//serverSocket.setSoTimeout(TIMEOUT * 1000); //TODO: I need this?
+				serverSocket.setSoTimeout(TIMEOUT * 1000); //TODO: I need this?
 
-				Thread responseThread = new Thread(new ResponseHandler(serverSocket));
+				Thread responseThread = new Thread(new ResponseHandler(serverSocket, isLogged));
 				responseThread.start();
 
 				while (!exit) {
+					Request request;
+
 					try {
 						String cmd = scanner.nextLine();
 						String[] cmdArgs = cmd.split(" ");
-						Request request = GetRequest.getRequest(cmdArgs);
+
+						if (cmdArgs[0].equals("exit")) {
+							exit = true;
+							request = new Logout();
+						} else {
+							request = GetRequest.getRequest(cmdArgs);
+						}
 
 						if (request == null) continue;
 
@@ -56,7 +66,7 @@ public class Client {
 		} catch (UnknownHostException e) {
 			System.out.println("[MainThread] Destino desconhecido:\n\t" + e);
 		} catch (NumberFormatException e) {
-			System.out.println("[MainThread] O porto do servidor deve ser um inteiro positivo.");
+			System.out.println("[MainThread] O porto do servidor deve ser um inteiro positivo");
 		} catch (SocketTimeoutException e) {
 			System.out.println("[MainThread] Nao foi recebida qualquer resposta:\n\t" + e);
 		} catch (SocketException e) {
@@ -70,9 +80,11 @@ public class Client {
 
 	static class ResponseHandler implements Runnable {
 		private final Socket socket;
+		private boolean isLogged = false;
 
-		public ResponseHandler(Socket socket) {
+		public ResponseHandler(Socket socket, boolean isLogged) {
 			this.socket = socket;
+			this.isLogged = isLogged;
 		}
 
 		@Override
@@ -83,9 +95,14 @@ public class Client {
 				while ((response = (Response) in.readObject()) != null) {
 					System.out.println("Response: " + response);
 
+					if (!isLogged)
+						if (response.isSuccess())
+							isLogged = true;
+						else continue;
+
 					if (response.toString().equals("exit")) {
 						exit = false;
-						System.out.println("Server.Server have been close...");
+						System.out.println("Server have been close...");
 						break;
 					}
 				}

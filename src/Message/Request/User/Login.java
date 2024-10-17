@@ -9,6 +9,11 @@ public record Login(String username, String password) implements Request {
 	public Response execute(DatabaseManager context) {
 		System.out.println("Login: " + this);
 
+		//TODO: use db to check if user exists
+		if (!username.equals("bata") || !password.equals("123")) {
+			return new Response(false, "Invalid username or password.");
+		}
+
 		return new Response(true);
 	}
 

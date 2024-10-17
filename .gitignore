@@ -118,3 +118,4 @@ fabric.properties
 
 /PD-Splitwise.iml
 /.idea/*
+/src/databasefiles/*

@@ -10,6 +10,8 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.SocketException;
 
+import static Server.Server.getTimeTag;
+
 public class ClientHandler implements Runnable {
 	private final Socket clientSocket;
 	private final DatabaseManager context;
@@ -18,7 +20,9 @@ public class ClientHandler implements Runnable {
 	public ClientHandler(Socket clientSocket, DatabaseManager context) {
 		this.clientSocket = clientSocket;
 		this.context = context;
-		name = clientSocket.getInetAddress().getHostAddress() + ":" + clientSocket.getPort() + " - " + clientSocket.getInetAddress().getHostName();
+		name = clientSocket.getInetAddress().getHostAddress() + ":" +
+				clientSocket.getPort() + " - " +
+				clientSocket.getInetAddress().getHostName();
 	}
 
 	@Override
@@ -41,7 +45,7 @@ public class ClientHandler implements Runnable {
 		} catch (IOException e) {
 			System.out.println("[ClientThread] Ocorreu um erro no acesso ao socket:\n\t" + e);
 		} finally {
-			System.out.println("Client.Client '" + name + "' disconnected");
+			System.out.println(getTimeTag() + "Client '" + name + "' disconnected");
 		}
 	}
 }

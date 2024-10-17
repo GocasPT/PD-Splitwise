@@ -7,6 +7,8 @@ javac -d ../out/ ^
     ../src/Client/*.java ^
     ../src/Client/ui/TUI/*.java ^
     ../src/Server/*.java ^
+    ../src/BackupServer/*.java ^
+    ../src/Message/*.java ^
     ../src/Message/Request/*.java ^
     ../src/Message/Request/User/*.java ^
     ../src/Message/Request/Group/*.java ^
