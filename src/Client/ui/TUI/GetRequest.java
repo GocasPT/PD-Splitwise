@@ -107,6 +107,13 @@ public class GetRequest {
 					yield new CreateGroup(cmdArgs[1]);
 			}
 
+			case "getGroup" -> {
+				if (cmdArgs.length != 2) {
+					throw new RuntimeException("Usage: getGroup <groupId>");
+				} else
+					yield new GetGroup(Integer.parseInt(cmdArgs[1]));
+			}
+
 			case "inviteUser" -> {
 				if (cmdArgs.length != 3) {
 					throw new RuntimeException("Usage: inviteUser <groupId> <username>");
