@@ -1,10 +1,12 @@
 package Data;
 
+import java.io.File;
+import java.io.IOException;
 import java.sql.*;
 
 public class DatabaseManager {
 	private final String dbPath;
-	private int version = 0;  // Version number of the database.
+	private int version = 0;
 
 	public DatabaseManager(String dbPath) {
 		this.dbPath = dbPath;
@@ -12,15 +14,28 @@ public class DatabaseManager {
 
 	public void initializeDatabase() {
 		System.out.println("Initializing database...");
+		File dbFile = new File(dbPath);
+
+		if (!dbFile.exists()) {
+			System.out.println("Database file does not exist. Creating a new one...");
+			try {
+				if (dbFile.createNewFile()) System.out.println("Database file created successfully.");
+				else {
+					System.err.println("Failed to create database file.");
+					return;
+				}
+			} catch (IOException e) {
+				throw new RuntimeException("Error creating database file: " + e.getMessage());
+			}
+		}
+
 		try (Connection conn = connect()) {
 			if (conn != null) {
 				System.out.println("Connected to the database.");
 				try (Statement stmt = conn.createStatement()) {
-					// Create a version table if it doesn't exist.
 					System.out.println("Creating version table if it doesn't exist.");
 					stmt.execute("CREATE TABLE IF NOT EXISTS version (value INTEGER)");
 
-					// Check the version number.
 					System.out.println("Checking the version number.");
 					ResultSet rs = stmt.executeQuery("SELECT value FROM version LIMIT 1");
 					if (rs.next()) {
@@ -31,9 +46,7 @@ public class DatabaseManager {
 						stmt.execute("INSERT INTO version (value) VALUES (0)");
 					}
 				}
-			} else {
-				System.err.println("Failed to connect to the database.");
-			}
+			} else System.err.println("Failed to connect to the database.");
 		} catch (SQLException e) {
 			System.err.println("Database initialization error: " + e.getMessage());
 		}

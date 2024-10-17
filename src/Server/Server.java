@@ -23,7 +23,11 @@ public class Server {
 		int listeningPort = Integer.parseInt(args[0]);
 		String dbPath = args[1];
 
-		new Server(listeningPort, dbPath).start();
+		try {
+			new Server(listeningPort, dbPath).start();
+		} catch (RuntimeException e) {
+			System.out.println("Error: " + e.getMessage());
+		}
 	}
 
 	public static String getTimeTag() {

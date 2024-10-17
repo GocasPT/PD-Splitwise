@@ -17,3 +17,5 @@ javac -d ../out/ ^
     ../src/Message/Response/*.java
 
 echo Compilation finished
+
+pause
