@@ -28,7 +28,7 @@ public class SocketManager {
 		return instance;
 	}
 
-	public void connect(Consumer<Response> responseHandler) throws IOException {
+	public void connect() throws IOException {
 		InetAddress serverAddr = ClientGUI.getServerAddr();
 		int port = ClientGUI.getPort();
 
@@ -36,23 +36,7 @@ public class SocketManager {
 		input = new ObjectInputStream(socket.getInputStream());
 		output = new ObjectOutputStream(socket.getOutputStream());
 
-		//TODO: make this a new class thread/runnable?
-		//TODO: debug later → this create multi threads OR this create one thread that handle all responses?
-		listenerThread = new Thread(() -> {
-			try {
-				while (true) {
-					Response response = (Response) input.readObject();
-					System.out.println("<Thread " + Thread.currentThread().getName() + "> Response: " + response);
-					Platform.runLater(() -> responseHandler.accept(response));
-				}
-			} catch (IOException | ClassNotFoundException e) { //TODO: Improve this exception handling
-				//TODO: close app
-				Platform.runLater(() -> {
-					System.out.println("Connection lost.");
-				});
-			}
-		});
-		listenerThread.start();
+		//TODO: create thread to listen for responses
 	}
 
 	public void sendRequest(Request request) {
@@ -68,6 +52,18 @@ public class SocketManager {
 				System.out.println("Error: " + e.getMessage());
 			});
 		}
+	}
+
+	public void waitForResponse(Consumer<Response> responseHandler) {
+		try {
+			Response response = (Response) input.readObject();
+			responseHandler.accept(response);
+		} catch (IOException | ClassNotFoundException e) { //TODO: Improve this exception handling
+			Platform.runLater(() -> {
+				System.out.println("Error: " + e.getMessage());
+			});
+		}
+
 	}
 
 	public void close() {

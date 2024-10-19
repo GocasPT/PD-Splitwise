@@ -1,11 +1,14 @@
 package pt.isec.a2021138502.PD_Splitwise.ui.controller;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import pt.isec.a2021138502.PD_Splitwise.Message.Request.User.Login;
 import pt.isec.a2021138502.PD_Splitwise.Message.Response.Response;
 import pt.isec.a2021138502.PD_Splitwise.model.SocketManager;
+import pt.isec.a2021138502.PD_Splitwise.ui.ClientGUI;
 
 public class LoginController {
 	@FXML
@@ -25,7 +28,7 @@ public class LoginController {
 		String password = passwordField.getText();
 
 		try {
-			SocketManager.getInstance().connect(this::handleResponse);
+			SocketManager.getInstance().connect();
 
 			Login loginRequest = new Login(username, password);
 			SocketManager.getInstance().sendRequest(loginRequest);
@@ -39,9 +42,9 @@ public class LoginController {
 		if (response.isSuccess())
 			switchToListScene();
 		else {
-			System.out.println(response.getErrorDescription());
 			SocketManager.getInstance().close();
-			//TODO: exit app
+			new Alert(Alert.AlertType.ERROR, response.getErrorDescription()).showAndWait();
+			Platform.exit();
 		}
 	}
 
@@ -49,7 +52,7 @@ public class LoginController {
 	private void switchToListScene() {
 		try {
 			//TODO: switch scene
-			//ClientGUI.switchScene("list.fxml");
+			ClientGUI.switchScene("home_page.fxml");
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
