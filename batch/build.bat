@@ -1,5 +1,5 @@
 @echo off
 
-call mvn -f ../ clean install
+call mvn -f ../ compile package
 
 pause

@@ -6,8 +6,12 @@ Trabalho prático feita por:
 
 - Guilherme Camacho
 
-Nota:
+## Nota:
 
-Funções em falta:
+## Funções em falta
 
 -   [ ] Nada :)
+
+## Auxilio
+
+- O meu [trabalho de GPS](https://gitlab.com/JoaoCapitao/GPS_G32) onde fui buscar maioria da lógica da parte GUI
