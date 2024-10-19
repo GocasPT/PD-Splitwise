@@ -4,9 +4,9 @@ ISEC - Trabalho de PD [24/25]
 
 Trabalho prático feita por:
 
--   Guilherme Camacho
+- Guilherme Camacho
 
-Nota: 
+Nota:
 
 Funções em falta:
 

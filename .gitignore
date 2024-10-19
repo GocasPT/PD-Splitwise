@@ -118,4 +118,10 @@ fabric.properties
 
 /PD-Splitwise.iml
 /.idea/*
-/src/databasefiles/*
+/Server/src/main/java/databasefiles/*
+/BackupServer/src/main/java/databasefiles/*
+dependency-reduced-pom.xml
+/common/target/*
+/Client/target/*
+/Server/target/*
+/BackupServer/target/*
