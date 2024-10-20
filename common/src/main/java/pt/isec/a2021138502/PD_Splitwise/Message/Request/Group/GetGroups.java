@@ -12,13 +12,19 @@ public record GetGroups(String email) implements Request {
 	public Response execute(DataBaseManager context) {
 		//TODO: query to get groups
 		Group[] groups = {
-				new Group("Fritadeira", new User[]{
-						new User("Sr. Batata", "9177, tira tira, mete, mete", "email@batata", "123")
-				}),
-				new Group("Pringles", new User[]{
-						new User("Sr. Batata", "9177, tira tira, mete, mete", "email@batata", "123"),
-						new User("Sr. Batata", "9177, tira tira, mete, mete", "email@batata", "123")
-				}),
+				new Group(
+						1,
+						"Fritadeira",
+						new User[]{
+								new User("Sr. Batata", "9177, tira tira, mete, mete", "email@batata", "123")
+						}),
+				new Group(
+						1,
+						"Pringles",
+						new User[]{
+								new User("Sr. Batata", "9177, tira tira, mete, mete", "email@batata", "123"),
+								new User("Sr. Batata", "9177, tira tira, mete, mete", "email@batata", "123")
+						}),
 		};
 
 		return new ListResponse<>(groups);

@@ -6,8 +6,10 @@ public enum EState {
 	GROUPS_PAGE("Groups Page"),
 	INVITES_PAGE("Invites Page"),
 	USER_PAGE("User Page"),
-	GROUP_PAGE("Group Page");
-	//TODO: add more states
+	EDIT_USER_PAGE("Edit User Page"),
+	GROUP_PAGE("Group Page"),
+	EDIT_GROUP_PAGE("Edit Group Page"),
+	;
 
 	private final String str;
 

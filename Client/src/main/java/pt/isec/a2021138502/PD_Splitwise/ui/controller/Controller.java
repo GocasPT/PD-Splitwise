@@ -12,7 +12,7 @@ public abstract class Controller {
 	}
 
 	protected void registerHandlers() {
-		ModelManager.getInstance().addPropertyChangeListener(evt -> update()); //TODO: this trigger 2 times, WHY?
+		ModelManager.getInstance().addPropertyChangeListener(evt -> update());
 	}
 
 	protected void update() {
@@ -20,5 +20,4 @@ public abstract class Controller {
 
 	protected void handleResponse(Response response) {
 	}
-	//TODO: add handlers for mains buttons (home, groups, etc)
 }

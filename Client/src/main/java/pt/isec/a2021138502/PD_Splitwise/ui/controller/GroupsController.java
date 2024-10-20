@@ -44,9 +44,11 @@ public class GroupsController extends Controller {
 	}
 
 	private void fetchGroups() {
-		//TODO: fetch groups from server
 		Request request = new GetGroups(ModelManager.getInstance().getEmailLoggedUser());
 		Response response = ModelManager.getInstance().sendRequest(request);
+
+		if (!response.isSuccess())
+			return; //TODO: handle error
 
 		vbGroups.getChildren().clear();
 		ListResponse<Group> listResponse = (ListResponse<Group>) response;

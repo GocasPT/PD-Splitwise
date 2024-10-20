@@ -44,9 +44,11 @@ public class InvitesController extends Controller {
 	}
 
 	private void fetchInvites() {
-		//TODO: fetch invites from server
 		Request request = new GetInvites(ModelManager.getInstance().getEmailLoggedUser());
 		Response response = ModelManager.getInstance().sendRequest(request);
+
+		if (!response.isSuccess())
+			return; //TODO: handle error
 
 		vbInvites.getChildren().clear();
 		ListResponse<Invite> listResponse = (ListResponse<Invite>) response;

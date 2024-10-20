@@ -1,5 +1,6 @@
 package pt.isec.a2021138502.PD_Splitwise.model;
 
+import pt.isec.a2021138502.PD_Splitwise.Data.Group;
 import pt.isec.a2021138502.PD_Splitwise.Message.Request.Request;
 import pt.isec.a2021138502.PD_Splitwise.Message.Response.Response;
 
@@ -14,7 +15,7 @@ public class ModelManager {
 	private final PropertyChangeSupport pcs;
 	private EState state;
 	private String emailLoggedUser;
-	private String groupView; //TODO: I need this or use controllers variables injector?
+	private Group groupView;
 
 	private ModelManager() {
 		pcs = new PropertyChangeSupport(this);
@@ -44,11 +45,11 @@ public class ModelManager {
 		this.emailLoggedUser = emailLoggedUser;
 	}
 
-	public String getGroupView() {
+	public Group getGroupView() {
 		return groupView;
 	}
 
-	public void setGroupView(String groupView) {
+	public void setGroupView(Group groupView) {
 		this.groupView = groupView;
 	}
 

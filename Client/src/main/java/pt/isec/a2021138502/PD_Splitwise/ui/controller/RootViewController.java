@@ -21,9 +21,9 @@ public class RootViewController {
 		loadView("login.fxml");
 		loadView("register.fxml");
 		loadView("groups_page.fxml");
+		loadView("group_page.fxml");
 		loadView("invites_page.fxml");
 		loadView("user_page.fxml");
-		//TODO: load all views
 	}
 
 	private void loadView(String fxmlName) {

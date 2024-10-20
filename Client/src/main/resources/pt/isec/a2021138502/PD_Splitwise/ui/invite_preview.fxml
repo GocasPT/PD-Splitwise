@@ -10,16 +10,14 @@
             fx:controller="pt.isec.a2021138502.PD_Splitwise.ui.controller.InvitePreviewController">
     <center>
         <VBox alignment="CENTER_LEFT">
-            <children>
-                <Text fx:id="tfUsername" strokeType="OUTSIDE" strokeWidth="0.0" text="Text"/>
-                <Text fx:id="tfGroupName" strokeType="OUTSIDE" strokeWidth="0.0" text="Text"/>
-                <HBox prefHeight="100.0" prefWidth="200.0">
-                    <children>
-                        <Button fx:id="btnAccept" mnemonicParsing="false" text="Accept"/>
-                        <Button fx:id="btnDenid" mnemonicParsing="false" text="Denid"/>
-                    </children>
-                </HBox>
-            </children>
+            <Text fx:id="tfUsername" strokeType="OUTSIDE" strokeWidth="0.0" text="Text"/>
+            <Text fx:id="tfGroupName" strokeType="OUTSIDE" strokeWidth="0.0" text="Text"/>
+            <HBox prefHeight="100.0" prefWidth="200.0">
+                <children>
+                    <Button fx:id="btnAccept" mnemonicParsing="false" text="Accept"/>
+                    <Button fx:id="btnDenid" mnemonicParsing="false" text="Denid"/>
+                </children>
+            </HBox>
         </VBox>
     </center>
 </BorderPane>

@@ -9,14 +9,12 @@
 <AnchorPane xmlns:fx="http://javafx.com/fxml/1" fx:id="loginPane" prefHeight="600.0" prefWidth="400.0"
             xmlns="http://javafx.com/javafx/20.0.1"
             fx:controller="pt.isec.a2021138502.PD_Splitwise.ui.controller.LoginController">
-    <children>
-        <VBox alignment="TOP_CENTER" spacing="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="100.0"
-              AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="0.0">
-            <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true"/>
-            <TextField fx:id="tfUsername" promptText="Enter username" VBox.vgrow="ALWAYS"/>
-            <PasswordField fx:id="tfPassword" promptText="Enter password" VBox.vgrow="ALWAYS"/>
-            <Button fx:id="btnLogin" text="Login"/>
-            <Hyperlink fx:id="hpSignUp" text="Sign up"/>
-        </VBox>
-    </children>
+    <VBox alignment="TOP_CENTER" spacing="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="100.0"
+          AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="0.0">
+        <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true"/>
+        <TextField fx:id="tfUsername" promptText="Enter username" VBox.vgrow="ALWAYS"/>
+        <PasswordField fx:id="tfPassword" promptText="Enter password" VBox.vgrow="ALWAYS"/>
+        <Button fx:id="btnLogin" text="Login"/>
+        <Hyperlink fx:id="hpSignUp" text="Sign up"/>
+    </VBox>
 </AnchorPane>

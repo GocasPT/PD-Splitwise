@@ -13,6 +13,7 @@ public record GetGroup(int groupId) implements Request {
 		//TODO: query to get group
 
 		Group group = new Group(
+				1,
 				"Fritadeira",
 				new User[]{
 						new User(
