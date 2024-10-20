@@ -19,8 +19,8 @@
                 <Button fx:id="btnGroups" mnemonicParsing="false" text="Groups" HBox.hgrow="ALWAYS"/>
                 <Button fx:id="btnInvites" layoutX="184.0" layoutY="48.0" mnemonicParsing="false" text="Invites"
                         HBox.hgrow="ALWAYS"/>
-                <Button fx:id="btnUser" disable="true" layoutX="210.0" layoutY="48.0" mnemonicParsing="false"
-                        text="User" HBox.hgrow="ALWAYS"/>
+                <Button fx:id="btnUser" layoutX="210.0" layoutY="48.0" mnemonicParsing="false" text="User"
+                        HBox.hgrow="ALWAYS"/>
             </children>
         </HBox>
     </bottom>
