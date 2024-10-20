@@ -15,7 +15,7 @@ public class ListResponse<T> extends Response {
 		this.invites = null;
 	}
 
-	public T[] getInvites() {
+	public T[] getList() {
 		return invites;
 	}
 

@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.*;
 
+//TODO: add Singleton pattern
 public class DataBaseManager {
 	private final String dbPath;
 	private int version = 0;

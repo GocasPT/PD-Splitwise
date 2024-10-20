@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+<BorderPane xmlns:fx="http://javafx.com/fxml/1" fx:id="previewPane" prefHeight="160.0" prefWidth="350.0"
+            style="-fx-border-color: red;" xmlns="http://javafx.com/javafx/20.0.1"
+            fx:controller="pt.isec.a2021138502.PD_Splitwise.ui.controller.GroupPreviewController">
+    <center>
+        <VBox alignment="CENTER_LEFT">
+            <children>
+                <Text fx:id="tfGroupName" strokeType="OUTSIDE" strokeWidth="0.0" text="Text"/>
+                <Text fx:id="tfGroupMembers" strokeType="OUTSIDE" strokeWidth="0.0" text="Text"/>
+            </children>
+        </VBox>
+    </center>
+</BorderPane>

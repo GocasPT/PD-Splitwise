@@ -1,12 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Hyperlink?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.VBox?>
-
-<VBox xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pt.isec.a2021138502.PD_Splitwise.ui.controller.LoginController">
-    <TextField fx:id="usernameField" promptText="Enter username" />
-   <PasswordField fx:id="passwordField" promptText="Enter password" />
-    <Button fx:id="loginButton" text="Login" />
-</VBox>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" fx:id="loginPane" prefHeight="600.0" prefWidth="400.0"
+            xmlns="http://javafx.com/javafx/20.0.1"
+            fx:controller="pt.isec.a2021138502.PD_Splitwise.ui.controller.LoginController">
+    <children>
+        <VBox alignment="TOP_CENTER" spacing="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="100.0"
+              AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="0.0">
+            <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true"/>
+            <TextField fx:id="tfUsername" promptText="Enter username" VBox.vgrow="ALWAYS"/>
+            <PasswordField fx:id="tfPassword" promptText="Enter password" VBox.vgrow="ALWAYS"/>
+            <Button fx:id="btnLogin" text="Login"/>
+            <Hyperlink fx:id="hpSignUp" text="Sign up"/>
+        </VBox>
+    </children>
+</AnchorPane>

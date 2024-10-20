@@ -7,9 +7,10 @@ import pt.isec.a2021138502.PD_Splitwise.Message.Response.Response;
 public record Login(String username, String password) implements Request {
 	@Override
 	public Response execute(DataBaseManager context) {
-		System.out.println("Login: " + this);
+		System.out.println(this);
 
-		//TODO: use db to check if user exists
+		//TODO: query to find user and check password
+		// if exists update user as online
 		if (!username.equals("bata") || !password.equals("123")) {
 			return new Response(false, "Invalid username or password.");
 		}
@@ -19,6 +20,6 @@ public record Login(String username, String password) implements Request {
 
 	@Override
 	public String toString() {
-		return "LOGIN" + " " + username + " " + password;
+		return "LOGIN " + username + " " + password;
 	}
 }

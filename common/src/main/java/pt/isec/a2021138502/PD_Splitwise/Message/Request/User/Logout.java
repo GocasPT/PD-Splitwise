@@ -4,14 +4,18 @@ import pt.isec.a2021138502.PD_Splitwise.Data.DataBaseManager;
 import pt.isec.a2021138502.PD_Splitwise.Message.Request.Request;
 import pt.isec.a2021138502.PD_Splitwise.Message.Response.Response;
 
-public class Logout implements Request {
+public record Logout(String email) implements Request {
 	@Override
 	public Response execute(DataBaseManager context) {
-		return null;
+		System.out.println(this);
+
+		//TODO: query to set user as offline
+
+		return new Response(true);
 	}
 
 	@Override
 	public String toString() {
-		return "LOGOUT";
+		return "LOGOUT " + email;
 	}
 }

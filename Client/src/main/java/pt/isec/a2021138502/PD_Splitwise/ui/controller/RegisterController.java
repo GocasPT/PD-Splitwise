@@ -2,47 +2,50 @@ package pt.isec.a2021138502.PD_Splitwise.ui.controller;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.Hyperlink;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
-import pt.isec.a2021138502.PD_Splitwise.Message.Request.User.Login;
+import pt.isec.a2021138502.PD_Splitwise.Message.Request.User.Register;
 import pt.isec.a2021138502.PD_Splitwise.Message.Response.Response;
 import pt.isec.a2021138502.PD_Splitwise.model.EState;
 import pt.isec.a2021138502.PD_Splitwise.model.ModelManager;
 
-public class LoginController extends Controller {
+public class RegisterController extends Controller {
 	@FXML
-	private AnchorPane loginPane;
+	private AnchorPane registerPane;
 	@FXML
 	private TextField tfUsername;
 	@FXML
-	private TextField tfPassword;
+	private TextField tfPhoneNumber;
 	@FXML
-	private Button btnLogin;
+	private TextField tfEmail;
 	@FXML
-	private Hyperlink hpSignUp;
+	private PasswordField tfPassword;
+	@FXML
+	private Button btnRegiste;
+	@FXML
+	private Hyperlink hpSignIn;
 
 	@Override
 	public void registerHandlers() {
 		super.registerHandlers();
-		btnLogin.setOnAction(e -> handleLogin());
-		hpSignUp.setOnAction(e -> ModelManager.getInstance().changeState(EState.REGISTER));
+		btnRegiste.setOnAction(e -> handleRegister());
+		hpSignIn.setOnAction(e -> ModelManager.getInstance().changeState(EState.LOGIN));
 	}
 
 	@Override
 	protected void update() {
-		loginPane.setVisible(ModelManager.getInstance().getState() == EState.LOGIN);
+		registerPane.setVisible(ModelManager.getInstance().getState() == EState.REGISTER);
 	}
 
-	private void handleLogin() {
+	private void handleRegister() {
 		String username = tfUsername.getText();
+		String phoneNumber = tfPhoneNumber.getText();
+		String email = tfEmail.getText();
 		String password = tfPassword.getText();
 
 		try {
-			Login loginRequest = new Login(username, password);
-			Response response = ModelManager.getInstance().sendRequest(loginRequest);
+			Register registerRequest = new Register(username, phoneNumber, email, password);
+			Response response = ModelManager.getInstance().sendRequest(registerRequest);
 			handleResponse(response);
 		} catch (Exception ex) { //TODO: Improve exception handling
 			System.out.println("Error on 'handleLogin': " + ex.getMessage());
@@ -52,7 +55,7 @@ public class LoginController extends Controller {
 	@Override
 	protected void handleResponse(Response response) {
 		if (response.isSuccess())
-			ModelManager.getInstance().changeState(EState.GROUPS_PAGE);
+			ModelManager.getInstance().changeState(EState.LOGIN);
 		else {
 			ModelManager.getInstance().close();
 			new Alert(Alert.AlertType.ERROR, response.getErrorDescription()).showAndWait();

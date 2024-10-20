@@ -1,13 +1,20 @@
 package pt.isec.a2021138502.PD_Splitwise.Message.Request.Group;
 
 import pt.isec.a2021138502.PD_Splitwise.Data.DataBaseManager;
+import pt.isec.a2021138502.PD_Splitwise.Data.Invite;
 import pt.isec.a2021138502.PD_Splitwise.Message.Request.Request;
+import pt.isec.a2021138502.PD_Splitwise.Message.Response.ListResponse;
 import pt.isec.a2021138502.PD_Splitwise.Message.Response.Response;
 
-public class GetInvites implements Request {
+public record GetInvites(String email) implements Request {
 	@Override
 	public Response execute(DataBaseManager context) {
-		return null;
+		System.out.println(this);
+
+		//TODO: query to get invites
+		Invite[] invites = {new Invite("Sr. Batata", "Group da felicidade")};
+
+		return new ListResponse<>(invites);
 	}
 
 	@Override

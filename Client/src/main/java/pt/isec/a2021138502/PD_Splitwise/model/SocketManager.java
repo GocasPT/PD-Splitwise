@@ -2,76 +2,85 @@ package pt.isec.a2021138502.PD_Splitwise.model;
 
 import javafx.application.Platform;
 import pt.isec.a2021138502.PD_Splitwise.Message.Request.Request;
+import pt.isec.a2021138502.PD_Splitwise.Message.Response.NotificaionResponse;
 import pt.isec.a2021138502.PD_Splitwise.Message.Response.Response;
-import pt.isec.a2021138502.PD_Splitwise.ui.ClientGUI;
+import pt.isec.a2021138502.PD_Splitwise.ui.NotificationManager;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.util.function.Consumer;
 
 public class SocketManager {
-	private static SocketManager instance;
+	private final Object lock = new Object();
 	private Socket socket;
 	private ObjectInputStream input;
 	private ObjectOutputStream output;
 	private Thread listenerThread;
+	private Response feedbackResponse;
 
-	private SocketManager() {
+	//TODO: add current logged user object to this class (to use on sendRequest method when need email)
+	// add current group view object to this class (to use on sendRequest method when need group id)
+	// add current invite object to this class (to use on sendRequest method when need invite id)
+
+	public SocketManager() {
 	}
 
-	public static synchronized SocketManager getInstance() {
-		if (instance == null)
-			instance = new SocketManager();
-		return instance;
-	}
-
-	public void connect() throws IOException {
-		InetAddress serverAddr = ClientGUI.getServerAddr();
-		int port = ClientGUI.getPort();
-
+	public void connect(InetAddress serverAddr, int port) throws IOException { //TODO: add other exceptions
 		socket = new Socket(serverAddr, port);
 		input = new ObjectInputStream(socket.getInputStream());
 		output = new ObjectOutputStream(socket.getOutputStream());
 
 		//TODO: create thread to listen for responses
+		//TODO: create Thread to listen all object from pipe (and what is feedback and what is notification)
+		listenerThread = new Thread(this::listenForMessages);
+		listenerThread.start();
 	}
 
-	public void sendRequest(Request request) {
-		try {
+	public void close() throws IOException {
+		if (socket != null && !socket.isClosed())
+			socket.close();
+		if (listenerThread != null && listenerThread.isAlive())
+			listenerThread.interrupt();
+	}
+
+	public Response sendRequest(Request request) throws IOException, InterruptedException {
+		synchronized (lock) {
 			output.writeObject(request);
 			output.flush();
-		} catch (RuntimeException e) { //TODO: Improve this exception handling
-			Platform.runLater(() -> {
-				System.out.println(e.getMessage());
-			});
-		} catch (IOException e) { //TODO: Improve this exception handling
-			Platform.runLater(() -> {
-				System.out.println("Error: " + e.getMessage());
-			});
+
+			lock.wait();
+			return feedbackResponse;
 		}
 	}
 
-	public void waitForResponse(Consumer<Response> responseHandler) {
+	//TODO: make this method as Runnable class
+	public void listenForMessages() {
 		try {
-			Response response = (Response) input.readObject();
-			responseHandler.accept(response);
-		} catch (IOException | ClassNotFoundException e) { //TODO: Improve this exception handling
-			Platform.runLater(() -> {
-				System.out.println("Error: " + e.getMessage());
-			});
-		}
-
-	}
-
-	public void close() {
-		try {
-			if (socket != null && !socket.isClosed())
-				socket.close();
+			while (socket != null && !socket.isClosed()) {
+				Response response = (Response) input.readObject();
+				handleIncomingMessage(response);
+			}
+		} catch (ClassNotFoundException e) {
+			System.out.println("ClassNotFoundException on 'listenForMessages': " + e.getMessage());
 		} catch (IOException e) {
-			System.out.println("Error: " + e.getMessage());
+			System.out.println("IOException on 'listenForMessages': " + e.getMessage());
 		}
+	}
+
+	private void handleIncomingMessage(Response response) {
+		synchronized (lock) {
+			if (isFeedbackResponse(response)) {
+				feedbackResponse = response;
+				lock.notify();
+			} else {
+				Platform.runLater(() -> NotificationManager.showNotification((NotificaionResponse) response));
+			}
+		}
+	}
+
+	private boolean isFeedbackResponse(Response response) {
+		return !(response instanceof NotificaionResponse);
 	}
 }

@@ -1,11 +1,15 @@
 package pt.isec.a2021138502.PD_Splitwise.Message.Response;
 
 public class NotificaionResponse extends Response {
-	public NotificaionResponse(boolean success) {
-		super(EResponse.NOTIFICATION, success, "");
+	private final String notifyDescription;
+	//TODO: add the notification data (String, Object, etc)
+
+	public NotificaionResponse(String text) {
+		super(true);
+		this.notifyDescription = text;
 	}
 
-	public NotificaionResponse(boolean success, String errorDescription) {
-		super(EResponse.NOTIFICATION, success, errorDescription);
+	public String getNotifyDescription() {
+		return notifyDescription;
 	}
 }
