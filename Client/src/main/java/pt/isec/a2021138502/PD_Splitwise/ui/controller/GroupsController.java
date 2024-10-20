@@ -27,7 +27,7 @@ public class GroupsController extends Controller {
 	private Button btnUser;
 
 	@Override
-	public void registerHandlers() {
+	protected void registerHandlers() {
 		super.registerHandlers();
 		btnGroups.setOnAction(e -> update());
 		btnInvites.setOnAction(e -> ModelManager.getInstance().changeState(EState.INVITES_PAGE));
@@ -47,7 +47,7 @@ public class GroupsController extends Controller {
 		//TODO: fetch groups from server
 		Request request = new GetGroups(ModelManager.getInstance().getEmailLoggedUser());
 		Response response = ModelManager.getInstance().sendRequest(request);
-		System.out.println(response);
+		//System.out.println(response);
 		vbGroups.getChildren().clear();
 		ListResponse<Group> listResponse = (ListResponse<Group>) response;
 		Group[] groups = listResponse.getList();

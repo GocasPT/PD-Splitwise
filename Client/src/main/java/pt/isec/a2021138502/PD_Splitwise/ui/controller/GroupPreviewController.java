@@ -14,7 +14,7 @@ public class GroupPreviewController extends Controller {
 	private Text tfGroupMembers;
 
 	@Override
-	public void registerHandlers() {
+	protected void registerHandlers() {
 		super.registerHandlers();
 		//TODO: when click on previewPane, change to group page[id]
 	}

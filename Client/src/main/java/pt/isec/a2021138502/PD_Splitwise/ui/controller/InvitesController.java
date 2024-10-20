@@ -20,7 +20,7 @@ public class InvitesController extends Controller {
 	private Button btnUser;
 
 	@Override
-	public void registerHandlers() {
+	protected void registerHandlers() {
 		super.registerHandlers();
 		btnGroups.setOnAction(e -> ModelManager.getInstance().changeState(EState.GROUPS_PAGE));
 		btnInvites.setOnAction(e -> update());
@@ -40,6 +40,6 @@ public class InvitesController extends Controller {
 		//TODO: fetch invites from server
 		Request request = new GetInvites(ModelManager.getInstance().getEmailLoggedUser());
 		Response response = ModelManager.getInstance().sendRequest(request);
-		System.out.println(response);
+		//System.out.println(response);
 	}
 }

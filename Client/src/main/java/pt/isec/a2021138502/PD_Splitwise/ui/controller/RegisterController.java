@@ -26,7 +26,7 @@ public class RegisterController extends Controller {
 	private Hyperlink hpSignIn;
 
 	@Override
-	public void registerHandlers() {
+	protected void registerHandlers() {
 		super.registerHandlers();
 		btnRegiste.setOnAction(e -> handleRegister());
 		hpSignIn.setOnAction(e -> ModelManager.getInstance().changeState(EState.LOGIN));

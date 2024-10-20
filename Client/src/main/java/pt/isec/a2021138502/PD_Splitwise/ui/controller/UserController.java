@@ -20,7 +20,7 @@ public class UserController extends Controller {
 	private Button btnUser;
 
 	@Override
-	public void registerHandlers() {
+	protected void registerHandlers() {
 		super.registerHandlers();
 		btnGroups.setOnAction(e -> ModelManager.getInstance().changeState(EState.GROUPS_PAGE));
 		btnInvites.setOnAction(e -> ModelManager.getInstance().changeState(EState.INVITES_PAGE));
@@ -40,6 +40,6 @@ public class UserController extends Controller {
 		//TODO: fetch user from server
 		Request request = new GetUser(ModelManager.getInstance().getEmailLoggedUser());
 		Response response = ModelManager.getInstance().sendRequest(request);
-		System.out.println(response);
+		//System.out.println(response);
 	}
 }

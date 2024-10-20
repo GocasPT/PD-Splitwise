@@ -30,8 +30,6 @@ public class RootViewController {
 		try {
 			FXMLLoader fxmlLoader = new FXMLLoader(ClientGUI.class.getResource(fxmlName));
 			Parent child = fxmlLoader.load();
-			Controller controller = fxmlLoader.getController();
-			controller.registerHandlers();
 			stackPane.getChildren().add(child);
 		} catch (IOException e) {
 			System.out.println("Error loading view: " + fxmlName);
