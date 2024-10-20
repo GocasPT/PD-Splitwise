@@ -7,7 +7,9 @@ import pt.isec.a2021138502.PD_Splitwise.Message.Response.Response;
 public record ExitGroup(int groupId) implements Request {
 	@Override
 	public Response execute(DataBaseManager context) {
-		return null;
+		//TODO: query to exit group
+
+		return new Response(true);
 	}
 
 	@Override

@@ -9,8 +9,6 @@ import pt.isec.a2021138502.PD_Splitwise.Message.Response.Response;
 public record GetInvites(String email) implements Request {
 	@Override
 	public Response execute(DataBaseManager context) {
-		System.out.println(this);
-
 		//TODO: query to get invites
 		Invite[] invites = {
 				new Invite(

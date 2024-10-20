@@ -9,10 +9,13 @@ import pt.isec.a2021138502.PD_Splitwise.Message.Response.ValueResponse;
 public record GetUser(String email) implements Request {
 	@Override
 	public Response execute(DataBaseManager context) {
-		System.out.println(this);
-
 		//TODO: query to get user data
-		User user = new User("bata", "9177, tira tira, mete mete", "email.batata", "password");
+		User user = new User(
+				"bata",
+				"9177, tira tira, mete mete",
+				"email.batata",
+				"password"
+		);
 
 		return new ValueResponse<>(user);
 	}

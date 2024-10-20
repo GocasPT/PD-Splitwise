@@ -7,8 +7,6 @@ import pt.isec.a2021138502.PD_Splitwise.Message.Response.Response;
 public record Logout(String email) implements Request {
 	@Override
 	public Response execute(DataBaseManager context) {
-		System.out.println(this);
-
 		//TODO: query to set user as offline
 
 		return new Response(true);

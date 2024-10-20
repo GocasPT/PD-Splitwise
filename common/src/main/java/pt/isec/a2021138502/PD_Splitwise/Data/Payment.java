@@ -7,12 +7,6 @@ public record Payment(Double value, Date date, String groupName, String buyerNam
                       String reciverName) implements Serializable {
 	@Override
 	public String toString() {
-		return "Payment{" +
-				"buyerName='" + buyerName + '\'' +
-				", value=" + value +
-				", date=" + date +
-				", groupName='" + groupName + '\'' +
-				", reciverName='" + reciverName + '\'' +
-				'}';
+		return "Payment [value: " + value + ", date: " + date + "]";
 	}
 }

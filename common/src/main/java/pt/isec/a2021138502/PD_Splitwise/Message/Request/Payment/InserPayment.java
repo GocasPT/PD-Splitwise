@@ -6,14 +6,13 @@ import pt.isec.a2021138502.PD_Splitwise.Message.Response.Response;
 
 import java.util.Date;
 
-/**
- * @param groupID TODO: client-side or server-side?
- */
 public record InserPayment(int groupID, int userBuyerID, int userReceiverID, Date date,
                            double amount) implements Request {
 	@Override
 	public Response execute(DataBaseManager context) {
-		return null;
+		//TODO: query to insert payment
+
+		return new Response(true);
 	}
 
 	@Override

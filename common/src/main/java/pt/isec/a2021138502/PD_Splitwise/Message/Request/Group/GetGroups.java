@@ -10,8 +10,6 @@ import pt.isec.a2021138502.PD_Splitwise.Message.Response.Response;
 public record GetGroups(String email) implements Request {
 	@Override
 	public Response execute(DataBaseManager context) {
-		System.out.println(this);
-
 		//TODO: query to get groups
 		Group[] groups = {
 				new Group("Fritadeira", new User[]{

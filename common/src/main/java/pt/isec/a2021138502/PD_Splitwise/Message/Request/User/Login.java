@@ -7,8 +7,6 @@ import pt.isec.a2021138502.PD_Splitwise.Message.Response.Response;
 public record Login(String username, String password) implements Request {
 	@Override
 	public Response execute(DataBaseManager context) {
-		System.out.println(this);
-
 		//TODO: query to find user and check password
 		// if exists update user as online
 		if (!username.equals("bata") || !password.equals("123")) {

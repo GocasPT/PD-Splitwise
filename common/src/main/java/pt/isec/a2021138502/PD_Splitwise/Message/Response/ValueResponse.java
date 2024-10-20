@@ -19,6 +19,6 @@ public class ValueResponse<T> extends Response {
 
 	@Override
 	public String toString() {
-		return "ValueResponse [sucess: " + isSuccess() + (!isSuccess() ? ", errorDescription=" + getErrorDescription() : ", value=" + value) + "]";
+		return "ValueResponse [sucess: " + isSuccess() + (!isSuccess() ? ", errorDescription: " + getErrorDescription() : ", value: " + value) + "]";
 	}
 }

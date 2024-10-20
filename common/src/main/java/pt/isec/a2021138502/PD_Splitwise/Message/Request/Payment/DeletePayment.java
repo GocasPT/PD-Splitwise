@@ -4,13 +4,12 @@ import pt.isec.a2021138502.PD_Splitwise.Data.DataBaseManager;
 import pt.isec.a2021138502.PD_Splitwise.Message.Request.Request;
 import pt.isec.a2021138502.PD_Splitwise.Message.Response.Response;
 
-/**
- * @param paymentID TODO: client-side or server-side?
- */
 public record DeletePayment(int paymentID) implements Request {
 	@Override
 	public Response execute(DataBaseManager context) {
-		return null;
+		//TODO: query to delete payment
+
+		return new Response(true);
 	}
 
 	@Override

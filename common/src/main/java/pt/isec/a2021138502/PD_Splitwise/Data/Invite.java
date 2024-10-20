@@ -6,11 +6,6 @@ public record Invite(int inviteId, String inviteUserEmail, String inviterUserEma
                      String groupName) implements Serializable {
 	@Override
 	public String toString() {
-		return "Invite{" +
-				"inviteId=" + inviteId + '\'' +
-				", groupName='" + groupName + '\'' +
-				", inviteUserEmail='" + inviteUserEmail + '\'' +
-				", inviterUserEmail='" + inviterUserEmail + '\'' +
-				'}';
+		return "Invite [group: " + groupName + "]";
 	}
 }

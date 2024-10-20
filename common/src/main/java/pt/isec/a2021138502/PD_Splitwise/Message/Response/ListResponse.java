@@ -3,24 +3,24 @@ package pt.isec.a2021138502.PD_Splitwise.Message.Response;
 import java.util.Arrays;
 
 public class ListResponse<T> extends Response {
-	private final T[] invites;
+	private final T[] list;
 
-	public ListResponse(T[] invites) {
+	public ListResponse(T[] list) {
 		super(true);
-		this.invites = invites;
+		this.list = list;
 	}
 
 	public ListResponse(String errorDescription) {
 		super(false, errorDescription);
-		this.invites = null;
+		this.list = null;
 	}
 
 	public T[] getList() {
-		return invites;
+		return list;
 	}
 
 	@Override
 	public String toString() {
-		return "ListResponse [sucess: " + isSuccess() + (!isSuccess() ? ", errorDescription=" + getErrorDescription() : ", invites=" + Arrays.toString(invites)) + "]";
+		return "ListResponse [sucess: " + isSuccess() + (!isSuccess() ? ", errorDescription: " + getErrorDescription() : ", list: " + Arrays.toString(list)) + "]";
 	}
 }

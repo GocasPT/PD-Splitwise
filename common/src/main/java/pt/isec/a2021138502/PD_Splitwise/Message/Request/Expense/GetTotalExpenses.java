@@ -3,14 +3,16 @@ package pt.isec.a2021138502.PD_Splitwise.Message.Request.Expense;
 import pt.isec.a2021138502.PD_Splitwise.Data.DataBaseManager;
 import pt.isec.a2021138502.PD_Splitwise.Message.Request.Request;
 import pt.isec.a2021138502.PD_Splitwise.Message.Response.Response;
+import pt.isec.a2021138502.PD_Splitwise.Message.Response.ValueResponse;
 
-/**
- * @param groupID TODO: groupId on client side or server side?
- */
 public record GetTotalExpenses(int groupID) implements Request {
 	@Override
 	public Response execute(DataBaseManager context) {
-		return null;
+		//TODO: query to get total expenses
+
+		Double totalExpenses = 69.0;
+
+		return new ValueResponse<>(totalExpenses);
 	}
 
 	@Override

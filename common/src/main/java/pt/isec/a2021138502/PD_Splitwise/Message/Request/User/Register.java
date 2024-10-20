@@ -7,8 +7,6 @@ import pt.isec.a2021138502.PD_Splitwise.Message.Response.Response;
 public record Register(String username, String phone, String email, String password) implements Request {
 	@Override
 	public Response execute(DataBaseManager context) {
-		System.out.println(this);
-
 		//TODO: query to see if email is unique
 
 		return new Response(true);

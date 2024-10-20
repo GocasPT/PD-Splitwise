@@ -6,13 +6,12 @@ import pt.isec.a2021138502.PD_Splitwise.Message.Response.Response;
 
 import java.util.Date;
 
-/**
- * @param date TODO: java.util.Date or java.sql.Date?
- */
 public record EditExpense(int expenseID, int groupID, Date date, double amount, String buyer) implements Request {
 	@Override
 	public Response execute(DataBaseManager context) {
-		return null;
+		//TODO: query to edit expense
+
+		return new Response(true);
 	}
 
 	@Override

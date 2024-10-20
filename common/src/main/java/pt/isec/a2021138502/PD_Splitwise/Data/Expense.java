@@ -7,12 +7,6 @@ public record Expense(String description, Double value, Date date, String groupN
                       String buyerName) implements Serializable {
 	@Override
 	public String toString() {
-		return "Expense{" +
-				"buyerName='" + buyerName + '\'' +
-				", description='" + description + '\'' +
-				", value=" + value +
-				", date=" + date +
-				", groupName='" + groupName + '\'' +
-				'}';
+		return "Expense [value: " + value + "]";
 	}
 }

@@ -34,8 +34,9 @@ public class ClientHandler implements Runnable {
 			try {
 				//TODO: loop unitl socket != null and !socket.isClosed()
 				while ((request = (Request) in.readObject()) != null) {
+					System.out.println(getTimeTag() + "'" + name + "': " + request);
 					Response response = request.execute(context);
-					System.out.println(response);
+					System.out.println(getTimeTag() + response);
 					out.writeObject(response);
 				}
 			} catch (ClassNotFoundException e) {

@@ -12,4 +12,9 @@ public class NotificaionResponse extends Response {
 	public String getNotifyDescription() {
 		return notifyDescription;
 	}
+
+	@Override
+	public String toString() {
+		return "NotificaionResponse [sucess: " + isSuccess() + (!isSuccess() ? ", errorDescription: " + getErrorDescription() : ", notifyDescription: " + notifyDescription + "]");
+	}
 }
