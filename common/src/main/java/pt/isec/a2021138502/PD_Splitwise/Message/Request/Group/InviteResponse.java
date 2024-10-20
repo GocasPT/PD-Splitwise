@@ -7,7 +7,9 @@ import pt.isec.a2021138502.PD_Splitwise.Message.Response.Response;
 public record InviteResponse(int inviteId, boolean isAccepted) implements Request {
 	@Override
 	public Response execute(DataBaseManager context) {
-		return null;
+		//TODO: query to update invite
+
+		return new Response(true);
 	}
 
 	@Override

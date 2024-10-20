@@ -12,6 +12,7 @@ public class GroupPreviewController extends Controller {
 	private Text tfGroupName;
 	@FXML
 	private Text tfGroupMembers;
+	private Group group; //TODO: change to group id (dont save object on client-side, request data from server)
 
 	@Override
 	protected void registerHandlers() {
@@ -20,6 +21,7 @@ public class GroupPreviewController extends Controller {
 	}
 
 	public void build(Group group) {
+		this.group = group;
 		tfGroupName.setText(group.name());
 		tfGroupMembers.setText(group.users().length + " members");
 	}
