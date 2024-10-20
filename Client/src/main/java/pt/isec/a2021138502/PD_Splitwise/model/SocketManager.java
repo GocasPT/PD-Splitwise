@@ -20,10 +20,6 @@ public class SocketManager {
 	private Thread listenerThread;
 	private Response feedbackResponse;
 
-	//TODO: add current logged user object to this class (to use on sendRequest method when need email)
-	// add current group view object to this class (to use on sendRequest method when need group id)
-	// add current invite object to this class (to use on sendRequest method when need invite id)
-
 	public SocketManager() {
 	}
 

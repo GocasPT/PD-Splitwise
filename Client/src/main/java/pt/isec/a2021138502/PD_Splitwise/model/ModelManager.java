@@ -13,6 +13,8 @@ public class ModelManager {
 	private final SocketManager socketManager;
 	private final PropertyChangeSupport pcs;
 	private EState state;
+	private String emailLoggedUser;
+	private String groupView; //TODO: I need this or use controllers variables injector?
 
 	private ModelManager() {
 		pcs = new PropertyChangeSupport(this);
@@ -26,17 +28,33 @@ public class ModelManager {
 		return instance;
 	}
 
-	public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
-		pcs.addPropertyChangeListener(propertyName, listener);
+	public void addPropertyChangeListener(PropertyChangeListener listener) {
+		pcs.addPropertyChangeListener(listener);
 	}
 
 	public EState getState() {
 		return state;
 	}
 
+	public String getEmailLoggedUser() {
+		return emailLoggedUser;
+	}
+
+	public void setEmailLoggedUser(String emailLoggedUser) {
+		this.emailLoggedUser = emailLoggedUser;
+	}
+
+	public String getGroupView() {
+		return groupView;
+	}
+
+	public void setGroupView(String groupView) {
+		this.groupView = groupView;
+	}
+
 	public void changeState(EState state) {
 		this.state = state;
-		pcs.firePropertyChange("", null, null);
+		pcs.firePropertyChange(null, null, null);
 	}
 
 	public void connect(InetAddress serverAddr, int port) {
