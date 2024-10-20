@@ -12,7 +12,7 @@ public abstract class Controller {
 	}
 
 	public void registerHandlers() {
-		ModelManager.getInstance().addPropertyChangeListener(evt -> update());
+		ModelManager.getInstance().addPropertyChangeListener(evt -> update()); //TODO: this trigger 2 times, WHY?
 	}
 
 	protected void update() {

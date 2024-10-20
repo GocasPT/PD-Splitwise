@@ -38,7 +38,7 @@ public class UserController extends Controller {
 
 	private void fetchUser() {
 		//TODO: fetch user from server
-		Request request = new GetUser("bata"); //TODO: get email from current logged user
+		Request request = new GetUser(ModelManager.getInstance().getEmailLoggedUser());
 		Response response = ModelManager.getInstance().sendRequest(request);
 		System.out.println(response);
 	}

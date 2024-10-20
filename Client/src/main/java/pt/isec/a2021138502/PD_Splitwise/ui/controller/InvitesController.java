@@ -38,7 +38,7 @@ public class InvitesController extends Controller {
 
 	private void fetchInvites() {
 		//TODO: fetch invites from server
-		Request request = new GetInvites("bata"); //TODO: get email from current logged user
+		Request request = new GetInvites(ModelManager.getInstance().getEmailLoggedUser());
 		Response response = ModelManager.getInstance().sendRequest(request);
 		System.out.println(response);
 	}

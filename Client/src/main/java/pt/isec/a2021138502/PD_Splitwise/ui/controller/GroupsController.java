@@ -45,7 +45,7 @@ public class GroupsController extends Controller {
 
 	private void fetchGroups() {
 		//TODO: fetch groups from server
-		Request request = new GetGroups("bata"); //TODO: get email from current logged user
+		Request request = new GetGroups(ModelManager.getInstance().getEmailLoggedUser());
 		Response response = ModelManager.getInstance().sendRequest(request);
 		System.out.println(response);
 		vbGroups.getChildren().clear();
