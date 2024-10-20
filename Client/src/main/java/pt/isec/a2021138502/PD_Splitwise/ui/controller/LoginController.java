@@ -36,6 +36,17 @@ public class LoginController extends Controller {
 		loginPane.setVisible(ModelManager.getInstance().getState() == EState.LOGIN);
 	}
 
+	@Override
+	protected void handleResponse(Response response) {
+		if (response.isSuccess())
+			ModelManager.getInstance().changeState(EState.GROUPS_PAGE);
+		else {
+			ModelManager.getInstance().close();
+			new Alert(Alert.AlertType.ERROR, response.getErrorDescription()).showAndWait();
+			Platform.exit();
+		}
+	}
+
 	private void handleLogin() {
 		String username = tfUsername.getText();
 		String password = tfPassword.getText();
@@ -46,17 +57,6 @@ public class LoginController extends Controller {
 			handleResponse(response);
 		} catch (Exception ex) { //TODO: Improve exception handling
 			System.out.println("Error on 'handleLogin': " + ex.getMessage());
-		}
-	}
-
-	@Override
-	protected void handleResponse(Response response) {
-		if (response.isSuccess())
-			ModelManager.getInstance().changeState(EState.GROUPS_PAGE);
-		else {
-			ModelManager.getInstance().close();
-			new Alert(Alert.AlertType.ERROR, response.getErrorDescription()).showAndWait();
-			Platform.exit();
 		}
 	}
 }

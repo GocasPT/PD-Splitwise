@@ -37,6 +37,17 @@ public class RegisterController extends Controller {
 		registerPane.setVisible(ModelManager.getInstance().getState() == EState.REGISTER);
 	}
 
+	@Override
+	protected void handleResponse(Response response) {
+		if (response.isSuccess())
+			ModelManager.getInstance().changeState(EState.LOGIN);
+		else {
+			ModelManager.getInstance().close();
+			new Alert(Alert.AlertType.ERROR, response.getErrorDescription()).showAndWait();
+			Platform.exit();
+		}
+	}
+
 	private void handleRegister() {
 		String username = tfUsername.getText();
 		String phoneNumber = tfPhoneNumber.getText();
@@ -49,17 +60,6 @@ public class RegisterController extends Controller {
 			handleResponse(response);
 		} catch (Exception ex) { //TODO: Improve exception handling
 			System.out.println("Error on 'handleLogin': " + ex.getMessage());
-		}
-	}
-
-	@Override
-	protected void handleResponse(Response response) {
-		if (response.isSuccess())
-			ModelManager.getInstance().changeState(EState.LOGIN);
-		else {
-			ModelManager.getInstance().close();
-			new Alert(Alert.AlertType.ERROR, response.getErrorDescription()).showAndWait();
-			Platform.exit();
 		}
 	}
 }
