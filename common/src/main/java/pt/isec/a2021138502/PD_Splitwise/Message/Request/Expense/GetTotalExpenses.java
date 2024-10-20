@@ -15,6 +15,6 @@ public record GetTotalExpenses(int groupID) implements Request {
 
 	@Override
 	public String toString() {
-		return "GET_TOTAL_EXPENSES" + " " + groupID;
+		return "GET_TOTAL_EXPENSES " + groupID;
 	}
 }

@@ -15,6 +15,6 @@ public record EditGroup(int groupId, String name) implements Request {
 
 	@Override
 	public String toString() {
-		return "EDIT_GROUP" + " " + groupId + " " + name;
+		return "EDIT_GROUP " + groupId + " " + name;
 	}
 }

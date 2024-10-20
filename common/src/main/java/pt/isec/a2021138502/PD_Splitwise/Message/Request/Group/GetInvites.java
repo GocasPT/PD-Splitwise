@@ -19,6 +19,6 @@ public record GetInvites(String email) implements Request {
 
 	@Override
 	public String toString() {
-		return "GET_INVITATIONS";
+		return "GET_INVITATIONS " + email;
 	}
 }

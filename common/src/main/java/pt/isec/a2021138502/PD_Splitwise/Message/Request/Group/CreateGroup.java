@@ -13,6 +13,6 @@ public record CreateGroup(String name) implements Request {
 
 	@Override
 	public String toString() {
-		return "CREATE_GROUP" + " '" + name + "'";
+		return "CREATE_GROUP '" + name + "'";
 	}
 }

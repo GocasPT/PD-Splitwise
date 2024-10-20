@@ -15,6 +15,6 @@ public record GetHistory(int groupID) implements Request {
 
 	@Override
 	public String toString() {
-		return "GET_HISTORY" + " " + groupID;
+		return "GET_HISTORY " + groupID;
 	}
 }

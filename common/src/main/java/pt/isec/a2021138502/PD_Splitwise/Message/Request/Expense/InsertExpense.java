@@ -18,6 +18,6 @@ public record InsertExpense(int groupID, Date date, double amount, String userBu
 
 	@Override
 	public String toString() {
-		return "INSERT_EXPENSE" + " " + groupID + " " + date + " " + amount + " " + userBuyer;
+		return "INSERT_EXPENSE " + groupID + " " + date + " " + amount + " " + userBuyer;
 	}
 }

@@ -12,6 +12,6 @@ public record DeleteGroup(int groupId) implements Request {
 
 	@Override
 	public String toString() {
-		return "DELETE_GROUP" + " " + groupId;
+		return "DELETE_GROUP " + groupId;
 	}
 }

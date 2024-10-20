@@ -17,6 +17,6 @@ public record EditExpense(int expenseID, int groupID, Date date, double amount, 
 
 	@Override
 	public String toString() {
-		return "EDIT_EXPENSE" + " " + expenseID + " " + groupID + " " + date + " " + amount + " " + buyer;
+		return "EDIT_EXPENSE " + expenseID + " " + groupID + " " + date + " " + amount + " " + buyer;
 	}
 }

@@ -18,6 +18,6 @@ public record InserPayment(int groupID, int userBuyerID, int userReceiverID, Dat
 
 	@Override
 	public String toString() {
-		return "INSERT_PAYMENT" + " " + groupID + " " + userBuyerID + " " + userReceiverID + " " + date + " " + amount;
+		return "INSERT_PAYMENT " + groupID + " " + userBuyerID + " " + userReceiverID + " " + date + " " + amount;
 	}
 }

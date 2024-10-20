@@ -28,6 +28,6 @@ public record GetGroups(String email) implements Request {
 
 	@Override
 	public String toString() {
-		return "GET_GROUPS";
+		return "GET_GROUPS " + email;
 	}
 }

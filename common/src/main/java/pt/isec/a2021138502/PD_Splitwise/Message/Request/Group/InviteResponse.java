@@ -12,6 +12,6 @@ public record InviteResponse(int inviteId, boolean isAccepted) implements Reques
 
 	@Override
 	public String toString() {
-		return "INVITE_RESPONSE" + " " + inviteId + " " + isAccepted;
+		return "INVITE_RESPONSE " + inviteId + " " + isAccepted;
 	}
 }

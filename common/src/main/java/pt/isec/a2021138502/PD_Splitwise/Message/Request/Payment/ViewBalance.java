@@ -15,6 +15,6 @@ public record ViewBalance(int groupID) implements Request {
 
 	@Override
 	public String toString() {
-		return "VIEW_BALANCE" + " " + groupID;
+		return "VIEW_BALANCE " + groupID;
 	}
 }

@@ -13,6 +13,6 @@ public record InviteUser(int groupID, String email) implements Request {
 
 	@Override
 	public String toString() {
-		return "LOGIN" + " " + email;
+		return "LOGIN " + email;
 	}
 }

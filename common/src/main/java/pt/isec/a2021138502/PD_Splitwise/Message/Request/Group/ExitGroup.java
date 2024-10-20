@@ -12,6 +12,6 @@ public record ExitGroup(int groupId) implements Request {
 
 	@Override
 	public String toString() {
-		return "EXIT_GROUP" + " " + groupId;
+		return "EXIT_GROUP " + groupId;
 	}
 }

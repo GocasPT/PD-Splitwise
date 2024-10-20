@@ -15,6 +15,6 @@ public record DeletePayment(int paymentID) implements Request {
 
 	@Override
 	public String toString() {
-		return "DELETE_PAYMENT" + " " + paymentID;
+		return "DELETE_PAYMENT " + paymentID;
 	}
 }

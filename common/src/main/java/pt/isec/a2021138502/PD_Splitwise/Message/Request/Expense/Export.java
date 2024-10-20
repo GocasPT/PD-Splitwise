@@ -15,6 +15,6 @@ public record Export(int groupID) implements Request {
 
 	@Override
 	public String toString() {
-		return "EXPORT" + " " + groupID;
+		return "EXPORT " + groupID;
 	}
 }

@@ -15,6 +15,6 @@ public record GetPayments(int groupID) implements Request {
 
 	@Override
 	public String toString() {
-		return "GET_PAYMENTS" + " " + groupID;
+		return "GET_PAYMENTS " + groupID;
 	}
 }
