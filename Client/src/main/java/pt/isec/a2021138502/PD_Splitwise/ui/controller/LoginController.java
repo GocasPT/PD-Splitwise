@@ -38,9 +38,10 @@ public class LoginController extends Controller {
 
 	@Override
 	protected void handleResponse(Response response) {
-		if (response.isSuccess())
+		if (response.isSuccess()) {
+			ModelManager.getInstance().setEmailLoggedUser(tfUsername.getText());
 			ModelManager.getInstance().changeState(EState.GROUPS_PAGE);
-		else {
+		} else {
 			ModelManager.getInstance().close();
 			new Alert(Alert.AlertType.ERROR, response.getErrorDescription()).showAndWait();
 			Platform.exit();
