@@ -7,7 +7,7 @@
             xmlns="http://javafx.com/javafx/20.0.1"
             fx:controller="pt.isec.a2021138502.PD_Splitwise.ui.controller.InvitesController">
     <center>
-        <VBox alignment="CENTER">
+        <VBox fx:id="vbInvites" alignment="CENTER">
             <children>
                 <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Invites page" textAlignment="CENTER"/>
             </children>

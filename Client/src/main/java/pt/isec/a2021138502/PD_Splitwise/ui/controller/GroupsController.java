@@ -47,7 +47,7 @@ public class GroupsController extends Controller {
 		//TODO: fetch groups from server
 		Request request = new GetGroups(ModelManager.getInstance().getEmailLoggedUser());
 		Response response = ModelManager.getInstance().sendRequest(request);
-		//System.out.println(response);
+
 		vbGroups.getChildren().clear();
 		ListResponse<Group> listResponse = (ListResponse<Group>) response;
 		Group[] groups = listResponse.getList();
@@ -59,7 +59,7 @@ public class GroupsController extends Controller {
 				controller.build(group);
 				vbGroups.getChildren().add(groupPreview);
 			}
-		} catch (Exception ex) {
+		} catch (Exception e) {
 			System.out.println("Error loading group preview");
 		}
 	}

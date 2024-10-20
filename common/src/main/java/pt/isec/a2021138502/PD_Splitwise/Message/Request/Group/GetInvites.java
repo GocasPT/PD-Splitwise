@@ -12,7 +12,7 @@ public record GetInvites(String email) implements Request {
 		System.out.println(this);
 
 		//TODO: query to get invites
-		Invite[] invites = {new Invite("Sr. Batata", "Group da felicidade")};
+		Invite[] invites = {new Invite("Sra. Cebola", "Sr. Batata", "Group da felicidade")};
 
 		return new ListResponse<>(invites);
 	}
