@@ -28,10 +28,10 @@ public class ClientGUI extends Application {
 			InetAddress serverAddr = InetAddress.getByName(args[0]);
 			int port = Integer.parseInt(args[1]);
 			ModelManager.getInstance().connect(serverAddr, port);
-		} catch (UnknownHostException e) { //TODO: Improve this exception handling
+		} catch ( UnknownHostException e ) { //TODO: Improve this exception handling
 			System.out.println("Error: " + e.getMessage());
 			Platform.exit();
-		} catch (NumberFormatException e) { //TODO: Improve this exception handling
+		} catch ( NumberFormatException e ) { //TODO: Improve this exception handling
 			System.out.println("Error: Invalid port number.");
 			Platform.exit();
 		} //TODO: maybe add more catch blocks

@@ -61,7 +61,7 @@ public class ModelManager {
 	public void connect(InetAddress serverAddr, int port) {
 		try {
 			socketManager.connect(serverAddr, port);
-		} catch (IOException e) { //TODO: Improve this exception handling
+		} catch ( IOException e ) { //TODO: Improve this exception handling
 			System.out.println("Error: " + e.getMessage());
 		}
 	}
@@ -69,7 +69,7 @@ public class ModelManager {
 	public void close() {
 		try {
 			socketManager.close();
-		} catch (IOException e) {
+		} catch ( IOException e ) {
 			throw new RuntimeException(e);
 		}
 	}
@@ -79,7 +79,7 @@ public class ModelManager {
 	public Response sendRequest(Request request) {
 		try {
 			return socketManager.sendRequest(request);
-		} catch (IOException | InterruptedException e) { //TODO: Improve this exception handling
+		} catch ( IOException | InterruptedException e ) { //TODO: Improve this exception handling
 			System.out.println("Error: " + e.getMessage());
 			return null;
 		}

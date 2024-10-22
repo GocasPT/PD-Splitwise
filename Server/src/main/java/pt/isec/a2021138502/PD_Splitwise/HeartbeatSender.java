@@ -25,7 +25,7 @@ public class HeartbeatSender implements Runnable {
 	public void run() {
 		int tcpPort = 6001;
 
-		try (ServerSocket serverSocket = new ServerSocket(tcpPort)) {
+		try ( ServerSocket serverSocket = new ServerSocket(tcpPort) ) {
 
 			//TODO: create new thread to handle TCP connections from backup servers
 
@@ -36,7 +36,7 @@ public class HeartbeatSender implements Runnable {
 				group = InetAddress.getByName(MULTICAST_ADDRESS);
 				nif = NetworkInterface.getByName(MULTICAST_ADDRESS);
 
-				try (MulticastSocket socket = new MulticastSocket(MULTICAST_PORT)) {
+				try ( MulticastSocket socket = new MulticastSocket(MULTICAST_PORT) ) {
 					socket.joinGroup(new InetSocketAddress(group, MULTICAST_PORT), nif);
 					System.out.println(getTimeTag() + "Heartbeat sender started");
 
@@ -50,25 +50,26 @@ public class HeartbeatSender implements Runnable {
 
 						System.out.println(getTimeTag() + "Sending heartbeat: " + heartbeat);
 
-						DatagramPacket packet = new DatagramPacket(bOut.toByteArray(), bOut.size(), group, MULTICAST_PORT);
+						DatagramPacket packet = new DatagramPacket(bOut.toByteArray(), bOut.size(), group,
+						                                           MULTICAST_PORT);
 						socket.send(packet);
 
 						Thread.sleep(INTERVAL * 1000);
 					}
-				} catch (InterruptedException e) {
+				} catch ( InterruptedException e ) {
 					System.out.println("[HeartbeatThread] Heartbeat sender interrupted");
-				} catch (IOException e) {
+				} catch ( IOException e ) {
 					System.err.println("[HeartbeatThread] Heartbeat sender error: " + e.getMessage());
 				} finally {
 					System.out.println(getTimeTag() + "Heartbeat sender stopped");
 				}
 
-			} catch (UnknownHostException e) {
+			} catch ( UnknownHostException e ) {
 				System.out.println("[HeartbeatThread] Unknown multicast group: " + MULTICAST_ADDRESS);
-			} catch (SocketException e) {
+			} catch ( SocketException e ) {
 				System.out.println("[HeartbeatThread] Unknown network interface: " + MULTICAST_ADDRESS);
 			}
-		} catch (IOException e) {
+		} catch ( IOException e ) {
 			System.out.println("[HeartbeatThread] Ocorreu um erro no acesso ao serverSocket:\n\t" + e);
 		}
 	}

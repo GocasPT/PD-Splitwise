@@ -14,4 +14,5 @@ Trabalho prático feita por:
 
 ## Auxilio
 
+- [SQLite JDBC](https://github.com/xerial/sqlite-jdbc) mais usado na plataforma maven
 - O meu [trabalho de GPS](https://gitlab.com/JoaoCapitao/GPS_G32) onde fui buscar maioria da lógica da parte GUI

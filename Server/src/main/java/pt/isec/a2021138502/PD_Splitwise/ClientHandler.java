@@ -27,8 +27,10 @@ public class ClientHandler implements Runnable {
 
 	@Override
 	public void run() {
-		try (ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream());
-		     ObjectInputStream in = new ObjectInputStream(clientSocket.getInputStream())) {
+		try (
+				ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream());
+				ObjectInputStream in = new ObjectInputStream(clientSocket.getInputStream())
+		) {
 			Request request;
 
 			try {
@@ -39,13 +41,13 @@ public class ClientHandler implements Runnable {
 					System.out.println(getTimeTag() + response);
 					out.writeObject(response);
 				}
-			} catch (ClassNotFoundException e) {
+			} catch ( ClassNotFoundException e ) {
 				System.out.println("[ClientThread] Ocorreu um erro ao ler o objeto recebido:\n\t" + e);
 			}
 
-		} catch (SocketException e) {
+		} catch ( SocketException e ) {
 			System.out.println("[ClientThread] Ocorreu um erro ao nivel do socket TCP:\n\t" + e);
-		} catch (IOException e) {
+		} catch ( IOException e ) {
 			System.out.println("[ClientThread] Ocorreu um erro no acesso ao socket:\n\t" + e);
 		} finally {
 			System.out.println(getTimeTag() + "Client '" + name + "' disconnected");

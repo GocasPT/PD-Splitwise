@@ -4,6 +4,7 @@ import javafx.fxml.FXML;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Text;
 import pt.isec.a2021138502.PD_Splitwise.Data.Group;
+import pt.isec.a2021138502.PD_Splitwise.Data.GroupPreview;
 import pt.isec.a2021138502.PD_Splitwise.Message.Request.Group.GetGroup;
 import pt.isec.a2021138502.PD_Splitwise.Message.Request.Request;
 import pt.isec.a2021138502.PD_Splitwise.Message.Response.Response;
@@ -27,10 +28,10 @@ public class GroupPreviewController extends Controller {
 	}
 
 	//TODO: improve this method (Group → each data maybe)
-	public void build(Group group) {
+	public void build(GroupPreview group) {
 		this.groupId = group.id();
 		tfGroupName.setText(group.name());
-		tfGroupMembers.setText(group.users().length + " members");
+		tfGroupMembers.setText(group.memberCount() + " members");
 	}
 
 	private void fetchGroup() {

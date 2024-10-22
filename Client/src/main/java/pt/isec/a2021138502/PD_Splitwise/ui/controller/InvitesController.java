@@ -61,7 +61,7 @@ public class InvitesController extends Controller {
 				controller.build(invite);
 				vbInvites.getChildren().add(invitePreview);
 			}
-		} catch (Exception e) {
+		} catch ( Exception e ) {
 			System.out.println("Error loading invite preview");
 		}
 	}

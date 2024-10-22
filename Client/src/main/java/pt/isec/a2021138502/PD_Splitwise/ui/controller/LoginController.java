@@ -16,7 +16,7 @@ public class LoginController extends Controller {
 	@FXML
 	private AnchorPane loginPane;
 	@FXML
-	private TextField tfUsername;
+	private TextField tfEmail;
 	@FXML
 	private TextField tfPassword;
 	@FXML
@@ -39,7 +39,7 @@ public class LoginController extends Controller {
 	@Override
 	protected void handleResponse(Response response) {
 		if (response.isSuccess()) {
-			ModelManager.getInstance().setEmailLoggedUser(tfUsername.getText());
+			ModelManager.getInstance().setEmailLoggedUser(tfEmail.getText());
 			ModelManager.getInstance().changeState(EState.GROUPS_PAGE);
 		} else {
 			ModelManager.getInstance().close();
@@ -49,15 +49,11 @@ public class LoginController extends Controller {
 	}
 
 	private void handleLogin() {
-		String username = tfUsername.getText();
+		String username = tfEmail.getText();
 		String password = tfPassword.getText();
 
-		try {
-			Login loginRequest = new Login(username, password);
-			Response response = ModelManager.getInstance().sendRequest(loginRequest);
-			handleResponse(response);
-		} catch (Exception ex) { //TODO: Improve exception handling
-			System.out.println("Error on 'handleLogin': " + ex.getMessage());
-		}
+		Login loginRequest = new Login(username, password);
+		Response response = ModelManager.getInstance().sendRequest(loginRequest);
+		handleResponse(response);
 	}
 }

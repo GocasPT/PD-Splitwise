@@ -58,9 +58,9 @@ public class SocketManager {
 				Response response = (Response) input.readObject();
 				handleIncomingMessage(response);
 			}
-		} catch (ClassNotFoundException e) {
+		} catch ( ClassNotFoundException e ) {
 			System.out.println("ClassNotFoundException on 'listenForMessages': " + e.getMessage());
-		} catch (IOException e) {
+		} catch ( IOException e ) {
 			System.out.println("IOException on 'listenForMessages': " + e.getMessage());
 		}
 	}

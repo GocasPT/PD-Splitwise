@@ -58,7 +58,7 @@ public class RegisterController extends Controller {
 			Register registerRequest = new Register(username, phoneNumber, email, password);
 			Response response = ModelManager.getInstance().sendRequest(registerRequest);
 			handleResponse(response);
-		} catch (Exception ex) { //TODO: Improve exception handling
+		} catch ( Exception ex ) { //TODO: Improve exception handling
 			System.out.println("Error on 'handleLogin': " + ex.getMessage());
 		}
 	}

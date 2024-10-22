@@ -5,6 +5,6 @@ import java.io.Serializable;
 public record User(String username, String phoneNumber, String email, String password) implements Serializable {
 	@Override
 	public String toString() {
-		return "User [username: " + username + ", email: " + email + "]";
+		return "User [email: " + username + ", email: " + email + "]";
 	}
 }

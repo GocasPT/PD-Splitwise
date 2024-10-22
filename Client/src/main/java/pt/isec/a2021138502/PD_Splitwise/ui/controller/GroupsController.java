@@ -5,7 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
-import pt.isec.a2021138502.PD_Splitwise.Data.Group;
+import pt.isec.a2021138502.PD_Splitwise.Data.GroupPreview;
 import pt.isec.a2021138502.PD_Splitwise.Message.Request.Group.GetGroups;
 import pt.isec.a2021138502.PD_Splitwise.Message.Request.Request;
 import pt.isec.a2021138502.PD_Splitwise.Message.Response.ListResponse;
@@ -51,17 +51,23 @@ public class GroupsController extends Controller {
 			return; //TODO: handle error
 
 		vbGroups.getChildren().clear();
-		ListResponse<Group> listResponse = (ListResponse<Group>) response;
-		Group[] groups = listResponse.getList();
+		ListResponse<GroupPreview> listResponse = (ListResponse<GroupPreview>) response;
+
+		if (listResponse.isEmpty()) {
+			System.out.println("No groups found");
+			return; //TODO: show message "No groups found"
+		}
+
+		GroupPreview[] groups = listResponse.getList();
 		try {
-			for (Group group : groups) {
+			for (GroupPreview group : groups) {
 				FXMLLoader fxmlLoader = new FXMLLoader(ClientGUI.class.getResource("group_preview.fxml"));
 				BorderPane groupPreview = fxmlLoader.load();
 				GroupPreviewController controller = fxmlLoader.getController();
 				controller.build(group);
 				vbGroups.getChildren().add(groupPreview);
 			}
-		} catch (Exception e) {
+		} catch ( Exception e ) {
 			System.out.println("Error loading group preview");
 		}
 	}

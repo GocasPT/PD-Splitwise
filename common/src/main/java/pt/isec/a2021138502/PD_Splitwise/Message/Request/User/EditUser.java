@@ -8,6 +8,14 @@ public record EditUser(String username, String phone, String email, String passw
 	@Override
 	public Response execute(DataBaseManager context) {
 		//TODO: query to find user and update data + check email is unique
+		String query = "UPDATE users SET phone_number = ?, email = ?, password = ? WHERE email = ?";
+
+		try {
+			context.update(query, phone, email, password, username);
+		} catch ( Exception e ) {
+			System.out.println("Error on 'EditUser.execute': " + e.getMessage());
+			return new Response(false, "Error editing user");
+		}
 
 		return new Response(true);
 	}

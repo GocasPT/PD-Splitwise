@@ -8,6 +8,13 @@ public record ExitGroup(int groupId) implements Request {
 	@Override
 	public Response execute(DataBaseManager context) {
 		//TODO: query to exit group
+		String query = "";
+
+		try {
+			context.update(query, groupId);
+		} catch ( Exception e ) {
+			return new Response(false, "Failed to exit group");
+		}
 
 		return new Response(true);
 	}

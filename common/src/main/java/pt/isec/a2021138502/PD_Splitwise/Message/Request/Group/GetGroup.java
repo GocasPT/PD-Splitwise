@@ -7,23 +7,35 @@ import pt.isec.a2021138502.PD_Splitwise.Message.Request.Request;
 import pt.isec.a2021138502.PD_Splitwise.Message.Response.Response;
 import pt.isec.a2021138502.PD_Splitwise.Message.Response.ValueResponse;
 
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+
 public record GetGroup(int groupId) implements Request {
 	@Override
 	public Response execute(DataBaseManager context) {
 		//TODO: query to get group
+		Group group = null;
+		String query = """
+		               SELECT *
+		               FROM %s
+		               WHERE group_id = ?
+		               """.formatted(context.GROUPS_TABLE);
 
-		Group group = new Group(
-				1,
-				"Fritadeira",
-				new User[]{
-						new User(
-								"Sr. Batata",
-								"9177, tira tira, mete, mete",
-								"email@batata",
-								"123"
-						)
-				}
-		);
+		try {
+			List<Map<String, Object>> rs = context.select(query, groupId);
+
+			for (Map<String, Object> row : rs) {
+				group = new Group(
+						(int) row.get("group_id"),
+						(String) row.get("name"),
+						new User[]{} //TODO: get users from query
+				);
+			}
+
+		} catch ( SQLException e ) {
+			return new ValueResponse<>("Failed to get group");
+		}
 
 		return new ValueResponse<>(group);
 	}

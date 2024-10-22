@@ -25,7 +25,7 @@ public class Server {
 
 		try {
 			new Server(listeningPort, dbPath).start();
-		} catch (RuntimeException e) {
+		} catch ( RuntimeException e ) {
 			System.out.println("Error: " + e.getMessage());
 		}
 	}
@@ -35,7 +35,7 @@ public class Server {
 	}
 
 	private void start() {
-		context.initializeDatabase();
+		//TODO: Runnable → Thread
 		new Thread(new HeartbeatSender(context)).start();
 		new Thread(new ClientReciver(listeningPort, context)).start();
 

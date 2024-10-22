@@ -37,8 +37,6 @@ public class BackupServer {
 	}
 
 	private void start() {
-		context.initializeDatabase();
-
 		InetAddress group;
 		NetworkInterface nif;
 
@@ -46,26 +44,27 @@ public class BackupServer {
 			group = InetAddress.getByName(MULTICAST_ADDRESS);
 			nif = NetworkInterface.getByName(MULTICAST_ADDRESS);
 
-			try (MulticastSocket socket = new MulticastSocket(MULTICAST_PORT)) {
+			try ( MulticastSocket socket = new MulticastSocket(MULTICAST_PORT) ) {
 				socket.joinGroup(new InetSocketAddress(group, MULTICAST_PORT), nif);
 				socket.setSoTimeout(INTERVAL * 1000);
 
 				DatagramPacket packet = new DatagramPacket(new byte[1024], 1024, group, MULTICAST_PORT);
 				socket.receive(packet);
 
-				ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(packet.getData(), 0, packet.getLength()));
+				ObjectInputStream in = new ObjectInputStream(
+						new ByteArrayInputStream(packet.getData(), 0, packet.getLength()));
 				Heartbeat heartbeat = (Heartbeat) in.readObject();
 
 				System.out.println(getTimeTag() + " Packet: " + heartbeat);
 
-			} catch (IOException e) {
+			} catch ( IOException e ) {
 				System.err.println("Heartbeat receiver error: " + e.getMessage());
-			} catch (ClassNotFoundException e) {
+			} catch ( ClassNotFoundException e ) {
 				System.err.println("Heartbeat receiver error: " + e.getMessage());
 			}
-		} catch (UnknownHostException e) {
+		} catch ( UnknownHostException e ) {
 			System.out.println("[HeartbeatThread] Unknown multicast group: " + MULTICAST_ADDRESS);
-		} catch (SocketException e) {
+		} catch ( SocketException e ) {
 			System.out.println("[HeartbeatThread] Unknown network interface: " + MULTICAST_ADDRESS);
 		}
 	}
