@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.text.Text?>
+<HBox xmlns:fx="http://javafx.com/fxml/1" fx:id="hb" alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="-Infinity"
+      minHeight="-Infinity" minWidth="-Infinity" spacing="8.0" xmlns="http://javafx.com/javafx/20.0.1"
+      fx:controller="pt.isec.a2021138502.PD_Splitwise.ui.controller.UserPreviewController">
+    <padding>
+        <Insets bottom="12.0" left="12.0" right="12.0" top="12.0"/>
+    </padding>
+    <Text fx:id="tfUsername" strokeType="OUTSIDE" strokeWidth="0.0" text="Text"/>
+    <Text fx:id="tfEmail" opacity="0.5" strokeType="OUTSIDE" strokeWidth="0.0" text="Text"/>
+</HBox>
