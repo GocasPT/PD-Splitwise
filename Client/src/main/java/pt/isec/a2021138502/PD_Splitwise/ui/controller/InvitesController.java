@@ -4,6 +4,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import pt.isec.a2021138502.PD_Splitwise.Data.Invite;
 import pt.isec.a2021138502.PD_Splitwise.Message.Request.Group.GetInvites;
@@ -56,7 +57,7 @@ public class InvitesController extends Controller {
 		try {
 			for (Invite invite : invites) {
 				FXMLLoader fxmlLoader = new FXMLLoader(ClientGUI.class.getResource("invite_preview.fxml"));
-				BorderPane invitePreview = fxmlLoader.load();
+				Pane invitePreview = fxmlLoader.load();
 				InvitePreviewController controller = fxmlLoader.getController();
 				controller.build(invite);
 				vbInvites.getChildren().add(invitePreview);

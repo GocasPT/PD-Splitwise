@@ -14,21 +14,33 @@ public record GetInvites(String email) implements Request {
 	@Override
 	public Response execute(DataBaseManager context) {
 		//TODO: query to get invites
+		String query = """
+		               SELECT
+		                   invites.id AS invite_id,
+		                   groups.name AS group_name,
+		                   inviter.username AS inviter_name
+		               FROM
+		                   invites
+		                       JOIN
+		                   users AS recipient ON invites.user_id = recipient.id
+		                       JOIN
+		                   users AS inviter ON invites.inviter_user_id = inviter.id
+		                       JOIN
+		                   groups ON invites.group_id = groups.id
+		               WHERE
+		                   recipient.email = ?;
+		               """;
 		List<Invite> inviteList = new ArrayList<>();
-		String querySelectUser = "SELECT id FROM users WHERE email = ?";
-		String querySelectInvites = "SELECT * FROM invites WHERE user_id = ?";
-		String querySelectGroup = "SELECT name FROM groups WHERE id = ?";
 
 		try {
-			int userId = (int) context.select(querySelectUser, email).getFirst().get("id");
-			List<Map<String, Object>> listInvites = context.select(querySelectInvites, userId);
+			List<Map<String, Object>> listInvites = context.select(query, email);
 
 			for (Map<String, Object> invitesData : listInvites) {
-				String groupName = (String) context.select(querySelectGroup,
-				                                           invitesData.get("group_id")).getFirst().get("name");
+
 				Invite invite = new Invite(
-						(int) invitesData.get("id"),
-						groupName
+						(int) invitesData.get("invite_id"),
+						(String) invitesData.get("group_name"),
+						(String) invitesData.get("inviter_name")
 				);
 				inviteList.add(invite);
 			}

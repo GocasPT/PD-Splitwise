@@ -80,6 +80,7 @@ public class DataBaseManager {
 			                   	id INTEGER PRIMARY KEY AUTOINCREMENT,
 			                   	group_id INTEGER NOT NULL,
 			                   	user_id INTEGER NOT NULL,
+			                   	inviter_user_id INTEGER NOT NULL,
 			                   	FOREIGN KEY (group_id) REFERENCES groups (id),
 			                   	FOREIGN KEY (user_id) REFERENCES users (id)
 			                   );
@@ -133,6 +134,27 @@ public class DataBaseManager {
 		}
 	}
 
+	//TODO: notify server new SQL query have been made
+	//TODO: sync
+	public void insert(String query, Object... params) throws SQLException {
+		try (
+				PreparedStatement pstmt = conn.prepareStatement(query)
+		) {
+			for (int i = 0; i < params.length; i++) {
+				pstmt.setObject(i + 1, params[i]);
+			}
+			pstmt.executeUpdate();
+			incrementVersion(conn);
+		}
+	}
+
+	private void incrementVersion(Connection conn) throws SQLException {
+		int newVersion = getVersion() + 1;
+		PreparedStatement pstmt = conn.prepareStatement("UPDATE version SET value = ?");
+		pstmt.setInt(1, newVersion);
+		pstmt.executeUpdate();
+	}
+
 	//TODO: throw exception on error
 	public int getVersion() {
 		int version = -1;
@@ -173,20 +195,6 @@ public class DataBaseManager {
 
 	//TODO: notify server new SQL query have been made
 	//TODO: sync
-	public void insert(String query, Object... params) throws SQLException {
-		try (
-				PreparedStatement pstmt = conn.prepareStatement(query)
-		) {
-			for (int i = 0; i < params.length; i++) {
-				pstmt.setObject(i + 1, params[i]);
-			}
-			pstmt.executeUpdate();
-			incrementVersion(conn);
-		}
-	}
-
-	//TODO: notify server new SQL query have been made
-	//TODO: sync
 	public void update(String query, Object... params) throws SQLException {
 		try (
 				PreparedStatement pstmt = conn.prepareStatement(query)
@@ -211,12 +219,5 @@ public class DataBaseManager {
 			pstmt.executeUpdate();
 			incrementVersion(conn);
 		}
-	}
-
-	private void incrementVersion(Connection conn) throws SQLException {
-		int newVersion = getVersion() + 1;
-		PreparedStatement pstmt = conn.prepareStatement("UPDATE version SET value = ?");
-		pstmt.setInt(1, newVersion);
-		pstmt.executeUpdate();
 	}
 }

@@ -97,7 +97,17 @@ public final class Payment implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Payment [id: " + id + ", group: " + groupName + ", value: " + value + ", date: " + date + ", buyer: " + buyerName + ", reciver: " + reciverName + "]";
+		StringBuilder sb = new StringBuilder();
+
+		sb.append("Payment [id: ").append(id);
+		if (groupName != null) sb.append(", group: ").append(groupName);
+		sb.append(", value: ").append(value);
+		sb.append(", date: ").append(date);
+		if (buyerName != null) sb.append(", buyer: ").append(buyerName);
+		if (reciverName != null) sb.append(", reciver: ").append(reciverName);
+		sb.append("]");
+
+		return sb.toString();
 	}
 
 }

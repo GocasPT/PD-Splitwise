@@ -8,11 +8,6 @@ public final class Invite implements Serializable {
 	private String groupName;
 	private String userThatInvites;
 
-	public Invite(int id, String groupName) {
-		this.id = id;
-		this.groupName = groupName;
-	}
-
 	public Invite(int id, String groupName, String userThatInvites) {
 		this.id = id;
 		this.groupName = groupName;
@@ -27,12 +22,20 @@ public final class Invite implements Serializable {
 		return groupName;
 	}
 
+	public String getUserThatInvites() {
+		return userThatInvites;
+	}
+
 	public void setId(int id) {
 		this.id = id;
 	}
 
 	public void setGroupName(String groupName) {
 		this.groupName = groupName;
+	}
+
+	public void setUserThatInvites(String userThatInvites) {
+		this.userThatInvites = userThatInvites;
 	}
 
 	@Override
@@ -51,7 +54,14 @@ public final class Invite implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Invite [id: " + id + "group: " + groupName + "]";
+		StringBuilder sb = new StringBuilder();
+
+		sb.append("Invite [id: ").append(id);
+		sb.append(", group: ").append(groupName);
+		if (userThatInvites != null) sb.append(", user: ").append(userThatInvites);
+		sb.append("]");
+
+		return sb.toString();
 	}
 
 }

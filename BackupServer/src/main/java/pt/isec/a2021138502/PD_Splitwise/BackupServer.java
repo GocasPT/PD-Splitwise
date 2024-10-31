@@ -32,10 +32,6 @@ public class BackupServer {
 		new BackupServer(dbPath).start();
 	}
 
-	public static String getTimeTag() {
-		return "<" + LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")) + "> ";
-	}
-
 	private void start() {
 		InetAddress group;
 		NetworkInterface nif;
@@ -67,5 +63,9 @@ public class BackupServer {
 		} catch ( SocketException e ) {
 			System.out.println("[HeartbeatThread] Unknown network interface: " + MULTICAST_ADDRESS);
 		}
+	}
+
+	public static String getTimeTag() {
+		return "<" + LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")) + "> ";
 	}
 }

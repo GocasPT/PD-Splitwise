@@ -2,7 +2,7 @@ package pt.isec.a2021138502.PD_Splitwise.ui.controller;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import pt.isec.a2021138502.PD_Splitwise.ui.ClientGUI;
 
@@ -29,7 +29,7 @@ public class RootViewController {
 	private void loadView(String fxmlName) {
 		try {
 			FXMLLoader fxmlLoader = new FXMLLoader(ClientGUI.class.getResource(fxmlName));
-			Parent child = fxmlLoader.load();
+			Pane child = fxmlLoader.load();
 			stackPane.getChildren().add(child);
 		} catch ( IOException e ) {
 			System.out.println("Error loading view: " + fxmlName);

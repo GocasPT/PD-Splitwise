@@ -4,7 +4,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import pt.isec.a2021138502.PD_Splitwise.Data.Invite;
@@ -15,7 +15,7 @@ import pt.isec.a2021138502.PD_Splitwise.model.ModelManager;
 
 public class InvitePreviewController extends Controller {
 	@FXML
-	private BorderPane previewPane;
+	private VBox previewPane;
 	@FXML
 	private Text tfUsername;
 	@FXML
@@ -45,16 +45,16 @@ public class InvitePreviewController extends Controller {
 		btnDenid.setDisable(true);
 	}
 
-	public void build(Invite invite) {
-		this.inviteId = invite.getId();
-		//tfUsername.setText(invite.inviterUserEmail());
-		tfGroupName.setText(invite.getGroupName());
-	}
-
 	private void handleRequest(boolean accept) {
 		Request request = new InviteResponse(inviteId, accept);
 		Response response = ModelManager.getInstance().sendRequest(request); //TODO: need feedback?
 		if (response.isSuccess())
 			update();
+	}
+
+	public void build(Invite invite) {
+		this.inviteId = invite.getId();
+		tfUsername.setText(invite.getUserThatInvites());
+		tfGroupName.setText(invite.getGroupName());
 	}
 }

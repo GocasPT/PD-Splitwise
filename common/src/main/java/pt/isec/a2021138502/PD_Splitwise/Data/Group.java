@@ -94,6 +94,19 @@ public final class Group implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Group [id: " + id + ", name: " + name + ",\n\tusers: " + userList + ",\n\texpenses: " + expeneseList + ",\n\tpayments: " + paymentsList + "\n]";
+		StringBuilder sb = new StringBuilder();
+
+		sb.append("Group [id: ").append(id);
+		sb.append(", name: ").append(name);
+
+		if (userList == null) sb.append(", numUsers: ").append(numUsers);
+		else {
+			sb.append(",\n\tusers: ").append(userList);
+			sb.append(",\n\texpenses: ").append(expeneseList);
+			sb.append(",\n\tpayments: ").append(paymentsList).append("\n");
+		}
+		sb.append("]");
+
+		return sb.toString();
 	}
 }

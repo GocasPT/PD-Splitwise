@@ -34,23 +34,6 @@ public class SocketManager {
 		listenerThread.start();
 	}
 
-	public void close() throws IOException {
-		if (socket != null && !socket.isClosed())
-			socket.close();
-		if (listenerThread != null && listenerThread.isAlive())
-			listenerThread.interrupt();
-	}
-
-	public Response sendRequest(Request request) throws IOException, InterruptedException {
-		synchronized (lock) {
-			output.writeObject(request);
-			output.flush();
-
-			lock.wait();
-			return feedbackResponse;
-		}
-	}
-
 	//TODO: make this method as Runnable class
 	public void listenForMessages() {
 		try {
@@ -78,5 +61,22 @@ public class SocketManager {
 
 	private boolean isFeedbackResponse(Response response) {
 		return !(response instanceof NotificaionResponse);
+	}
+
+	public void close() throws IOException {
+		if (socket != null && !socket.isClosed())
+			socket.close();
+		if (listenerThread != null && listenerThread.isAlive())
+			listenerThread.interrupt();
+	}
+
+	public Response sendRequest(Request request) throws IOException, InterruptedException {
+		synchronized (lock) {
+			output.writeObject(request);
+			output.flush();
+
+			lock.wait();
+			return feedbackResponse;
+		}
 	}
 }

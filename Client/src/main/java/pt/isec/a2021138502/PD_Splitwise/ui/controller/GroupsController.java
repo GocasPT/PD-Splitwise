@@ -9,6 +9,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.DialogPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -110,7 +111,7 @@ public class GroupsController extends Controller {
 		try {
 			for (Group group : groups) {
 				FXMLLoader fxmlLoader = new FXMLLoader(ClientGUI.class.getResource("group_preview.fxml"));
-				BorderPane groupPreview = fxmlLoader.load();
+				Pane groupPreview = fxmlLoader.load();
 				GroupPreviewController controller = fxmlLoader.getController();
 				controller.build(group);
 				vbGroups.getChildren().add(groupPreview);

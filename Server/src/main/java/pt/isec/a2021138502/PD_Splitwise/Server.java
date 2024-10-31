@@ -30,15 +30,15 @@ public class Server {
 		}
 	}
 
-	public static String getTimeTag() {
-		return "<" + LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")) + "> ";
-	}
-
 	private void start() {
 		//TODO: Runnable → Thread
 		new Thread(new HeartbeatSender(context)).start();
 		new Thread(new ClientReciver(listeningPort, context)).start();
 
 		//TODO: what the main thread gonna do?
+	}
+
+	public static String getTimeTag() {
+		return "<" + LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")) + "> ";
 	}
 }

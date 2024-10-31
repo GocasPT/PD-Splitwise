@@ -26,13 +26,6 @@ public class GroupPreviewController extends Controller {
 		previewPane.setOnMouseClicked(e -> fetchGroup());
 	}
 
-	//TODO: improve this method (Group → each data maybe)
-	public void build(Group group) {
-		this.groupId = group.getId();
-		tfGroupName.setText(group.getName());
-		tfGroupMembers.setText(group.getNumUsers() + " members");
-	}
-
 	private void fetchGroup() {
 		Request request = new GetGroup(groupId);
 		Response response = ModelManager.getInstance().sendRequest(request);
@@ -47,5 +40,12 @@ public class GroupPreviewController extends Controller {
 		Group group = valueResponse.getValue();
 		ModelManager.getInstance().setGroupInView(group);
 		ModelManager.getInstance().changeState(EState.GROUP_PAGE);
+	}
+
+	//TODO: improve this method (Group → each data maybe)
+	public void build(Group group) {
+		this.groupId = group.getId();
+		tfGroupName.setText(group.getName());
+		tfGroupMembers.setText(group.getNumUsers() + " members");
 	}
 }

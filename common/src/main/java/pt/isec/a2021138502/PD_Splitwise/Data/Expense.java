@@ -97,7 +97,17 @@ public final class Expense implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Expense [id: " + id + ", group: " + groupName + ", value: " + value + ", description: " + description + ", date: " + date + ", buyer: " + buyerName + "]";
+		StringBuilder sb = new StringBuilder();
+
+		sb.append("Expense [id: ").append(id);
+		if (groupName != null) sb.append(", group: ").append(groupName);
+		sb.append(", value: ").append(value);
+		if (description != null) sb.append(", description: ").append(description);
+		sb.append(", date: ").append(date);
+		if (buyerName != null) sb.append(", buyer: ").append(buyerName);
+		sb.append("]");
+
+		return sb.toString();
 	}
 
 }
