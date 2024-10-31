@@ -9,6 +9,7 @@ import java.net.SocketException;
 
 import static pt.isec.a2021138502.PD_Splitwise.Server.getTimeTag;
 
+//TODO: Runnable → Thread
 public class BackupServerHandler implements Runnable {
 	private final Socket backupServerSocket;
 	private final DataBaseManager context;

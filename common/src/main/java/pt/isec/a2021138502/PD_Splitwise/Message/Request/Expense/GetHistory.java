@@ -15,11 +15,12 @@ public record GetHistory(int groupID) implements Request {
 
 		Expense[] expensesHistory = {
 				new Expense(
-						"Batata frita do Pingo Doce",
-						1.99,
+						1,
+						"Batatas do Pingo Doce",
+						10.99,
+						"Supermercado",
 						new Date(),
-						"Fritadeira",
-						"Sr. Batata"
+						"João"
 				),
 		};
 

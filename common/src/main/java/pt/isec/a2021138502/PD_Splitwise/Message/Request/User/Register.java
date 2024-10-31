@@ -9,16 +9,15 @@ import java.sql.SQLException;
 public record Register(String username, String phone, String email, String password) implements Request {
 	@Override
 	public Response execute(DataBaseManager context) {
-		//TODO: query to see if email is unique
-		String query = """
-		               INSERT INTO users
-		               	(username, email, password, phone_number)
-		               VALUES (?, ?, ?, ?)
-		               """;
+		String query = "INSERT INTO users (username, email, password, phone_number) VALUES (?, ?, ?, ?)";
 
 		try {
 			context.insert(query, username, email, password, phone);
 		} catch ( SQLException e ) {
+			if (e.getErrorCode() == 19 && e.getMessage().toLowerCase().contains("unique")) {
+				return new Response(false, "Email already in use");
+			}
+
 			System.out.println("Error on 'Register.execute': " + e.getMessage());
 			return new Response(false, "Error registering user");
 		}

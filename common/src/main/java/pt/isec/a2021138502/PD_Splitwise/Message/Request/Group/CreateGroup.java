@@ -7,15 +7,21 @@ import pt.isec.a2021138502.PD_Splitwise.Message.Response.Response;
 
 import java.sql.SQLException;
 
-public record CreateGroup(String name, String userEmail) implements Request {
+public record CreateGroup(String groupName, String userEmail) implements Request {
 	@Override
 	public Response execute(DataBaseManager context) {
-		//TODO: query to create group
-		String query = "INSERT INTO groups (name, admin) VALUES (?, ?)";
+		String queryCreateGroup = "INSERT INTO groups (name) VALUES (?)";
+		String queryGetGroupID = "SELECT id FROM groups WHERE name = ?";
+		String queryGetUserID = "SELECT id FROM users WHERE email = ?";
+		String queryInsertGroupUser = "INSERT INTO group_users (group_id, user_id) VALUES (?, ?)";
 
 		try {
-			context.insert(query, name, userEmail);
+			context.insert(queryCreateGroup, groupName);
+			int groupID = (int) context.select(queryGetGroupID, groupName).getFirst().get("id");
+			int userID = (int) context.select(queryGetUserID, userEmail).getFirst().get("id");
+			context.insert(queryInsertGroupUser, groupID, userID);
 		} catch ( SQLException e ) {
+			System.out.println("Error on 'CreateGroup.execute': " + e.getMessage());
 			return new Response(false, "Failed to create group");
 		}
 
@@ -24,6 +30,6 @@ public record CreateGroup(String name, String userEmail) implements Request {
 
 	@Override
 	public String toString() {
-		return "CREATE_GROUP '" + name + "' " + userEmail;
+		return "CREATE_GROUP '" + groupName + "' " + userEmail;
 	}
 }

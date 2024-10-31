@@ -15,7 +15,7 @@ public class ModelManager {
 	private final PropertyChangeSupport pcs;
 	private EState state;
 	private String emailLoggedUser;
-	private Group groupView;
+	private Group groupInView;
 
 	private ModelManager() {
 		pcs = new PropertyChangeSupport(this);
@@ -45,12 +45,12 @@ public class ModelManager {
 		this.emailLoggedUser = emailLoggedUser;
 	}
 
-	public Group getGroupView() {
-		return groupView;
+	public Group getGroupInView() {
+		return groupInView;
 	}
 
-	public void setGroupView(Group groupView) {
-		this.groupView = groupView;
+	public void setGroupInView(Group groupInView) {
+		this.groupInView = groupInView;
 	}
 
 	public void changeState(EState state) {

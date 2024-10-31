@@ -1,4 +1,5 @@
 module common {
+	requires com.google.gson;
 	requires java.sql;
 
 	exports pt.isec.a2021138502.PD_Splitwise.Data;

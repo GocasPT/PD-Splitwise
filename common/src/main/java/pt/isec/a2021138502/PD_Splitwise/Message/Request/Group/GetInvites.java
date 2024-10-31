@@ -15,26 +15,26 @@ public record GetInvites(String email) implements Request {
 	public Response execute(DataBaseManager context) {
 		//TODO: query to get invites
 		List<Invite> inviteList = new ArrayList<>();
-		String query = """
-		               SELECT *
-		               FROM %s
-		               WHERE email = ?
-		               """.formatted(context.INVITES_TABLE); //TODO: joins
+		String querySelectUser = "SELECT id FROM users WHERE email = ?";
+		String querySelectInvites = "SELECT * FROM invites WHERE user_id = ?";
+		String querySelectGroup = "SELECT name FROM groups WHERE id = ?";
 
 		try {
-			List<Map<String, Object>> rs = context.select(query, email);
+			int userId = (int) context.select(querySelectUser, email).getFirst().get("id");
+			List<Map<String, Object>> listInvites = context.select(querySelectInvites, userId);
 
-			for (Map<String, Object> row : rs) {
+			for (Map<String, Object> invitesData : listInvites) {
+				String groupName = (String) context.select(querySelectGroup,
+				                                           invitesData.get("group_id")).getFirst().get("name");
 				Invite invite = new Invite(
-						(int) row.get("invite_id"),
-						"TEST", //row.getString(""),
-						"DEBUG", //row.getString(""),
-						"GROUP_NAME" //row.getString("")
+						(int) invitesData.get("id"),
+						groupName
 				);
 				inviteList.add(invite);
 			}
 
 		} catch ( Exception e ) {
+			System.out.println("Error on 'GetInvites.execute': " + e.getMessage());
 			return new ListResponse<>("Failed to get invites");
 		}
 

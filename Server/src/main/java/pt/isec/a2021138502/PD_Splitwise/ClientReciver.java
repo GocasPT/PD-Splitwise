@@ -9,6 +9,7 @@ import java.net.SocketException;
 
 import static pt.isec.a2021138502.PD_Splitwise.Server.getTimeTag;
 
+//TODO: Runnable → Thread
 public class ClientReciver implements Runnable {
 	private final int listeningPort;
 	private final DataBaseManager context;

@@ -13,10 +13,8 @@
             <Text fx:id="tfUsername" strokeType="OUTSIDE" strokeWidth="0.0" text="Text"/>
             <Text fx:id="tfGroupName" strokeType="OUTSIDE" strokeWidth="0.0" text="Text"/>
             <HBox prefHeight="100.0" prefWidth="200.0">
-                <children>
-                    <Button fx:id="btnAccept" mnemonicParsing="false" text="Accept"/>
-                    <Button fx:id="btnDenid" mnemonicParsing="false" text="Denid"/>
-                </children>
+                <Button fx:id="btnAccept" mnemonicParsing="false" text="Accept"/>
+                <Button fx:id="btnDenid" mnemonicParsing="false" text="Denid"/>
             </HBox>
         </VBox>
     </center>

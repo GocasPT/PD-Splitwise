@@ -5,27 +5,20 @@ import pt.isec.a2021138502.PD_Splitwise.Message.Request.Request;
 import pt.isec.a2021138502.PD_Splitwise.Message.Response.Response;
 
 import java.sql.SQLException;
-import java.util.List;
 import java.util.Map;
 
 public record Login(String email, String password) implements Request {
 	@Override
 	public Response execute(DataBaseManager context) {
-		//TODO: query to find user and check password
-		// if exists update user as online (?)
-		String query = """
-		               SELECT *
-		               FROM %s
-		               WHERE email = ? AND password = ?
-		               """.formatted(context.USERS_TABLE);
+		String query = "SELECT * FROM users  WHERE email = ? AND password = ?";
 
 		try {
-			List<Map<String, Object>> rs = context.select(query, email, password);
+			Map<String, Object> user = context.select(query, email, password).getFirst();
 
-			String rsEmail = (String) rs.getFirst().get("email");
-			String rsPassword = (String) rs.getFirst().get("password");
+			String userEmail = (String) user.get("email");
+			String userPassword = (String) user.get("password");
 
-			if (!rsEmail.equals(email) || !rsPassword.equals(password))
+			if (!userEmail.equals(email) || !userPassword.equals(password))
 				return new Response(false, "Invalid email or password");
 
 		} catch ( SQLException e ) {

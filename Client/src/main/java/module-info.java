@@ -2,7 +2,6 @@ module pt.isec.a2021138502.PD_Splitwise {
 	requires javafx.controls;
 	requires javafx.fxml;
 
-	//TODO: check this later
 	requires org.controlsfx.controls;
 	requires com.dlsc.formsfx;
 	requires net.synedra.validatorfx;

@@ -9,12 +9,12 @@ import java.sql.SQLException;
 public record DeleteGroup(int groupId) implements Request {
 	@Override
 	public Response execute(DataBaseManager context) {
-		//TODO: query to delete group
-		String query = "DELETE FROM groups WHERE group_id = ?";
+		String query = "DELETE FROM groups WHERE id = ?";
 
 		try {
 			context.delete(query, groupId);
 		} catch ( SQLException e ) {
+			System.out.println("Error on 'DeleteGroup.execute': " + e.getMessage());
 			return new Response(false, "Failed to delete group");
 		}
 

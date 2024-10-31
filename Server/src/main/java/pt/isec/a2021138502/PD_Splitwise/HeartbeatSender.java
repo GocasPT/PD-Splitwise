@@ -10,6 +10,7 @@ import java.net.*;
 
 import static pt.isec.a2021138502.PD_Splitwise.Server.getTimeTag;
 
+//TODO: Runnable → Thread
 public class HeartbeatSender implements Runnable {
 	private static final String MULTICAST_ADDRESS = "230.44.44.44";
 	private static final int MULTICAST_PORT = 4444;
@@ -23,11 +24,11 @@ public class HeartbeatSender implements Runnable {
 
 	@Override
 	public void run() {
-		int tcpPort = 6001;
+		try ( ServerSocket serverSocket = new ServerSocket(0) ) {
 
-		try ( ServerSocket serverSocket = new ServerSocket(tcpPort) ) {
-
-			//TODO: create new thread to handle TCP connections from backup servers
+			//TODO: create new thread to handle TCP connections from backup servers to send database
+			// and close that connections
+			// this TCP socket if for backup servers to connect and download the database
 
 			InetAddress group;
 			NetworkInterface nif;
@@ -42,7 +43,7 @@ public class HeartbeatSender implements Runnable {
 
 					//TODO: break loop when server is stopped
 					while (true) {
-						Heartbeat heartbeat = new Heartbeat(context.getVersion(), tcpPort);
+						Heartbeat heartbeat = new Heartbeat(context.getVersion(), serverSocket.getLocalPort());
 						ByteArrayOutputStream bOut = new ByteArrayOutputStream();
 						ObjectOutputStream out = new ObjectOutputStream(bOut);
 						out.writeObject(heartbeat);

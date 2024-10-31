@@ -6,31 +6,22 @@ import pt.isec.a2021138502.PD_Splitwise.Message.Request.Request;
 import pt.isec.a2021138502.PD_Splitwise.Message.Response.Response;
 import pt.isec.a2021138502.PD_Splitwise.Message.Response.ValueResponse;
 
-import java.util.List;
 import java.util.Map;
 
 public record GetUser(String email) implements Request {
 	@Override
 	public Response execute(DataBaseManager context) {
-		//TODO: query to get user data
-		User user = null;
-		String query = """
-		               SELECT *
-		               FROM %s
-		               WHERE email = ?
-		               """.formatted(context.USERS_TABLE);
+		User user;
+		String query = "SELECT * FROM users WHERE email = ?";
 
 		try {
-			List<Map<String, Object>> rs = context.select(query, email);
+			Map<String, Object> userDate = context.select(query, email).getFirst();
 
-			for (Map<String, Object> row : rs) {
-				user = new User(
-						(String) row.get("email"),
-						(String) row.get("phone_number"),
-						(String) row.get("email"),
-						(String) row.get("password")
-				);
-			}
+			user = new User(
+					(String) userDate.get("email"),
+					(String) userDate.get("email"), (String) userDate.get("phone_number"),
+					(String) userDate.get("password")
+			);
 
 		} catch ( Exception e ) {
 			System.out.println("Error on 'GetUser.execute': " + e.getMessage());

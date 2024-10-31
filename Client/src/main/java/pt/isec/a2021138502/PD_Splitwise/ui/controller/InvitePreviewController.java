@@ -46,9 +46,9 @@ public class InvitePreviewController extends Controller {
 	}
 
 	public void build(Invite invite) {
-		this.inviteId = invite.inviteId();
-		tfUsername.setText(invite.inviterUserEmail());
-		tfGroupName.setText(invite.groupName());
+		this.inviteId = invite.getId();
+		//tfUsername.setText(invite.inviterUserEmail());
+		tfGroupName.setText(invite.getGroupName());
 	}
 
 	private void handleRequest(boolean accept) {

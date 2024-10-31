@@ -4,15 +4,20 @@ import pt.isec.a2021138502.PD_Splitwise.Data.DataBaseManager;
 import pt.isec.a2021138502.PD_Splitwise.Message.Request.Request;
 import pt.isec.a2021138502.PD_Splitwise.Message.Response.Response;
 
+import java.sql.SQLException;
+
 public record EditUser(String username, String phone, String email, String password) implements Request {
 	@Override
 	public Response execute(DataBaseManager context) {
-		//TODO: query to find user and update data + check email is unique
-		String query = "UPDATE users SET phone_number = ?, email = ?, password = ? WHERE email = ?";
+		String queryUpdate = "UPDATE users SET phone_number = ?, email = ?, password = ? WHERE email = ?";
 
 		try {
-			context.update(query, phone, email, password, username);
-		} catch ( Exception e ) {
+			context.update(queryUpdate, phone, email, password, username);
+		} catch ( SQLException e ) {
+			if (e.getErrorCode() == 19 && e.getMessage().toLowerCase().contains("unique")) {
+				return new Response(false, "Email already in use");
+			}
+
 			System.out.println("Error on 'EditUser.execute': " + e.getMessage());
 			return new Response(false, "Error editing user");
 		}

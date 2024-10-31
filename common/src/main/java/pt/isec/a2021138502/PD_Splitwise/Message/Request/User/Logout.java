@@ -7,7 +7,7 @@ import pt.isec.a2021138502.PD_Splitwise.Message.Response.Response;
 public record Logout(String email) implements Request {
 	@Override
 	public Response execute(DataBaseManager context) {
-		//TODO: query to set user as offline (?)
+		//TODO: maybe do nothing... or set client handler other info (no current user logged in)
 
 		return new Response(true);
 	}

@@ -15,11 +15,12 @@ public record GetPayments(int groupID) implements Request {
 
 		Payment[] payments = {
 				new Payment(
-						420.69,
+						1,
+						"Batatas do Pingo Doce",
+						10.99,
 						new Date(),
-						"Fritadeira",
-						"Sr. Batata",
-						"Sra. Cebola"
+						"João",
+						"Maria"
 				)
 		};
 

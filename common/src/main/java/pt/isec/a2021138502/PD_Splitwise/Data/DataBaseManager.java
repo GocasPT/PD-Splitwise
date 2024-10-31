@@ -1,25 +1,17 @@
 package pt.isec.a2021138502.PD_Splitwise.Data;
 
-import java.nio.file.Paths;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-//TODO: Singleton Pattern
+//TODO: Singleton Pattern (?)
 public class DataBaseManager {
-	public final String VERSION_TABLE = "version";
-	public final String USERS_TABLE = "users";
-	public final String GROUPS_TABLE = "groups";
-	public final String GROUP_USERS_TABLE = "group_users";
-	public final String INVITES_TABLE = "invites";
-	public final String EXPENSES_TABLE = "expenses";
-	public final String PAYMENTS_TABLE = "payments";
-	public final String DEBTS_TABLE = "debts";
-	//TODO: add all tables strings
-
 	private final Connection conn;
+	//TODO: object to sync (dabatase manager - server)
+	// when server receive a new backup server, wait until "download" is complete
+	// when database manager make a new SQL query, notify server to send new heartbeat with query
 
 	//TODO: verbose + loading steps
 	public DataBaseManager(String dbPath) {
@@ -27,7 +19,8 @@ public class DataBaseManager {
 
 		try {
 			//Note: getConnection() will create the database if it doesn't exist
-			conn = DriverManager.getConnection("jdbc:sqlite:" + Paths.get(dbPath).toAbsolutePath());
+			//conn = DriverManager.getConnection("jdbc:sqlite:" + Paths.get(dbPath).toAbsolutePath());
+			conn = DriverManager.getConnection("jdbc:sqlite:" + dbPath);
 			System.out.println(getClassTag() + "Connected to the database");
 			createTables(conn);
 		} catch ( SQLException e ) {
@@ -43,106 +36,107 @@ public class DataBaseManager {
 		try ( Statement stmt = conn.createStatement() ) {
 			// Version table
 			stmt.executeUpdate("""
-			                   CREATE TABLE IF NOT EXISTS %s (
+			                   CREATE TABLE IF NOT EXISTS version (
 			                       value INTEGER NOT NULL
 			                   );
-			                   """.formatted(VERSION_TABLE)
+			                   """
 			);
 
 			// Users table
 			stmt.executeUpdate("""
-			                   CREATE TABLE IF NOT EXISTS %s (
+			                   CREATE TABLE IF NOT EXISTS users (
 			                   	id INTEGER PRIMARY KEY AUTOINCREMENT,
 			                   	username TEXT NOT NULL,
 			                   	email TEXT NOT NULL UNIQUE,
 			                   	password TEXT NOT NULL,
 			                   	phone_number TEXT NOT NULL
 			                   );
-			                   """.formatted(USERS_TABLE)
+			                   """
 			);
 
 			// Groups table
 			stmt.executeUpdate("""
-			                   CREATE TABLE IF NOT EXISTS %s (
+			                   CREATE TABLE IF NOT EXISTS groups (
 			                   	id INTEGER PRIMARY KEY AUTOINCREMENT,
 			                   	name TEXT NOT NULL
 			                   );
-			                   """.formatted(GROUPS_TABLE)
+			                   """
 			);
 
 			// Group users table
 			stmt.executeUpdate("""
-			                   CREATE TABLE IF NOT EXISTS %s (
+			                   CREATE TABLE IF NOT EXISTS group_users (
 			                   	group_id INTEGER NOT NULL,
 			                   	user_id INTEGER NOT NULL,
-			                   	FOREIGN KEY (group_id) REFERENCES %s (id),
-			                   	FOREIGN KEY (user_id) REFERENCES %s (id)
+			                   	FOREIGN KEY (group_id) REFERENCES groups (id),
+			                   	FOREIGN KEY (user_id) REFERENCES users (id)
 			                   );
-			                   """.formatted(GROUP_USERS_TABLE, GROUP_USERS_TABLE, USERS_TABLE)
+			                   """
 			);
 
 			// Invites table
 			stmt.executeUpdate("""
-			                   CREATE TABLE IF NOT EXISTS %s (
+			                   CREATE TABLE IF NOT EXISTS invites (
 			                   	id INTEGER PRIMARY KEY AUTOINCREMENT,
 			                   	group_id INTEGER NOT NULL,
 			                   	user_id INTEGER NOT NULL,
-			                   	FOREIGN KEY (group_id) REFERENCES %s (id),
-			                   	FOREIGN KEY (user_id) REFERENCES %s (id)
+			                   	FOREIGN KEY (group_id) REFERENCES groups (id),
+			                   	FOREIGN KEY (user_id) REFERENCES users (id)
 			                   );
-			                   """.formatted(INVITES_TABLE, GROUPS_TABLE, USERS_TABLE)
+			                   """
 			);
 
 			// Expenses table
 			stmt.executeUpdate("""
-			                   CREATE TABLE IF NOT EXISTS %s (
+			                   CREATE TABLE IF NOT EXISTS expenses (
 			                   	id INTEGER PRIMARY KEY AUTOINCREMENT,
 			                   	group_id INTEGER NOT NULL,
 			                   	payer_id INTEGER NOT NULL,
 			                   	amount REAL NOT NULL,
 			                   	description TEXT NOT NULL,
 			                   	date TEXT NOT NULL,
-			                   	FOREIGN KEY (group_id) REFERENCES %s (id),
-			                   	FOREIGN KEY (payer_id) REFERENCES %s (id)
+			                   	FOREIGN KEY (group_id) REFERENCES groups (id),
+			                   	FOREIGN KEY (payer_id) REFERENCES users (id)
 			                   );
-			                   """.formatted(EXPENSES_TABLE, GROUPS_TABLE, USERS_TABLE)
+			                   """
 			);
 
 			// Payments table
 			stmt.executeUpdate("""
-			                   CREATE TABLE IF NOT EXISTS %s (
+			                   CREATE TABLE IF NOT EXISTS payments (
 			                   	id INTEGER PRIMARY KEY AUTOINCREMENT,
 			                   	expense_id INTEGER NOT NULL,
 			                   	payer_id INTEGER NOT NULL,
 			                   	payee_id INTEGER NOT NULL,
 			                   	amount REAL NOT NULL,
-			                   	FOREIGN KEY (expense_id) REFERENCES %s (id),
-			                   	FOREIGN KEY (payer_id) REFERENCES %s (id),
-			                   	FOREIGN KEY (payee_id) REFERENCES %s (id)
+			                   	FOREIGN KEY (expense_id) REFERENCES expenses (id),
+			                   	FOREIGN KEY (payer_id) REFERENCES users (id),
+			                   	FOREIGN KEY (payee_id) REFERENCES users (id)
 			                   );
-			                   """.formatted(PAYMENTS_TABLE, EXPENSES_TABLE, USERS_TABLE, USERS_TABLE)
+			                   """
 			);
 
 			// Debts table
 			stmt.executeUpdate("""
-			                   CREATE TABLE IF NOT EXISTS %s (
+			                   CREATE TABLE IF NOT EXISTS debts (
 			                   	id INTEGER PRIMARY KEY AUTOINCREMENT,
 			                   	group_id INTEGER NOT NULL,
 			                   	payer_id INTEGER NOT NULL,
 			                   	payee_id INTEGER NOT NULL,
 			                   	amount REAL NOT NULL,
-			                   	FOREIGN KEY (group_id) REFERENCES %s (id),
-			                   	FOREIGN KEY (payer_id) REFERENCES %s (id),
-			                   	FOREIGN KEY (payee_id) REFERENCES %S (id)
+			                   	FOREIGN KEY (group_id) REFERENCES groups (id),
+			                   	FOREIGN KEY (payer_id) REFERENCES users (id),
+			                   	FOREIGN KEY (payee_id) REFERENCES users (id)
 			                   );
-			                   """.formatted(DEBTS_TABLE, GROUPS_TABLE, USERS_TABLE, USERS_TABLE)
+			                   """
 			);
 		}
 	}
 
+	//TODO: throw exception on error
 	public int getVersion() {
 		int version = -1;
-		String query = "SELECT * FROM %s;".formatted(VERSION_TABLE);
+		String query = "SELECT * FROM version;";
 
 		try {
 			List<Map<String, Object>> rs = select(query);
@@ -177,6 +171,8 @@ public class DataBaseManager {
 		return results;
 	}
 
+	//TODO: notify server new SQL query have been made
+	//TODO: sync
 	public void insert(String query, Object... params) throws SQLException {
 		try (
 				PreparedStatement pstmt = conn.prepareStatement(query)
@@ -189,6 +185,8 @@ public class DataBaseManager {
 		}
 	}
 
+	//TODO: notify server new SQL query have been made
+	//TODO: sync
 	public void update(String query, Object... params) throws SQLException {
 		try (
 				PreparedStatement pstmt = conn.prepareStatement(query)
@@ -201,6 +199,8 @@ public class DataBaseManager {
 		}
 	}
 
+	//TODO: notify server new SQL query have been made
+	//TODO: sync
 	public void delete(String query, Object... params) throws SQLException {
 		try (
 				PreparedStatement pstmt = conn.prepareStatement(query)
