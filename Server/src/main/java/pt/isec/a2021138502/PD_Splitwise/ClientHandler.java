@@ -40,22 +40,22 @@ public class ClientHandler implements Runnable {
 			Request request;
 
 			try {
-				//TODO: wait for LOGIN/REGISTER request to get guestEmail
-				// [x] LOGIN
-				// [ ] REGISTER
-				// loop until login success
-				request = (Request) in.readObject();
-				if (request instanceof Login) {
-					Response response = request.execute(context);
-					email = ((Login) request).email();
-					out.writeObject(response);
-					//TODO: register client in NotificationManager
-					Server.getNotificationManager().registerClient(email, this);
-				} else if (request instanceof Register) {
-					//TODO: logic on register request
-				} else {
-					System.out.println(getTimeTag() + "Client '" + host + "' not logged in");
-					return;
+				// Block for Login or Register request
+				// Need to be logged in to access other requests
+				while (email == null) {
+					request = (Request) in.readObject();
+					if (request instanceof Login) {
+						Response response = request.execute(context);
+						email = ((Login) request).email();
+						out.writeObject(response);
+						Server.getNotificationManager().registerClient(email, this);
+					} else if (request instanceof Register) {
+						Response response = request.execute(context);
+						out.writeObject(response);
+					} else {
+						System.out.println(getTimeTag() + "Client '" + host + "' not logged in");
+						return;
+					}
 				}
 
 				clientSocket.setSoTimeout(0); // "Disable" timeout

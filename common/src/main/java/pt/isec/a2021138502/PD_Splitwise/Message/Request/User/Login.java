@@ -10,12 +10,12 @@ import java.util.Map;
 public record Login(String email, String password) implements Request {
 	@Override
 	public Response execute(DataBaseManager context) {
-		String query = "SELECT * FROM users  WHERE guestEmail = ? AND password = ?";
+		String query = "SELECT * FROM users  WHERE email = ? AND password = ?";
 
 		try {
 			Map<String, Object> user = context.select(query, email, password).getFirst();
 
-			String userEmail = (String) user.get("guestEmail");
+			String userEmail = (String) user.get("email");
 			String userPassword = (String) user.get("password");
 
 			if (!userEmail.equals(email) || !userPassword.equals(password))

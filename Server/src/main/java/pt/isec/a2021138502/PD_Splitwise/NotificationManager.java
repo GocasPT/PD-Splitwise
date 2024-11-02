@@ -6,6 +6,7 @@ import pt.isec.a2021138502.PD_Splitwise.Message.Response.NotificaionResponse;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+//TODO: this could be a singleton (?)
 public class NotificationManager implements INotificationObserver {
 	private final Map<String, ClientHandler> clientHandlerMap = new ConcurrentHashMap<>();
 
