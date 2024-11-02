@@ -17,27 +17,26 @@ import static pt.isec.a2021138502.PD_Splitwise.Server.getTimeTag;
 
 public class ClientHandler implements Runnable {
 	private final Socket clientSocket;
+	private final ObjectOutputStream out;
 	private final DataBaseManager context;
 	private final String host;
-	private final ObjectOutputStream out;
-	private final ObjectInputStream in;
 	private String email;
 
 	//TODO: improve exception handling
 	public ClientHandler(Socket clientSocket, DataBaseManager context) throws IOException {
 		this.clientSocket = clientSocket;
+		this.out = new ObjectOutputStream(clientSocket.getOutputStream());
 		this.context = context;
-		host = clientSocket.getInetAddress().getHostAddress() + ":" +
+		this.host = clientSocket.getInetAddress().getHostAddress() + ":" +
 				clientSocket.getPort() + " - " +
 				clientSocket.getInetAddress().getHostName();
-
-		this.out = new ObjectOutputStream(clientSocket.getOutputStream());
-		this.in = new ObjectInputStream(clientSocket.getInputStream());
 	}
 
 	@Override
 	public void run() {
-		try {
+		System.out.println(getTimeTag() + "Client '" + host + "' connected");
+
+		try ( ObjectInputStream in = new ObjectInputStream(clientSocket.getInputStream()); ) {
 			Request request;
 
 			try {

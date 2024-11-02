@@ -13,21 +13,21 @@ import static pt.isec.a2021138502.PD_Splitwise.Server.getTimeTag;
 public class HeartbeatSender implements Runnable {
 	private static final String MULTICAST_ADDRESS = "230.44.44.44";
 	private static final int MULTICAST_PORT = 4444;
-	private static final int INTERVAL = 10;
+	private static final int HEARTBEAT_INTERVAL = 10;
 
 	private final DataBaseManager context;
+	private Thread backupServerReceiver;
 
 	public HeartbeatSender(DataBaseManager context) {
 		this.context = context;
 	}
 
+	//TODO: improve this method
 	@Override
 	public void run() {
-		try ( ServerSocket serverSocket = new ServerSocket(0) ) {
-
-			//TODO: create new thread to handle TCP connections from backup servers to send database
-			// and close that connections
-			// this TCP socket if for backup servers to connect and download the database
+		try ( ServerSocket serverSocket = new ServerSocket(0); ) {
+			backupServerReceiver = new Thread(new BackupServerReceiver(serverSocket, context));
+			backupServerReceiver.start();
 
 			InetAddress group;
 			NetworkInterface nif;
@@ -36,13 +36,14 @@ public class HeartbeatSender implements Runnable {
 				group = InetAddress.getByName(MULTICAST_ADDRESS);
 				nif = NetworkInterface.getByName(MULTICAST_ADDRESS);
 
-				try ( MulticastSocket socket = new MulticastSocket(MULTICAST_PORT) ) {
+				try ( MulticastSocket socket = new MulticastSocket(MULTICAST_PORT); ) {
 					socket.joinGroup(new InetSocketAddress(group, MULTICAST_PORT), nif);
 					System.out.println(getTimeTag() + "Heartbeat sender started");
 
 					//TODO: break loop when server is stopped
 					while (true) {
-						Heartbeat heartbeat = new Heartbeat(context.getVersion(), serverSocket.getLocalPort());
+						Thread.sleep(HEARTBEAT_INTERVAL * 1000);
+						Heartbeat heartbeat = new Heartbeat(context.getVersion(), serverSocket.getLocalPort(), null);
 						ByteArrayOutputStream bOut = new ByteArrayOutputStream();
 						ObjectOutputStream out = new ObjectOutputStream(bOut);
 						out.writeObject(heartbeat);
@@ -53,8 +54,6 @@ public class HeartbeatSender implements Runnable {
 						DatagramPacket packet = new DatagramPacket(bOut.toByteArray(), bOut.size(), group,
 						                                           MULTICAST_PORT);
 						socket.send(packet);
-
-						Thread.sleep(INTERVAL * 1000);
 					}
 				} catch ( InterruptedException e ) {
 					System.out.println("[HeartbeatThread] Heartbeat sender interrupted");
@@ -70,8 +69,7 @@ public class HeartbeatSender implements Runnable {
 				System.out.println("[HeartbeatThread] Unknown network interface: " + MULTICAST_ADDRESS);
 			}
 		} catch ( IOException e ) {
-			System.out.println("[HeartbeatThread] Ocorreu um erro no acesso ao serverSocket:\n\t" + e);
+			System.out.println("[HeartbeatThread] Ocorreu um erro no acesso ao serverSocket: " + e);
 		}
 	}
-
 }

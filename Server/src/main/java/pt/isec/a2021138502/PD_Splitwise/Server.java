@@ -35,10 +35,8 @@ public class Server {
 	}
 
 	private void start() {
-		//TODO: Runnable → Thread
 		new Thread(new HeartbeatSender(context)).start();
-		new Thread(new ClientReciver(listeningPort, context)).start(); //TODO: create thread for this OR run in main thread?
-
+		new Thread(new ClientReceiver(listeningPort, context)).start();
 		//TODO: what the main thread gonna do?
 	}
 

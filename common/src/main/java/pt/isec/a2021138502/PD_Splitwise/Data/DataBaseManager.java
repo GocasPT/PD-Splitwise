@@ -2,6 +2,8 @@ package pt.isec.a2021138502.PD_Splitwise.Data;
 
 import pt.isec.a2021138502.PD_Splitwise.Message.Response.NotificaionResponse;
 
+import java.io.File;
+import java.nio.file.Paths;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,6 +12,7 @@ import java.util.Map;
 
 //TODO: Singleton Pattern (?)
 public class DataBaseManager {
+	private final String dbPath;
 	private final Connection conn;
 	private final INotificationObserver observer;
 	//TODO: object to sync (database manager - server)
@@ -19,18 +22,24 @@ public class DataBaseManager {
 
 	//TODO: verbose + loading steps
 	public DataBaseManager(String dbPath, INotificationObserver observer) {
+		this.dbPath = dbPath;
+
 		System.out.println(getClassTag() + "Initializing database...");
 
 		try {
 			//Note: getConnection() will create the database if it doesn't exist
 			//conn = DriverManager.getConnection("jdbc:sqlite:" + Paths.get(dbPath).toAbsolutePath());
-			conn = DriverManager.getConnection("jdbc:sqlite:" + dbPath);
+			conn = DriverManager.getConnection("jdbc:sqlite:" + this.dbPath);
 			System.out.println(getClassTag() + "Connected to the database");
 			createTables(conn);
 		} catch ( SQLException e ) {
 			throw new RuntimeException("Database error: " + e.getMessage()); //TODO: improve error message
 		}
 		this.observer = observer;
+	}
+
+	public File getDBFile() {
+		return new File(dbPath);
 	}
 
 	private String getClassTag() {
