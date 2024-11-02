@@ -1,5 +1,7 @@
 package pt.isec.a2021138502.PD_Splitwise.Data;
 
+import pt.isec.a2021138502.PD_Splitwise.Message.Response.NotificaionResponse;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,12 +11,14 @@ import java.util.Map;
 //TODO: Singleton Pattern (?)
 public class DataBaseManager {
 	private final Connection conn;
-	//TODO: object to sync (dabatase manager - server)
+	private final INotificationObserver observer;
+	//TODO: object to sync (database manager - server)
 	// when server receive a new backup server, wait until "download" is complete
 	// when database manager make a new SQL query, notify server to send new heartbeat with query
+	// when insert invite (and other events), notify server to send notification to user
 
 	//TODO: verbose + loading steps
-	public DataBaseManager(String dbPath) {
+	public DataBaseManager(String dbPath, INotificationObserver observer) {
 		System.out.println(getClassTag() + "Initializing database...");
 
 		try {
@@ -26,6 +30,7 @@ public class DataBaseManager {
 		} catch ( SQLException e ) {
 			throw new RuntimeException("Database error: " + e.getMessage()); //TODO: improve error message
 		}
+		this.observer = observer;
 	}
 
 	private String getClassTag() {
@@ -219,5 +224,13 @@ public class DataBaseManager {
 			pstmt.executeUpdate();
 			incrementVersion(conn);
 		}
+	}
+
+	public void createInvite(String invetedEmal) {
+		System.out.println("DEBUG: createInvite(" + invetedEmal + ") " + observer);
+		if (observer == null) return; //TODO: throw exception (?)
+
+		NotificaionResponse notification = new NotificaionResponse(invetedEmal, "You have been invited to a group");
+		observer.onNotification(notification);
 	}
 }

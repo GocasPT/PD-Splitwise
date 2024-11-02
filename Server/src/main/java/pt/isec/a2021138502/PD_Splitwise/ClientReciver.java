@@ -9,7 +9,6 @@ import java.net.SocketException;
 
 import static pt.isec.a2021138502.PD_Splitwise.Server.getTimeTag;
 
-//TODO: Runnable → Thread
 public class ClientReciver implements Runnable {
 	private final int listeningPort;
 	private final DataBaseManager context;
@@ -27,6 +26,7 @@ public class ClientReciver implements Runnable {
 			//TODO: need to add something where? (flag to stop loop?)
 			while (true) {
 				Socket clientSocket = serverSocket.accept();
+				clientSocket.setSoTimeout(Server.TIMEOUT_CLIENT_SOCKET * 1000);
 				System.out.println(getTimeTag() + "Client '" +
 						                   clientSocket.getInetAddress().getHostAddress() + ":" +
 						                   clientSocket.getPort() + " - " +

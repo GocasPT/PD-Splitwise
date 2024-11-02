@@ -10,7 +10,6 @@ import java.net.*;
 
 import static pt.isec.a2021138502.PD_Splitwise.Server.getTimeTag;
 
-//TODO: Runnable → Thread
 public class HeartbeatSender implements Runnable {
 	private static final String MULTICAST_ADDRESS = "230.44.44.44";
 	private static final int MULTICAST_PORT = 4444;

@@ -7,10 +7,12 @@ import pt.isec.a2021138502.PD_Splitwise.Message.Response.Response;
 import pt.isec.a2021138502.PD_Splitwise.ui.NotificationManager;
 
 import java.io.IOException;
+import java.io.InvalidClassException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.net.SocketException;
 
 public class SocketManager {
 	private final Object lock = new Object();
@@ -20,29 +22,39 @@ public class SocketManager {
 	private Thread listenerThread;
 	private Response feedbackResponse;
 
-	public SocketManager() {
-	}
+	public SocketManager() {}
 
 	public void connect(InetAddress serverAddr, int port) throws IOException { //TODO: add other exceptions
 		socket = new Socket(serverAddr, port);
-		input = new ObjectInputStream(socket.getInputStream());
 		output = new ObjectOutputStream(socket.getOutputStream());
+		output.flush();
+		input = new ObjectInputStream(socket.getInputStream());
 
-		//TODO: create thread to listen for responses
-		//TODO: create Thread to listen all object from pipe (and what is feedback and what is notification)
 		listenerThread = new Thread(this::listenForMessages);
 		listenerThread.start();
 	}
 
-	//TODO: make this method as Runnable class
-	public void listenForMessages() {
+	public void close() throws IOException {
+		if (socket != null && !socket.isClosed())
+			socket.close();
+		if (listenerThread != null && listenerThread.isAlive())
+			listenerThread.interrupt();
+	}
+
+	//TODO: improve catch blocks
+	private void listenForMessages() {
 		try {
 			while (socket != null && !socket.isClosed()) {
-				Response response = (Response) input.readObject();
-				handleIncomingMessage(response);
+				Object readObject = input.readObject();
+				if (readObject instanceof Response response)
+					handleIncomingMessage(response);
 			}
+		} catch ( SocketException e ) {
+			System.out.println("SocketException on 'listenForMessages': " + e.getMessage());
 		} catch ( ClassNotFoundException e ) {
 			System.out.println("ClassNotFoundException on 'listenForMessages': " + e.getMessage());
+		} catch ( InvalidClassException e ) {
+			System.out.println("InvalidClassException on 'listenForMessages': " + e.getMessage());
 		} catch ( IOException e ) {
 			System.out.println("IOException on 'listenForMessages': " + e.getMessage());
 		}
@@ -54,20 +66,15 @@ public class SocketManager {
 				feedbackResponse = response;
 				lock.notify();
 			} else {
-				Platform.runLater(() -> NotificationManager.showNotification((NotificaionResponse) response));
+				NotificaionResponse notificationResponse = (NotificaionResponse) response;
+				System.out.println("Notification received: " + notificationResponse); //TODO: DEBUG SOUT
+				Platform.runLater(() -> NotificationManager.showNotification(notificationResponse));
 			}
 		}
 	}
 
 	private boolean isFeedbackResponse(Response response) {
 		return !(response instanceof NotificaionResponse);
-	}
-
-	public void close() throws IOException {
-		if (socket != null && !socket.isClosed())
-			socket.close();
-		if (listenerThread != null && listenerThread.isAlive())
-			listenerThread.interrupt();
 	}
 
 	public Response sendRequest(Request request) throws IOException, InterruptedException {

@@ -59,13 +59,12 @@
             <Separator prefWidth="200.0" />
             <HBox alignment="CENTER" layoutX="10.0" layoutY="42.0" spacing="5.0">
                 <padding>
-                    <Insets bottom="8.0"/>
+                    <Insets bottom="8.0" />
                 </padding>
-                <Button fx:id="btnPay" mnemonicParsing="false" text="Pay"/>
-                <Button fx:id="btnBalance" layoutX="193.0" layoutY="10.0" mnemonicParsing="false" text="Balance"/>
-                <Button fx:id="btnTotalSpend" layoutX="202.0" layoutY="10.0" mnemonicParsing="false"
-                        text="Total Spend"/>
-                <Button fx:id="btnExport" layoutX="221.0" layoutY="10.0" mnemonicParsing="false" text="Export"/>
+                <Button fx:id="btnPay" mnemonicParsing="false" text="Pay" />
+                <Button fx:id="btnBalance" layoutX="193.0" layoutY="10.0" mnemonicParsing="false" text="Balance" />
+                <Button fx:id="btnTotalSpend" layoutX="202.0" layoutY="10.0" mnemonicParsing="false" text="Total Spend" />
+                <Button fx:id="btnExport" layoutX="221.0" layoutY="10.0" mnemonicParsing="false" text="Export" />
             </HBox>
         </VBox>
     </top>

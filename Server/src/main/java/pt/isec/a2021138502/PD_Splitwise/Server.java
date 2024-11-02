@@ -6,12 +6,16 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 public class Server {
+	public static final int TIMEOUT_CLIENT_SOCKET = 60;
+
 	private final int listeningPort;
 	private final DataBaseManager context;
+	private static NotificationManager notificationManager;
 
 	public Server(int listeningPort, String dbPath) {
 		this.listeningPort = listeningPort;
-		context = new DataBaseManager(dbPath);
+		notificationManager = new NotificationManager();
+		context = new DataBaseManager(dbPath, notificationManager);
 	}
 
 	public static void main(String[] args) {
@@ -33,12 +37,16 @@ public class Server {
 	private void start() {
 		//TODO: Runnable → Thread
 		new Thread(new HeartbeatSender(context)).start();
-		new Thread(new ClientReciver(listeningPort, context)).start();
+		new Thread(new ClientReciver(listeningPort, context)).start(); //TODO: create thread for this OR run in main thread?
 
 		//TODO: what the main thread gonna do?
 	}
 
 	public static String getTimeTag() {
 		return "<" + LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")) + "> ";
+	}
+
+	public static NotificationManager getNotificationManager() {
+		return notificationManager;
 	}
 }

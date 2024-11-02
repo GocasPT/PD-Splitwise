@@ -79,7 +79,7 @@ public final class User implements Serializable {
 		StringBuilder sb = new StringBuilder();
 
 		sb.append("User [username: ").append(username);
-		if (email != null) sb.append(", email: ").append(email);
+		if (email != null) sb.append(", guestEmail: ").append(email);
 		if (phoneNumber != null) sb.append(", phone: ").append(phoneNumber);
 		sb.append("]");
 

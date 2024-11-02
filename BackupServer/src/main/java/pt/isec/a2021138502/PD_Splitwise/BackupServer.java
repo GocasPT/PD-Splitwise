@@ -18,7 +18,7 @@ public class BackupServer {
 	private final DataBaseManager context;
 
 	public BackupServer(String dbPath) {
-		context = new DataBaseManager(dbPath);
+		context = new DataBaseManager(dbPath, null);
 	}
 
 	public static void main(String[] args) {

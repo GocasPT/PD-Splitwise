@@ -3,7 +3,6 @@ package pt.isec.a2021138502.PD_Splitwise.Message.Response;
 import java.io.Serializable;
 
 public class Response implements Serializable {
-	public static final long serialVersionUID = 1010L;
 	private final boolean success;
 	private final String errorDescription;
 

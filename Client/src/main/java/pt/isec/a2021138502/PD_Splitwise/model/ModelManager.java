@@ -79,9 +79,17 @@ public class ModelManager {
 	public Response sendRequest(Request request) {
 		try {
 			return socketManager.sendRequest(request);
-		} catch ( IOException | InterruptedException e ) { //TODO: Improve this exception handling
-			System.out.println("Error: " + e.getMessage());
-			return null;
+		} catch ( IOException e ) {
+			System.err.println("IOException while sending request: " + e.getMessage());
+			// Handle IOException specifically if needed
+		} catch ( InterruptedException e ) {
+			System.err.println("InterruptedException while sending request: " + e.getMessage());
+			// Handle InterruptedException specifically if needed
+		} catch ( Exception e ) {
+			System.err.println("Unexpected exception while sending request: " + e.getMessage());
+			// Handle any other unexpected exceptions
 		}
+
+		return null;
 	}
 }
