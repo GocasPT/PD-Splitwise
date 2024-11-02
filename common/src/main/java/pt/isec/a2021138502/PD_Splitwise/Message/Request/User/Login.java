@@ -19,7 +19,7 @@ public record Login(String email, String password) implements Request {
 			String userPassword = (String) user.get("password");
 
 			if (!userEmail.equals(email) || !userPassword.equals(password))
-				return new Response(false, "Invalid guestEmail or password");
+				return new Response(false, "Invalid email or password");
 
 		} catch ( SQLException e ) {
 			System.out.println("Error on 'Login.execute': " + e.getMessage());

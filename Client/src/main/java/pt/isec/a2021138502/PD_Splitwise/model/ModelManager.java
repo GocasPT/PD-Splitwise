@@ -62,7 +62,7 @@ public class ModelManager {
 		try {
 			socketManager.connect(serverAddr, port);
 		} catch ( IOException e ) { //TODO: Improve this exception handling
-			System.out.println("Error: " + e.getMessage());
+			throw new RuntimeException(e);
 		}
 	}
 

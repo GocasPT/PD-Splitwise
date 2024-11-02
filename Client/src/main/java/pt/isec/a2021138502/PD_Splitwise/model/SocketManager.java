@@ -13,6 +13,7 @@ import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketException;
+import java.net.SocketTimeoutException;
 
 public class SocketManager {
 	private final Object lock = new Object();
@@ -49,6 +50,7 @@ public class SocketManager {
 				if (readObject instanceof Response response)
 					handleIncomingMessage(response);
 			}
+			//TODO: improve catch blocks (show error message on GUI/Popup)
 		} catch ( SocketException e ) {
 			System.out.println("SocketException on 'listenForMessages': " + e.getMessage());
 		} catch ( ClassNotFoundException e ) {
@@ -57,6 +59,9 @@ public class SocketManager {
 			System.out.println("InvalidClassException on 'listenForMessages': " + e.getMessage());
 		} catch ( IOException e ) {
 			System.out.println("IOException on 'listenForMessages': " + e.getMessage());
+		} finally {
+			//Platform.runLater(() -> ); //TODO: show error message
+			Platform.exit();
 		}
 	}
 

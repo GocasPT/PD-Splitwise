@@ -7,7 +7,7 @@ import pt.isec.a2021138502.PD_Splitwise.Message.Response.Response;
 public record ExitGroup(String userEmail, int groupId) implements Request {
 	@Override
 	public Response execute(DataBaseManager context) {
-		String querySelect = "SELECT id FROM user WHEN guestEmail = ?";
+		String querySelect = "SELECT id FROM user WHEN email = ?";
 		String queryDelete = "DELETE FROM group_users WHERE user_id = ? AND group_id = ?";
 
 		try {

@@ -19,24 +19,25 @@ public class ClientHandler implements Runnable {
 	private final Socket clientSocket;
 	private final DataBaseManager context;
 	private final String host;
+	private final ObjectOutputStream out;
+	private final ObjectInputStream in;
 	private String email;
 
-	private ObjectOutputStream out;
-
-	public ClientHandler(Socket clientSocket, DataBaseManager context) {
+	//TODO: improve exception handling
+	public ClientHandler(Socket clientSocket, DataBaseManager context) throws IOException {
 		this.clientSocket = clientSocket;
 		this.context = context;
 		host = clientSocket.getInetAddress().getHostAddress() + ":" +
 				clientSocket.getPort() + " - " +
 				clientSocket.getInetAddress().getHostName();
+
+		this.out = new ObjectOutputStream(clientSocket.getOutputStream());
+		this.in = new ObjectInputStream(clientSocket.getInputStream());
 	}
 
 	@Override
 	public void run() {
 		try {
-			out = new ObjectOutputStream(clientSocket.getOutputStream());
-			ObjectInputStream in = new ObjectInputStream(clientSocket.getInputStream());
-
 			Request request;
 
 			try {
@@ -79,6 +80,11 @@ public class ClientHandler implements Runnable {
 			System.out.println(getTimeTag() + "Client '" + host + "' disconnected");
 			if (email != null)
 				Server.getNotificationManager().unregisterClient(email);
+			try {
+				clientSocket.close();
+			} catch ( IOException e ) {
+				System.out.println("[ClientThread] Ocorreu um erro ao fechar o socket:\n\t" + e);
+			}
 		}
 	}
 

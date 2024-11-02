@@ -9,7 +9,7 @@ import java.sql.SQLException;
 public record EditUser(String username, String phone, String email, String password) implements Request {
 	@Override
 	public Response execute(DataBaseManager context) {
-		String queryUpdate = "UPDATE users SET phone_number = ?, guestEmail = ?, password = ? WHERE guestEmail = ?";
+		String queryUpdate = "UPDATE users SET phone_number = ?, email = ?, password = ? WHERE email = ?";
 
 		try {
 			context.update(queryUpdate, phone, email, password, username);

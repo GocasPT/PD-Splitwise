@@ -16,13 +16,12 @@ import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import pt.isec.a2021138502.PD_Splitwise.Data.Group;
-import pt.isec.a2021138502.PD_Splitwise.Data.Invite;
 import pt.isec.a2021138502.PD_Splitwise.Data.User;
 import pt.isec.a2021138502.PD_Splitwise.Message.Request.Group.InviteUser;
 import pt.isec.a2021138502.PD_Splitwise.Message.Response.Response;
 import pt.isec.a2021138502.PD_Splitwise.model.EState;
 import pt.isec.a2021138502.PD_Splitwise.model.ModelManager;
-import pt.isec.a2021138502.PD_Splitwise.ui.ClientGUI;
+import pt.isec.a2021138502.PD_Splitwise.ui.GUI;
 
 public class GroupController extends Controller {
 	@FXML
@@ -85,7 +84,7 @@ public class GroupController extends Controller {
 			User[] members = groupInView.getUserList().toArray(User[]::new);
 			try {
 				for (User member : members) {
-					FXMLLoader fxmlLoader = new FXMLLoader(ClientGUI.class.getResource("user_preview.fxml"));
+					FXMLLoader fxmlLoader = new FXMLLoader(GUI.class.getResource("user_preview.fxml"));
 					Pane userPreview = fxmlLoader.load();
 					UserPreviewController controller = fxmlLoader.getController();
 					controller.build(member);
@@ -107,7 +106,7 @@ public class GroupController extends Controller {
 		vbox.setPadding(new Insets(10));
 
 		TextField emailField = new TextField();
-		emailField.setPromptText("Enter guestEmail");
+		emailField.setPromptText("Enter email");
 
 		Button btnInvite = new Button("Invite");
 		Button btnCancel = new Button("Cancel");

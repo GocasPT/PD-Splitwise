@@ -9,7 +9,7 @@ import java.sql.SQLException;
 public record Register(String username, String phone, String email, String password) implements Request {
 	@Override
 	public Response execute(DataBaseManager context) {
-		String query = "INSERT INTO users (username, guestEmail, password, phone_number) VALUES (?, ?, ?, ?)";
+		String query = "INSERT INTO users (username, email, password, phone_number) VALUES (?, ?, ?, ?)";
 
 		try {
 			context.insert(query, username, email, password, phone);

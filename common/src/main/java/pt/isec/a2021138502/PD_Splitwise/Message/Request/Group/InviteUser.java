@@ -9,7 +9,7 @@ import java.sql.SQLException;
 public record InviteUser(int groupID, String guestEmail, String inviteeEmail) implements Request {
 	@Override
 	public Response execute(DataBaseManager context) {
-		String querySelect = "SELECT id FROM users WHERE guestEmail = ?"; //TODO: get guest user ID and invitee user ID
+		String querySelect = "SELECT id FROM users WHERE email = ?"; //TODO: get guest user ID and invitee user ID
 		String queryInsert = "INSERT INTO invites (group_id, user_id) VALUES (?, ?)";
 
 		try {

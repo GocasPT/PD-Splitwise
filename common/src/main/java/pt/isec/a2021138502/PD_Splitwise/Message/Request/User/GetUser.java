@@ -12,14 +12,15 @@ public record GetUser(String email) implements Request {
 	@Override
 	public Response execute(DataBaseManager context) {
 		User user;
-		String query = "SELECT * FROM users WHERE guestEmail = ?";
+		String query = "SELECT * FROM users WHERE email = ?";
 
 		try {
 			Map<String, Object> userDate = context.select(query, email).getFirst();
 
 			user = new User(
-					(String) userDate.get("guestEmail"),
-					(String) userDate.get("guestEmail"), (String) userDate.get("phone_number"),
+					(String) userDate.get("name"),
+					(String) userDate.get("email"),
+					(String) userDate.get("phone_number"),
 					(String) userDate.get("password")
 			);
 

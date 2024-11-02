@@ -12,7 +12,7 @@ public record CreateGroup(String groupName, String userEmail) implements Request
 	public Response execute(DataBaseManager context) {
 		String queryCreateGroup = "INSERT INTO groups (name) VALUES (?)";
 		String queryGetGroupID = "SELECT id FROM groups WHERE name = ?";
-		String queryGetUserID = "SELECT id FROM users WHERE guestEmail = ?";
+		String queryGetUserID = "SELECT id FROM users WHERE email = ?";
 		String queryInsertGroupUser = "INSERT INTO group_users (group_id, user_id) VALUES (?, ?)";
 
 		try {

@@ -13,7 +13,7 @@ import pt.isec.a2021138502.PD_Splitwise.Message.Response.ListResponse;
 import pt.isec.a2021138502.PD_Splitwise.Message.Response.Response;
 import pt.isec.a2021138502.PD_Splitwise.model.EState;
 import pt.isec.a2021138502.PD_Splitwise.model.ModelManager;
-import pt.isec.a2021138502.PD_Splitwise.ui.ClientGUI;
+import pt.isec.a2021138502.PD_Splitwise.ui.GUI;
 
 public class InvitesController extends Controller {
 	@FXML
@@ -56,7 +56,7 @@ public class InvitesController extends Controller {
 		Invite[] invites = listResponse.getList();
 		try {
 			for (Invite invite : invites) {
-				FXMLLoader fxmlLoader = new FXMLLoader(ClientGUI.class.getResource("invite_preview.fxml"));
+				FXMLLoader fxmlLoader = new FXMLLoader(GUI.class.getResource("invite_preview.fxml"));
 				Pane invitePreview = fxmlLoader.load();
 				InvitePreviewController controller = fxmlLoader.getController();
 				controller.build(invite);

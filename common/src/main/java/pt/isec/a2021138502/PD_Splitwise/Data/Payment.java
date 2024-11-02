@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 
-//TODO: name OR guestEmail → name (?)
+//TODO: name OR email → name (?)
 public final class Payment implements Serializable {
 	private int id;
 	private String groupName;

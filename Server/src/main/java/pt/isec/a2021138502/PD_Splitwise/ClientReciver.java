@@ -33,7 +33,11 @@ public class ClientReciver implements Runnable {
 						                   clientSocket.getInetAddress().getHostName() +
 						                   "' connected");
 
-				new Thread(new ClientHandler(clientSocket, context)).start();
+				try {
+					new Thread(new ClientHandler(clientSocket, context)).start();
+				} catch ( IOException e ) {
+					System.out.println(getTimeTag() + "Error: " + e.getMessage()); //TODO: improve this message (see ClientHandler construtor)
+				}
 			}
 		} catch ( NumberFormatException e ) {
 			System.out.println("[MainThread] O porto de escuta deve ser um inteiro positivo");

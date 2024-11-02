@@ -11,11 +11,11 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
-public class ClientGUI extends Application {
+public class GUI extends Application {
 	@Override
 	public void init() throws Exception {
 		super.init();
-		String[] args = getParameters().getRaw().toArray(new String[0]);
+		String[] args = getParameters().getRaw().toArray(String[]::new);
 
 		if (args.length != 2) {
 			//TODO: show this message on java error box
@@ -25,21 +25,26 @@ public class ClientGUI extends Application {
 		}
 
 		try {
-			InetAddress serverAddr = InetAddress.getByName(args[0]);
+			InetAddress serverAdder = InetAddress.getByName(args[0]);
 			int port = Integer.parseInt(args[1]);
-			ModelManager.getInstance().connect(serverAddr, port);
-		} catch ( UnknownHostException e ) { //TODO: Improve this exception handling
-			System.out.println("Error: " + e.getMessage());
+			ModelManager.getInstance().connect(serverAdder, port);
+		//TODO: Improve catch blocks
+		// show error message on GUI/Popup
+		} catch ( UnknownHostException e ) {
+			System.out.println("UnknownHostException on 'init': " + e.getMessage());
 			Platform.exit();
-		} catch ( NumberFormatException e ) { //TODO: Improve this exception handling
-			System.out.println("Error: Invalid port number.");
+		} catch ( NumberFormatException e ) {
+			System.out.println("NumberFormatException on 'init': " + e.getMessage());
 			Platform.exit();
-		} //TODO: maybe add more catch blocks
+		} catch ( RuntimeException e ) {
+			System.out.println("RuntimeException on 'init': " + e.getMessage());
+			Platform.exit();
+		}
 	}
 
 	@Override
 	public void start(Stage stage) throws IOException {
-		FXMLLoader fxmlLoader = new FXMLLoader(ClientGUI.class.getResource("root-view.fxml"));
+		FXMLLoader fxmlLoader = new FXMLLoader(GUI.class.getResource("root-view.fxml"));
 		Scene scene = new Scene(fxmlLoader.load()); //TODO: set scene size
 		stage.setOnCloseRequest(e -> ModelManager.getInstance().close());
 		stage.setTitle("PD_Splitwise");

@@ -4,7 +4,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
-import pt.isec.a2021138502.PD_Splitwise.ui.ClientGUI;
+import pt.isec.a2021138502.PD_Splitwise.ui.GUI;
 
 import java.io.IOException;
 
@@ -28,7 +28,7 @@ public class RootViewController {
 
 	private void loadView(String fxmlName) {
 		try {
-			FXMLLoader fxmlLoader = new FXMLLoader(ClientGUI.class.getResource(fxmlName));
+			FXMLLoader fxmlLoader = new FXMLLoader(GUI.class.getResource(fxmlName));
 			Pane child = fxmlLoader.load();
 			stackPane.getChildren().add(child);
 		} catch ( IOException e ) {

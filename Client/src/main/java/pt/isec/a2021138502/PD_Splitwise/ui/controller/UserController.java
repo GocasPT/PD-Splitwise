@@ -20,7 +20,7 @@ import pt.isec.a2021138502.PD_Splitwise.Message.Response.Response;
 import pt.isec.a2021138502.PD_Splitwise.Message.Response.ValueResponse;
 import pt.isec.a2021138502.PD_Splitwise.model.EState;
 import pt.isec.a2021138502.PD_Splitwise.model.ModelManager;
-import pt.isec.a2021138502.PD_Splitwise.ui.ClientGUI;
+import pt.isec.a2021138502.PD_Splitwise.ui.GUI;
 
 import java.io.IOException;
 
@@ -65,7 +65,7 @@ public class UserController extends Controller {
 
 	private void editUSerPopUp() {
 		try {
-			FXMLLoader fxmlLoader = new FXMLLoader(ClientGUI.class.getResource("edit_user_popup.fxml"));
+			FXMLLoader fxmlLoader = new FXMLLoader(GUI.class.getResource("edit_user_popup.fxml"));
 			DialogPane popup = fxmlLoader.load();
 
 			Stage popupStage = new Stage();
