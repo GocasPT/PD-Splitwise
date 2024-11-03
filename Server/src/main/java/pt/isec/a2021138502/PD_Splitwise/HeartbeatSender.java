@@ -76,9 +76,9 @@ public class HeartbeatSender implements Runnable {
 		}
 	}
 
-	public void sendHeartbeat(String query) {
+	public void sendHeartbeat(String query, Object... params) {
 		try {
-			Heartbeat heartbeat = new Heartbeat(context.getVersion(), serverSocket.getLocalPort(), query);
+			Heartbeat heartbeat = new Heartbeat(context.getVersion(), serverSocket.getLocalPort(), query, params);
 			ByteArrayOutputStream bOut = new ByteArrayOutputStream();
 			ObjectOutputStream out = new ObjectOutputStream(bOut);
 			out.writeObject(heartbeat);

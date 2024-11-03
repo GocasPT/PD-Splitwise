@@ -161,7 +161,7 @@ public class DataBaseManager {
 			}
 			pstmt.executeUpdate();
 			incrementVersion(conn);
-			databaseChange(pstmt.toString());
+			databaseChange(query, params);
 		}
 	}
 
@@ -210,11 +210,11 @@ public class DataBaseManager {
 		return results;
 	}
 
-	private void databaseChange(String query) {
+	private void databaseChange(String query, Object... params) {
 		System.out.println("DEBUG: databaseChange(" + query + ") " + databaseChangeObserver);
 		if (databaseChangeObserver == null) return; //TODO: throw exception (?)
 
-		databaseChangeObserver.onDatabaseChange(query);
+		databaseChangeObserver.onDatabaseChange(query, params);
 	}
 
 	//TODO: notify server new SQL query have been made
@@ -228,7 +228,7 @@ public class DataBaseManager {
 			}
 			pstmt.executeUpdate();
 			incrementVersion(conn);
-			databaseChange(pstmt.toString());
+			databaseChange(query, params);
 		}
 	}
 
@@ -243,7 +243,19 @@ public class DataBaseManager {
 			}
 			pstmt.executeUpdate();
 			incrementVersion(conn);
-			databaseChange(pstmt.toString());
+			databaseChange(query, params);
+		}
+	}
+
+	public void updateDatabase(String query, Object... params) throws SQLException {
+		try (
+				PreparedStatement pstmt = conn.prepareStatement(query)
+		) {
+			for (int i = 0; i < params.length; i++) {
+				pstmt.setObject(i + 1, params[i]);
+			}
+			pstmt.executeUpdate();
+			incrementVersion(conn);
 		}
 	}
 

@@ -7,6 +7,7 @@ import java.io.*;
 import java.net.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.sql.SQLException;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
@@ -154,6 +155,18 @@ public class BackupServer {
 							heartbeat = (Heartbeat) objIn.readObject();
 
 							System.out.println("Received heartbeat: " + heartbeat);
+
+							if (heartbeat.query() != null) {
+								if (heartbeat.version() == context.getVersion()) {
+									System.out.println(getTimeTag() + "Server is up-to-date, closing connection");
+								} else {
+									System.out.println(getTimeTag() + "Server version mismatch, updating database...");
+									context.updateDatabase(heartbeat.query(), heartbeat.params());
+								}
+							} else if (heartbeat.version() != context.getVersion()) {
+								System.out.println(getTimeTag() + "Server version mismatch, closing connection");
+								return;
+							}
 						} catch (ClassNotFoundException e) {
 							System.err.println(getTimeTag() + "Invalid heartbeat format: " + e.getMessage());
 							return;
@@ -163,6 +176,10 @@ public class BackupServer {
 						} catch (IOException e) {
 							System.err.println(getTimeTag() + "Error reading heartbeat data: " + e.getMessage());
 							return;
+
+							//TODO: see this later
+						} catch ( SQLException e ) {
+							throw new RuntimeException(e);
 						}
 					}
 				} catch (ConnectException e) {
