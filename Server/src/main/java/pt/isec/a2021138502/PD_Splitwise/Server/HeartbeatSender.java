@@ -48,7 +48,7 @@ public class HeartbeatSender extends Thread {
 				System.out.println(getTimeTag() + "Sending heartbeat: " + heartbeat);
 
 				DatagramPacket packet = new DatagramPacket(bOut.toByteArray(), bOut.size(), group,
-				                                           multicastSocket.getPort());
+				                                           multicastSocket.getLocalPort());
 				multicastSocket.send(packet);
 			}
 		} catch ( InterruptedException e ) {
