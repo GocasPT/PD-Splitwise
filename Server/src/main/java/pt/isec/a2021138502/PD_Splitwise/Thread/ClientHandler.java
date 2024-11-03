@@ -8,7 +8,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
-public class ClientHandler extends Thread {
+public class ClientHandler implements Runnable {
 	private final Socket clientSocket;
 	private final ObjectOutputStream out;
 	private final ObjectInputStream in;

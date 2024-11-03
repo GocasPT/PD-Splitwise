@@ -30,7 +30,10 @@ public class ClientReceiver implements Runnable {
 				Socket clientSocket = serverSocket.accept();
 				clientSocket.setSoTimeout(Server.TIMEOUT_CLIENT_SOCKET * 1000);
 				//new Thread(new ClientHandler(clientSocket, context)).start();
-				new ClientHandler(clientSocket, new SessionManager()).start();
+				new Thread(
+						new ClientHandler(clientSocket, new SessionManager()),
+						clientSocket.getInetAddress().toString()
+				).start();
 			}
 		} catch ( NumberFormatException e ) {
 			System.out.println("[MainThread] O porto de escuta deve ser um inteiro positivo");
