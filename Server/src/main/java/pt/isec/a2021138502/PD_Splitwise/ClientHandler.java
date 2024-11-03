@@ -47,9 +47,14 @@ public class ClientHandler implements Runnable {
 					System.out.println(getTimeTag() + "Client '" + host + "': " + request);
 					if (request instanceof Login) {
 						Response response = request.execute(context);
-						email = ((Login) request).email();
-						out.writeObject(response);
-						Server.getNotificationManager().registerClient(email, this);
+						if (!response.isSuccess()) {
+							out.writeObject(response);
+							return;
+						} else {
+							email = ((Login) request).email();
+							out.writeObject(response);
+							Server.getNotificationManager().registerClient(email, this);
+						}
 					} else if (request instanceof Register) {
 						Response response = request.execute(context);
 						out.writeObject(response);
@@ -61,8 +66,9 @@ public class ClientHandler implements Runnable {
 
 				clientSocket.setSoTimeout(0); // "Disable" timeout
 
-				//TODO: loop unitl socket != null and !socket.isClosed()
-				while ((request = (Request) in.readObject()) != null) {
+				// Main loop
+				while (!clientSocket.isClosed()) {
+					request = (Request) in.readObject();
 					System.out.println(getTimeTag() + "(" + email + ")" + "'" + host + "': " + request);
 					Response response = request.execute(context);
 					System.out.println(getTimeTag() + response);
@@ -92,9 +98,7 @@ public class ClientHandler implements Runnable {
 		try {
 			synchronized (out) {
 				System.out.println("[ClientThread] Sending notification to '" + email + "': " + notification);
-				//TODO: send notification object
 				out.writeObject(notification);
-				out.reset();
 				out.flush();
 			}
 		} catch ( IOException e ) {
