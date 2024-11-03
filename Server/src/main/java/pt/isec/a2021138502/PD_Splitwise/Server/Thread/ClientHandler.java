@@ -1,7 +1,7 @@
-package pt.isec.a2021138502.PD_Splitwise.Thread;
+package pt.isec.a2021138502.PD_Splitwise.Server.Thread;
 
-import pt.isec.a2021138502.PD_Splitwise.Manager.SessionManager;
 import pt.isec.a2021138502.PD_Splitwise.Message.Response.NotificaionResponse;
+import pt.isec.a2021138502.PD_Splitwise.Server.Manager.SessionManager;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;

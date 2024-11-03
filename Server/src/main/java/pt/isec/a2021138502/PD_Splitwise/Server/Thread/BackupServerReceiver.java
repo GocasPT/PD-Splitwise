@@ -1,6 +1,7 @@
-package pt.isec.a2021138502.PD_Splitwise;
+package pt.isec.a2021138502.PD_Splitwise.Server.Thread;
 
 import pt.isec.a2021138502.PD_Splitwise.Data.DataBaseManager;
+import pt.isec.a2021138502.PD_Splitwise.Server.Runnable.BackupServerHandler;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -9,11 +10,14 @@ import java.net.SocketException;
 
 import static pt.isec.a2021138502.PD_Splitwise.Terminal.utils.getTimeTag;
 
-public class BackupServerReceiver implements Runnable {
+public class BackupServerReceiver extends Thread {
 	private final ServerSocket serverSocket;
 	private final DataBaseManager context;
+	private final boolean isRunning;
 
-	public BackupServerReceiver(ServerSocket serverSocket, DataBaseManager context) {
+	public BackupServerReceiver(boolean isRunning, ServerSocket serverSocket, DataBaseManager context) {
+		super("BackupServerReceiver");
+		this.isRunning = isRunning;
 		this.serverSocket = serverSocket;
 		this.context = context;
 	}
@@ -24,9 +28,12 @@ public class BackupServerReceiver implements Runnable {
 			System.out.println(getTimeTag() + "Backup server receiver started");
 
 			//TODO: need to add something where? (flag to stop loop?)
-			while (true) {
+			while (isRunning) {
 				Socket backupServerSocket = serverSocket.accept();
-				new Thread(new BackupServerHandler(backupServerSocket, context)).start();
+				new Thread(
+						new BackupServerHandler(backupServerSocket, context),
+						backupServerSocket.getInetAddress().toString()
+				).start();
 			}
 		} catch ( NumberFormatException e ) {
 			System.out.println("[HeartbeatThread] O porto de escuta deve ser um inteiro positivo");

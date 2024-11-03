@@ -35,7 +35,7 @@
                             <transformers>
                                 <transformer
                                         implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>pt.isec.a2021138502.PD_Splitwise.Server</mainClass>
+                                    <mainClass>pt.isec.a2021138502.PD_Splitwise.ServerApp</mainClass>
                                 </transformer>
                             </transformers>
                         </configuration>

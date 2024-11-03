@@ -1,6 +1,6 @@
-package pt.isec.a2021138502.PD_Splitwise.Manager;
+package pt.isec.a2021138502.PD_Splitwise.Server.Manager;
 
-import pt.isec.a2021138502.PD_Splitwise.Thread.ClientHandler;
+import pt.isec.a2021138502.PD_Splitwise.Server.Thread.ClientHandler;
 
 import java.util.HashMap;
 import java.util.Map;
