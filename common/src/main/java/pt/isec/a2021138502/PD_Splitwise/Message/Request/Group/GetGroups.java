@@ -32,7 +32,7 @@ public record GetGroups(String email) implements Request {
 		               """;
 
 		try {
-			List<Map<String, Object>> listGroups = context.select(query, email);
+			List<Map<String, Object>> listGroups = context.getData(query, email);
 
 			for (Map<String, Object> groupData : listGroups) {
 				Group group = new Group(

@@ -7,7 +7,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 
-import static pt.isec.a2021138502.PD_Splitwise.Server.getTimeTag;
+import static pt.isec.a2021138502.PD_Splitwise.Terminal.utils.getTimeTag;
 
 public class ClientReceiver implements Runnable {
 	private final int listeningPort;
@@ -20,7 +20,7 @@ public class ClientReceiver implements Runnable {
 
 	@Override
 	public void run() {
-		try ( ServerSocket serverSocket = new ServerSocket(listeningPort); ) {
+		try ( ServerSocket serverSocket = new ServerSocket(listeningPort) ) {
 			System.out.println(getTimeTag() + "Server ready to receive clients...");
 
 			//TODO: need to add something where? (flag to stop loop?)

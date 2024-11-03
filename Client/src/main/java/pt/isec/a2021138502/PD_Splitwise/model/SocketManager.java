@@ -22,7 +22,8 @@ public class SocketManager {
 	private Thread listenerThread;
 	private Response feedbackResponse;
 
-	public SocketManager() {}
+	public SocketManager() {
+	}
 
 	public void connect(InetAddress serverAdder, int port) throws IOException { //TODO: add other exceptions
 		socket = new Socket(serverAdder, port);
@@ -32,13 +33,6 @@ public class SocketManager {
 
 		listenerThread = new Thread(this::listenForMessages);
 		listenerThread.start();
-	}
-
-	public void close() throws IOException {
-		if (socket != null && !socket.isClosed())
-			socket.close();
-		if (listenerThread != null && listenerThread.isAlive())
-			listenerThread.interrupt();
 	}
 
 	//TODO: improve catch blocks
@@ -79,6 +73,13 @@ public class SocketManager {
 
 	private boolean isFeedbackResponse(Response response) {
 		return !(response instanceof NotificaionResponse);
+	}
+
+	public void close() throws IOException {
+		if (socket != null && !socket.isClosed())
+			socket.close();
+		if (listenerThread != null && listenerThread.isAlive())
+			listenerThread.interrupt();
 	}
 
 	public Response sendRequest(Request request) throws IOException, InterruptedException {

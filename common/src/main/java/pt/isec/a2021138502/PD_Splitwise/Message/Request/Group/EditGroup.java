@@ -10,7 +10,7 @@ public record EditGroup(int groupId, String newGroupName) implements Request {
 		String query = "UPDATE groups SET name = ? WHERE id = ?";
 
 		try {
-			context.update(query, newGroupName, groupId);
+			context.setData(query, newGroupName, groupId);
 		} catch ( Exception e ) {
 			System.out.println("Error on 'EditGroup.execute': " + e.getMessage());
 			return new Response(false, "Failed to edit group");

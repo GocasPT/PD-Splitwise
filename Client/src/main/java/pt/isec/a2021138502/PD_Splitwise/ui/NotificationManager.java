@@ -1,7 +1,5 @@
 package pt.isec.a2021138502.PD_Splitwise.ui;
 
-import javafx.application.Platform;
-import javafx.scene.control.Alert;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import org.controlsfx.control.Notifications;

@@ -13,7 +13,7 @@ public record Login(String email, String password) implements Request {
 		String query = "SELECT * FROM users  WHERE email = ? AND password = ?";
 
 		try {
-			Map<String, Object> user = context.select(query, email, password).getFirst();
+			Map<String, Object> user = context.getData(query, email, password).getFirst();
 
 			String userEmail = (String) user.get("email");
 			String userPassword = (String) user.get("password");

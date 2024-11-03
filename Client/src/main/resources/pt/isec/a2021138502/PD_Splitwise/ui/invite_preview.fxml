@@ -5,15 +5,16 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
-
-<VBox fx:id="previewPane" alignment="CENTER_LEFT" prefWidth="200.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pt.isec.a2021138502.PD_Splitwise.ui.controller.InvitePreviewController">
-    <Text fx:id="tfGroupName" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
-    <Text fx:id="tfUsername" opacity="0.5" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
+<VBox xmlns:fx="http://javafx.com/fxml/1" fx:id="previewPane" alignment="CENTER_LEFT" prefWidth="200.0"
+      xmlns="http://javafx.com/javafx/20.0.1"
+      fx:controller="pt.isec.a2021138502.PD_Splitwise.ui.controller.InvitePreviewController">
+    <Text fx:id="tfGroupName" strokeType="OUTSIDE" strokeWidth="0.0" text="Text"/>
+    <Text fx:id="tfUsername" opacity="0.5" strokeType="OUTSIDE" strokeWidth="0.0" text="Text"/>
     <HBox alignment="CENTER_RIGHT" spacing="5.0">
-        <Button fx:id="btnAccept" mnemonicParsing="false" text="Accept" />
-        <Button fx:id="btnDenid" mnemonicParsing="false" text="Denid" />
+        <Button fx:id="btnAccept" mnemonicParsing="false" text="Accept"/>
+        <Button fx:id="btnDenid" mnemonicParsing="false" text="Denid"/>
     </HBox>
     <padding>
-        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
     </padding>
 </VBox>

@@ -12,7 +12,7 @@ public record EditUser(String username, String phone, String email, String passw
 		String queryUpdate = "UPDATE users SET phone_number = ?, email = ?, password = ? WHERE email = ?";
 
 		try {
-			context.update(queryUpdate, phone, email, password, username);
+			context.setData(queryUpdate, phone, email, password, username);
 		} catch ( SQLException e ) {
 			if (e.getErrorCode() == 19 && e.getMessage().toLowerCase().contains("unique")) {
 				return new Response(false, "Email already in use");

@@ -13,7 +13,7 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.SocketException;
 
-import static pt.isec.a2021138502.PD_Splitwise.Server.getTimeTag;
+import static pt.isec.a2021138502.PD_Splitwise.Terminal.utils.getTimeTag;
 
 public class ClientHandler implements Runnable {
 	private final Socket clientSocket;
@@ -36,7 +36,7 @@ public class ClientHandler implements Runnable {
 	public void run() {
 		System.out.println(getTimeTag() + "Client '" + host + "' connected");
 
-		try ( ObjectInputStream in = new ObjectInputStream(clientSocket.getInputStream()); ) {
+		try ( ObjectInputStream in = new ObjectInputStream(clientSocket.getInputStream()) ) {
 			Request request;
 
 			try {

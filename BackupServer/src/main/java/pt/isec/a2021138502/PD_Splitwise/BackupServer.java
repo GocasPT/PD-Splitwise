@@ -8,10 +8,11 @@ import java.net.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.SQLException;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 
 import static pt.isec.a2021138502.PD_Splitwise.Message.Heartbeat.BUFFER_SIZE;
+import static pt.isec.a2021138502.PD_Splitwise.Terminal.utils.getTimeTag;
+import static pt.isec.a2021138502.PD_Splitwise.Terminal.utils.printProgress;
 
 public class BackupServer {
 	private static final String MULTICAST_ADDRESS = "230.44.44.44";
@@ -35,20 +36,6 @@ public class BackupServer {
 		File[] files = directory.listFiles();
 		if (files == null || files.length != 0)
 			throw new IllegalArgumentException("Directory is not empty: " + dbDirectory);
-	}
-
-	private static String getTimeTag() {
-		return "<" + LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")) + "> ";
-	}
-
-	private void printProgress(long current, long total) {
-		int percentage = (int) ((current * 100.0) / total);
-		int progressChars = (int) ((60.0 * current) / total);
-		String progress = "\r[" +
-				"=".repeat(progressChars) +
-				" ".repeat(60 - progressChars) +
-				String.format("] %d%% (%d/%d bytes)", percentage, current, total);
-		System.out.println(progress);
 	}
 
 	public static void main(String[] args) {
@@ -139,6 +126,7 @@ public class BackupServer {
 				DataInputStream dataIn = new DataInputStream(inStream);
 				FileOutputStream fileOut = new FileOutputStream(dbFilePath.toFile())
 		) {
+			System.out.println(getTimeTag() + "Connected to server at " + tcpAddress + ":" + tcpPort);
 			System.out.println(getTimeTag() + "Downloading database to '" + dbFilePath + "'...");
 
 			long fileSize;
@@ -181,6 +169,8 @@ public class BackupServer {
 	}
 
 	private void processHeartbeat(Heartbeat heartbeat) throws SQLException {
+		System.out.println(getTimeTag() + "Received heartbeat: " + heartbeat);
+
 		if (heartbeat.version() != context.getVersion())
 			if (heartbeat.query() != null)
 				handleDatabaseUpdate(heartbeat);
@@ -191,7 +181,9 @@ public class BackupServer {
 	}
 
 	private void handleDatabaseUpdate(Heartbeat heartbeat) throws SQLException {
-		System.out.println(getTimeTag() + "Updating database with new data: " + heartbeat.query());
+		System.out.println(
+				getTimeTag() + "Updating database with new data: " + heartbeat.query() + " " + Arrays.toString(
+						heartbeat.params()));
 		context.updateDatabase(heartbeat.query(), heartbeat.params());
 	}
 }

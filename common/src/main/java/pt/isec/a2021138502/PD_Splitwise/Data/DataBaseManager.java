@@ -15,12 +15,11 @@ public class DataBaseManager {
 	private final Connection conn;
 	private final INotificationObserver notificationObserver;
 	private final IDatabaseChangeObserver databaseChangeObserver;
+	private final DatabaseSyncManager syncManager = new DatabaseSyncManager();
 	//TODO: object to sync (database manager - server)
 	// when server receive a new backup server, wait until "download" is complete
 	// when insert invite (and other events), notify server to send notification to user
 
-
-	//TODO: verbose + loading steps
 	public DataBaseManager(String dbPath, INotificationObserver notificationObserver, IDatabaseChangeObserver databaseChangeObserver) {
 		this.dbPath = dbPath;
 
@@ -39,9 +38,7 @@ public class DataBaseManager {
 		this.databaseChangeObserver = databaseChangeObserver;
 	}
 
-	public File getDBFile() {
-		return new File(dbPath);
-	}
+	//TODO: verbose + loading steps
 
 	private String getClassTag() {
 		return "(" + this.getClass().getSimpleName() + "): ";
@@ -150,19 +147,43 @@ public class DataBaseManager {
 		}
 	}
 
-	//TODO: throw exception on error
-	public int getVersion() {
-		int version = -1;
-		String query = "SELECT * FROM version;";
+	public File getDBFile() {
+		return new File(dbPath);
+	}
 
+	public DatabaseSyncManager getSyncManager() {
+		return syncManager;
+	}
+
+	//TODO: sync
+	public void setData(String query, Object... params) throws SQLException {
 		try {
-			List<Map<String, Object>> rs = select(query);
-			version = (int) rs.getFirst().get("value");
-		} catch ( SQLException e ) {
-			System.err.println(getClassTag() + "Error getting version: " + e.getMessage());
+			syncManager.executeOperation(() -> {
+				updateDatabase(query, params);
+				databaseChange(query, params);
+			});
+		} catch ( InterruptedException e ) {
+			Thread.currentThread().interrupt();
+			throw new SQLException("Operation interrupted", e);
 		}
+	}
 
-		return version;
+	public void updateDatabase(String query, Object... params) throws SQLException {
+		try (
+				PreparedStatement pstmt = conn.prepareStatement(query)
+		) {
+			for (int i = 0; i < params.length; i++) {
+				pstmt.setObject(i + 1, params[i]);
+			}
+			pstmt.executeUpdate();
+			incrementVersion(conn);
+		}
+	}
+
+	private void databaseChange(String query, Object... params) {
+		if (databaseChangeObserver == null) return; //TODO: throw exception (?)
+
+		databaseChangeObserver.onDatabaseChange(query, params);
 	}
 
 	private void incrementVersion(Connection conn) throws SQLException {
@@ -172,14 +193,23 @@ public class DataBaseManager {
 		pstmt.executeUpdate();
 	}
 
-	//TODO: sync
-	public void insert(String query, Object... params) throws SQLException {
-		updateDatabase(query, params);
-		databaseChange(query, params);
+	//TODO: throw exception on error
+	public int getVersion() {
+		int version = -1;
+		String query = "SELECT * FROM version;";
+
+		try {
+			List<Map<String, Object>> rs = getData(query);
+			version = (int) rs.getFirst().get("value");
+		} catch ( SQLException e ) {
+			System.err.println(getClassTag() + "Error getting version: " + e.getMessage());
+		}
+
+		return version;
 	}
 
 	//Note: Returning ResultSet when Statement is on try-with-resources will close the Statement, so close the ResultSet and cannot access the data on database
-	public List<Map<String, Object>> select(String query, Object... params) throws SQLException {
+	public List<Map<String, Object>> getData(String query, Object... params) throws SQLException {
 		List<Map<String, Object>> results = new ArrayList<>();
 		try ( PreparedStatement pstmt = conn.prepareStatement(query) ) {
 			for (int i = 0; i < params.length; i++) {
@@ -199,36 +229,6 @@ public class DataBaseManager {
 			}
 		}
 		return results;
-	}
-
-	private void databaseChange(String query, Object... params) {
-		if (databaseChangeObserver == null) return; //TODO: throw exception (?)
-
-		databaseChangeObserver.onDatabaseChange(query, params);
-	}
-
-	//TODO: sync
-	public void update(String query, Object... params) throws SQLException {
-		updateDatabase(query, params);
-		databaseChange(query, params);
-	}
-
-	//TODO: sync
-	public void delete(String query, Object... params) throws SQLException {
-		updateDatabase(query, params);
-		databaseChange(query, params);
-	}
-
-	public void updateDatabase(String query, Object... params) throws SQLException {
-		try (
-				PreparedStatement pstmt = conn.prepareStatement(query)
-		) {
-			for (int i = 0; i < params.length; i++) {
-				pstmt.setObject(i + 1, params[i]);
-			}
-			pstmt.executeUpdate();
-			incrementVersion(conn);
-		}
 	}
 
 	//TODO: this trigger should be on DataBaseManger (?)

@@ -72,7 +72,7 @@ public record GetGroup(int groupId) implements Request {
 		               WHERE g.id = ?;
 		               """;
 		try {
-			Map<String, Object> groupData = context.select(query, groupId).getFirst();
+			Map<String, Object> groupData = context.getData(query, groupId).getFirst();
 			List<User> members;
 			List<Expense> expenses;
 			List<Payment> payments;

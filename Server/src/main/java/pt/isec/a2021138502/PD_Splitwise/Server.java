@@ -2,17 +2,12 @@ package pt.isec.a2021138502.PD_Splitwise;
 
 import pt.isec.a2021138502.PD_Splitwise.Data.DataBaseManager;
 
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-
 public class Server {
 	public static final int TIMEOUT_CLIENT_SOCKET = 60;
-
-	private final int listeningPort;
-	private final DataBaseManager context;
 	private static NotificationManager notificationManager;
 	private static ChangeManager changeManager;
-
+	private final int listeningPort;
+	private final DataBaseManager context;
 	private HeartbeatSender heartbeatSenderThread;
 
 	public Server(int listeningPort, String dbPath) {
@@ -44,10 +39,6 @@ public class Server {
 		new Thread(heartbeatSenderThread).start();
 		new Thread(new ClientReceiver(listeningPort, context)).start();
 		//TODO: what the main thread gonna do?
-	}
-
-	public static String getTimeTag() {
-		return "<" + LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")) + "> ";
 	}
 
 	public static NotificationManager getNotificationManager() {

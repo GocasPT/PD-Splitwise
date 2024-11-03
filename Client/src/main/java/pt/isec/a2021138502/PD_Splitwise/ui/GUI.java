@@ -28,8 +28,8 @@ public class GUI extends Application {
 			InetAddress serverAdder = InetAddress.getByName(args[0]);
 			int port = Integer.parseInt(args[1]);
 			ModelManager.getInstance().connect(serverAdder, port);
-		//TODO: Improve catch blocks
-		// show error message on GUI/Popup
+			//TODO: Improve catch blocks
+			// show error message on GUI/Popup
 		} catch ( UnknownHostException e ) {
 			System.out.println("UnknownHostException on 'init': " + e.getMessage());
 			Platform.exit();

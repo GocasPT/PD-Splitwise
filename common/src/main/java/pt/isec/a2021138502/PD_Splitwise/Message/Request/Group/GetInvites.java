@@ -33,7 +33,7 @@ public record GetInvites(String email) implements Request {
 		List<Invite> inviteList = new ArrayList<>();
 
 		try {
-			List<Map<String, Object>> listInvites = context.select(query, email);
+			List<Map<String, Object>> listInvites = context.getData(query, email);
 
 			for (Map<String, Object> invitesData : listInvites) {
 

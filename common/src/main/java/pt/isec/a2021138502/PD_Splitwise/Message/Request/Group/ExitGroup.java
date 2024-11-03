@@ -11,8 +11,8 @@ public record ExitGroup(String userEmail, int groupId) implements Request {
 		String queryDelete = "DELETE FROM group_users WHERE user_id = ? AND group_id = ?";
 
 		try {
-			int userId = (int) context.select(querySelect, userEmail).getFirst().get("id");
-			context.update(queryDelete, userId, groupId);
+			int userId = (int) context.getData(querySelect, userEmail).getFirst().get("id");
+			context.setData(queryDelete, userId, groupId);
 		} catch ( Exception e ) {
 			System.out.println("Error on 'ExitGroup.execute': " + e.getMessage());
 			return new Response(false, "Failed to exit group");

@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.*;
 
-import static pt.isec.a2021138502.PD_Splitwise.Server.getTimeTag;
+import static pt.isec.a2021138502.PD_Splitwise.Terminal.utils.getTimeTag;
 
 public class HeartbeatSender implements Runnable {
 	private static final String MULTICAST_ADDRESS = "230.44.44.44";
@@ -16,9 +16,9 @@ public class HeartbeatSender implements Runnable {
 	private static final int HEARTBEAT_INTERVAL = 10;
 
 	private final ServerSocket serverSocket;
+	private final DataBaseManager context;
 	private MulticastSocket socket;
 	private InetAddress group;
-	private final DataBaseManager context;
 	private Thread backupServerReceiver;
 
 	public HeartbeatSender(DataBaseManager context) {

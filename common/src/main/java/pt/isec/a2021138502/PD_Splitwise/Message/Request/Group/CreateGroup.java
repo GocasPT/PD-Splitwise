@@ -16,10 +16,10 @@ public record CreateGroup(String groupName, String userEmail) implements Request
 		String queryInsertGroupUser = "INSERT INTO group_users (group_id, user_id) VALUES (?, ?)";
 
 		try {
-			context.insert(queryCreateGroup, groupName);
-			int groupID = (int) context.select(queryGetGroupID, groupName).getFirst().get("id");
-			int userID = (int) context.select(queryGetUserID, userEmail).getFirst().get("id");
-			context.insert(queryInsertGroupUser, groupID, userID);
+			context.setData(queryCreateGroup, groupName);
+			int groupID = (int) context.getData(queryGetGroupID, groupName).getFirst().get("id");
+			int userID = (int) context.getData(queryGetUserID, userEmail).getFirst().get("id");
+			context.setData(queryInsertGroupUser, groupID, userID);
 		} catch ( SQLException e ) {
 			System.out.println("Error on 'CreateGroup.execute': " + e.getMessage());
 			return new Response(false, "Failed to create group");

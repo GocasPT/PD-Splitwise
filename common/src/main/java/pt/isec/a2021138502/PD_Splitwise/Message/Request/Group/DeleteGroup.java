@@ -12,7 +12,7 @@ public record DeleteGroup(int groupId) implements Request {
 		String query = "DELETE FROM groups WHERE id = ?";
 
 		try {
-			context.delete(query, groupId);
+			context.setData(query, groupId);
 		} catch ( SQLException e ) {
 			System.out.println("Error on 'DeleteGroup.execute': " + e.getMessage());
 			return new Response(false, "Failed to delete group");

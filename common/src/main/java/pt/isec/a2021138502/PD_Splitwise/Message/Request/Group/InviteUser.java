@@ -13,8 +13,9 @@ public record InviteUser(int groupID, String guestEmail, String inviteeEmail) im
 		String queryInsert = "INSERT INTO invites (group_id, user_id) VALUES (?, ?)";
 
 		try {
-			int userID = (int) context.select(querySelect, guestEmail).getFirst().get("id"); //TODO: exceptions for empty list/map result
-			context.insert(queryInsert, groupID, userID);
+			int userID = (int) context.getData(querySelect, guestEmail).getFirst().get(
+					"id"); //TODO: exceptions for empty list/map result
+			context.setData(queryInsert, groupID, userID);
 			context.triggerNotification(guestEmail, "You have been invited to a group"); //TODO: check (exceptions, etc)
 		} catch ( SQLException e ) {
 			System.out.println("Error on 'InviteUser.execute': " + e.getMessage());

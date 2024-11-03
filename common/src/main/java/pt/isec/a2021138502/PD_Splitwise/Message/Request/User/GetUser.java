@@ -15,7 +15,7 @@ public record GetUser(String email) implements Request {
 		String query = "SELECT * FROM users WHERE email = ?";
 
 		try {
-			Map<String, Object> userDate = context.select(query, email).getFirst();
+			Map<String, Object> userDate = context.getData(query, email).getFirst();
 
 			user = new User(
 					(String) userDate.get("name"),

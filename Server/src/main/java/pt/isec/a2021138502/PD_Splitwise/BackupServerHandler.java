@@ -1,13 +1,14 @@
 package pt.isec.a2021138502.PD_Splitwise;
 
 import pt.isec.a2021138502.PD_Splitwise.Data.DataBaseManager;
+import pt.isec.a2021138502.PD_Splitwise.Data.DatabaseSyncManager;
 
 import java.io.*;
 import java.net.Socket;
 import java.net.SocketException;
 
 import static pt.isec.a2021138502.PD_Splitwise.Message.Heartbeat.BUFFER_SIZE;
-import static pt.isec.a2021138502.PD_Splitwise.Server.getTimeTag;
+import static pt.isec.a2021138502.PD_Splitwise.Terminal.utils.getTimeTag;
 
 public class BackupServerHandler implements Runnable {
 	private final Socket backupServerSocket;
@@ -25,6 +26,15 @@ public class BackupServerHandler implements Runnable {
 	@Override
 	public void run() {
 		System.out.println(getTimeTag() + "Backup Server '" + host + "' connected");
+		DatabaseSyncManager syncManager = context.getSyncManager();
+		syncManager.startBackupTransfer();
+
+		//TODO: DEBUG
+		try {
+			Thread.sleep(1000 * 10);
+		} catch ( InterruptedException e ) {
+			throw new RuntimeException(e);
+		}
 
 		try (
 				OutputStream outStream = backupServerSocket.getOutputStream();
@@ -54,15 +64,16 @@ public class BackupServerHandler implements Runnable {
 			}
 			dataOut.flush();
 
-		} catch (SocketException e) {
+		} catch ( SocketException e ) {
 			System.out.println("[BackupServerThread] Socket error: " + e.getMessage());
-		} catch (IOException e) {
+		} catch ( IOException e ) {
 			System.out.println("[BackupServerThread] I/O error: " + e.getMessage());
 		} finally {
 			System.out.println(getTimeTag() + "Backup Server '" + host + "' disconnected");
+			syncManager.endBackupTransfer();
 			try {
 				backupServerSocket.close();
-			} catch (IOException e) {
+			} catch ( IOException e ) {
 				System.out.println("[BackupServerThread] Error closing socket: " + e.getMessage());
 			}
 		}

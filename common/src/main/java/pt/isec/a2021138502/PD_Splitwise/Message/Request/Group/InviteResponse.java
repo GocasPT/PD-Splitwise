@@ -15,12 +15,12 @@ public record InviteResponse(int inviteId, boolean isAccepted) implements Reques
 		String queryInsert = "INSERT INTO group_users (group_id, user_id) VALUES (?, ?) ";
 
 		try {
-			context.delete(queryDelete, inviteId);
+			context.setData(queryDelete, inviteId);
 			if (isAccepted) {
-				Map<String, Object> inviteDate = context.select(querySelect, inviteId).getFirst();
+				Map<String, Object> inviteDate = context.getData(querySelect, inviteId).getFirst();
 				int groupId = (int) inviteDate.get("group_id");
 				int userId = (int) inviteDate.get("user_id");
-				context.update(queryInsert, groupId, userId);
+				context.setData(queryInsert, groupId, userId);
 			}
 		} catch ( SQLException e ) {
 			System.out.println("Error on 'InviteResponse.execute': " + e.getMessage());

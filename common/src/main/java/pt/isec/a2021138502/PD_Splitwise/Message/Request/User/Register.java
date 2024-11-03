@@ -12,7 +12,7 @@ public record Register(String username, String phone, String email, String passw
 		String query = "INSERT INTO users (username, email, password, phone_number) VALUES (?, ?, ?, ?)";
 
 		try {
-			context.insert(query, username, email, password, phone);
+			context.setData(query, username, email, password, phone);
 		} catch ( SQLException e ) {
 			if (e.getErrorCode() == 19 && e.getMessage().toLowerCase().contains("unique")) {
 				return new Response(false, "Email already in use");

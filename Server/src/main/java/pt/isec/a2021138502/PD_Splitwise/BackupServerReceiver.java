@@ -7,9 +7,9 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 
-import static pt.isec.a2021138502.PD_Splitwise.Server.getTimeTag;
+import static pt.isec.a2021138502.PD_Splitwise.Terminal.utils.getTimeTag;
 
-public class BackupServerReceiver implements Runnable{
+public class BackupServerReceiver implements Runnable {
 	private final ServerSocket serverSocket;
 	private final DataBaseManager context;
 
