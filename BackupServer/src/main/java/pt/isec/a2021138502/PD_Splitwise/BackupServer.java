@@ -33,8 +33,22 @@ public class BackupServer {
 		}
 
 		File[] files = directory.listFiles();
-		if (files == null || files.length == 0)
-			throw new IllegalArgumentException("Directory is empty: " + dbDirectory);
+		if (files == null || files.length != 0)
+			throw new IllegalArgumentException("Directory is not empty: " + dbDirectory);
+	}
+
+	private static String getTimeTag() {
+		return "<" + LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")) + "> ";
+	}
+
+	private void printProgress(long current, long total) {
+		int percentage = (int) ((current * 100.0) / total);
+		int progressChars = (int) ((60.0 * current) / total);
+		String progress = "\r[" +
+				"=".repeat(progressChars) +
+				" ".repeat(60 - progressChars) +
+				String.format("] %d%% (%d/%d bytes)", percentage, current, total);
+		System.out.println(progress);
 	}
 
 	public static void main(String[] args) {
@@ -87,10 +101,6 @@ public class BackupServer {
 		} catch ( RuntimeException e ) {
 			System.out.println(getTimeTag() + e.getMessage());
 		}
-	}
-
-	private static String getTimeTag() {
-		return "<" + LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")) + "> ";
 	}
 
 	private DatagramPacket getPacket(MulticastSocket socket, InetAddress group) {
@@ -178,16 +188,6 @@ public class BackupServer {
 				throw new RuntimeException("Version mismatch but no update query provided");
 		else if (heartbeat.query() != null)
 			throw new RuntimeException("No version mismatch but update query provided");
-	}
-
-	private void printProgress(long current, long total) {
-		int percentage = (int) ((current * 100.0) / total);
-		int progressChars = (int) ((60.0 * current) / total);
-		String progress = "\r[" +
-				"=".repeat(progressChars) +
-				" ".repeat(60 - progressChars) +
-				String.format("] %d%% (%d/%d bytes)", percentage, current, total);
-		System.out.print(progress);
 	}
 
 	private void handleDatabaseUpdate(Heartbeat heartbeat) throws SQLException {
