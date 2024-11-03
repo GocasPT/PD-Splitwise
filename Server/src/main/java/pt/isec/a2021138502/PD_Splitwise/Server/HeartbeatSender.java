@@ -9,6 +9,7 @@ import java.io.ObjectOutputStream;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
+import java.net.ServerSocket;
 
 import static pt.isec.a2021138502.PD_Splitwise.Terminal.utils.getTimeTag;
 
@@ -16,14 +17,16 @@ public class HeartbeatSender extends Thread {
 	private final int HEARTBEAT_INTERVAL = 10;
 	private final MulticastSocket multicastSocket;
 	private final InetAddress group;
+	private final ServerSocket backupServerSocket;
 	private final DataBaseManager dbManager;
 	private final boolean isRunning;
 
-	public HeartbeatSender(boolean isRunning, MulticastSocket multicastSocket, InetAddress group, DataBaseManager dbManager) {
+	public HeartbeatSender(boolean isRunning, MulticastSocket multicastSocket, InetAddress group, ServerSocket backupServerSocket, DataBaseManager dbManager) {
 		super("HeartbeatSender");
 		this.isRunning = isRunning;
 		this.multicastSocket = multicastSocket;
 		this.group = group;
+		this.backupServerSocket = backupServerSocket;
 		this.dbManager = dbManager;
 	}
 
@@ -36,7 +39,7 @@ public class HeartbeatSender extends Thread {
 			//TODO: break loop when server is stopped
 			while (isRunning) {
 				Thread.sleep(HEARTBEAT_INTERVAL * 1000);
-				Heartbeat heartbeat = new Heartbeat(dbManager.getVersion(), multicastSocket.getLocalPort(), null);
+				Heartbeat heartbeat = new Heartbeat(dbManager.getVersion(), backupServerSocket.getLocalPort(), null);
 				ByteArrayOutputStream bOut = new ByteArrayOutputStream();
 				ObjectOutputStream out = new ObjectOutputStream(bOut);
 				out.writeObject(heartbeat);

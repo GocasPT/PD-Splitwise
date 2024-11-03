@@ -16,7 +16,7 @@ public class ChangeManager implements IDatabaseChangeObserver {
 	@Override
 	public void onDatabaseChange(String query, Object... params) {
 		if (heartbeatSender != null) {
-			heartbeatSender.sendHeartbeat(query, params);
+			//heartbeatSender.sendHeartbeat(query, params);
 		}
 	}
 }

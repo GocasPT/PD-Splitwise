@@ -33,7 +33,7 @@ public class HeartbeatManager {
 	}
 
 	public void startHeartbeat() {
-		heartbeatSender = new HeartbeatSender(isRunning, multicastSocket, group, dbManager);
+		heartbeatSender = new HeartbeatSender(isRunning, multicastSocket, group, backupServerSocket, dbManager);
 		heartbeatSender.start();
 		backupServerReceiver = new BackupServerReceiver(isRunning, backupServerSocket, dbManager);
 		backupServerReceiver.start();
