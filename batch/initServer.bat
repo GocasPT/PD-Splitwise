@@ -1,7 +1,7 @@
 @echo off
 
 set port=6000
-set database_path=../Server/src/main/java/databasefiles/database.db
+set database_path=../db/Server/database.db
 
 echo Stating up Server on %port% with database at '%database_path%'
 
