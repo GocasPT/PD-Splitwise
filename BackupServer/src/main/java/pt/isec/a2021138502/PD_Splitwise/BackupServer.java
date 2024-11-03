@@ -80,7 +80,7 @@ public class BackupServer {
 				int tcpPort = heartbeat.tcpPort();
 				Path dbFilePath = dbDirectory.resolve(dbFilename);
 
-				if (downloadDBFile(tcpAddress, tcpPort, dbFilePath)) return;
+				if (!downloadDBFile(tcpAddress, tcpPort, dbFilePath)) return;
 
 				while (true) {
 					heartbeat = getHeartbeat(getPacket(socket, group));
