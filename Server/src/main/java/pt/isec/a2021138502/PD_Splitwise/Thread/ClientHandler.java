@@ -1,40 +1,39 @@
-package pt.isec.a2021138502.PD_Splitwise;
+package pt.isec.a2021138502.PD_Splitwise.Thread;
 
-import pt.isec.a2021138502.PD_Splitwise.Data.DataBaseManager;
-import pt.isec.a2021138502.PD_Splitwise.Message.Request.Request;
-import pt.isec.a2021138502.PD_Splitwise.Message.Request.User.Login;
-import pt.isec.a2021138502.PD_Splitwise.Message.Request.User.Register;
+import pt.isec.a2021138502.PD_Splitwise.Manager.SessionManager;
 import pt.isec.a2021138502.PD_Splitwise.Message.Response.NotificaionResponse;
-import pt.isec.a2021138502.PD_Splitwise.Message.Response.Response;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.net.SocketException;
 
-import static pt.isec.a2021138502.PD_Splitwise.Terminal.utils.getTimeTag;
-
-public class ClientHandler implements Runnable {
+public class ClientHandler extends Thread {
 	private final Socket clientSocket;
 	private final ObjectOutputStream out;
-	private final DataBaseManager context;
-	private final String host;
-	private String email;
+	private final ObjectInputStream in;
+	private final SessionManager sessionManager;
+
+	//private final DataBaseManager context;
+	//private final String host;
+	//private String email;
 
 	//TODO: improve exception handling
-	public ClientHandler(Socket clientSocket, DataBaseManager context) throws IOException {
+	public ClientHandler(Socket clientSocket, SessionManager sessionManager /*, DataBaseManager context*/) throws IOException {
 		this.clientSocket = clientSocket;
 		this.out = new ObjectOutputStream(clientSocket.getOutputStream());
-		this.context = context;
+		this.in = new ObjectInputStream(clientSocket.getInputStream());
+		this.sessionManager = sessionManager;
+
+		/*this.context = context;
 		this.host = clientSocket.getInetAddress().getHostAddress() + ":" +
 				clientSocket.getPort() + " - " +
-				clientSocket.getInetAddress().getHostName();
+				clientSocket.getInetAddress().getHostName();*/
 	}
 
 	@Override
 	public void run() {
-		System.out.println(getTimeTag() + "Client '" + host + "' connected");
+		/*System.out.println(getTimeTag() + "Client '" + host + "' connected");
 
 		try ( ObjectInputStream in = new ObjectInputStream(clientSocket.getInputStream()) ) {
 			Request request;
@@ -91,11 +90,16 @@ public class ClientHandler implements Runnable {
 			} catch ( IOException e ) {
 				System.out.println("[ClientThread] Ocorreu um erro ao fechar o socket:\n\t" + e);
 			}
-		}
+		}*/
+	}
+
+	//TODO: what this method have as argument?
+	public void sendMessage() {
+		//TODO: implement this method
 	}
 
 	public void sendNotification(NotificaionResponse notification) {
-		try {
+		/*try {
 			synchronized (out) {
 				System.out.println("[ClientThread] Sending notification to '" + email + "': " + notification);
 				out.writeObject(notification);
@@ -103,7 +107,7 @@ public class ClientHandler implements Runnable {
 			}
 		} catch ( IOException e ) {
 			System.out.println("[ClientThread] Ocorreu um erro ao enviar a notificação:\n\t" + e);
-		}
+		}*/
 	}
 }
 

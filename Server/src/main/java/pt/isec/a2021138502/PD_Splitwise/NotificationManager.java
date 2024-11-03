@@ -2,6 +2,7 @@ package pt.isec.a2021138502.PD_Splitwise;
 
 import pt.isec.a2021138502.PD_Splitwise.Data.INotificationObserver;
 import pt.isec.a2021138502.PD_Splitwise.Message.Response.NotificaionResponse;
+import pt.isec.a2021138502.PD_Splitwise.Thread.ClientHandler;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

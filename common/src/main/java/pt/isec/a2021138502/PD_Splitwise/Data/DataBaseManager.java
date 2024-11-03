@@ -20,6 +20,11 @@ public class DataBaseManager {
 	// when server receive a new backup server, wait until "download" is complete
 	// when insert invite (and other events), notify server to send notification to user
 
+	//TODO: check this later
+	public DataBaseManager(String dbPath) {
+		this(dbPath, null, null);
+	}
+
 	public DataBaseManager(String dbPath, INotificationObserver notificationObserver, IDatabaseChangeObserver databaseChangeObserver) {
 		this.dbPath = dbPath;
 
