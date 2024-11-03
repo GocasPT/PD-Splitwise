@@ -29,13 +29,6 @@ public class BackupServerHandler implements Runnable {
 		DatabaseSyncManager syncManager = context.getSyncManager();
 		syncManager.startBackupTransfer();
 
-		//TODO: DEBUG
-		try {
-			Thread.sleep(1000 * 10);
-		} catch ( InterruptedException e ) {
-			throw new RuntimeException(e);
-		}
-
 		try (
 				OutputStream outStream = backupServerSocket.getOutputStream();
 				DataOutputStream dataOut = new DataOutputStream(outStream);
