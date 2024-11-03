@@ -5,8 +5,11 @@ import pt.isec.a2021138502.PD_Splitwise.Message.Heartbeat;
 
 import java.io.*;
 import java.net.*;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 
 import static pt.isec.a2021138502.PD_Splitwise.Message.Heartbeat.BYTE_LENGTH;
 
@@ -15,17 +18,14 @@ public class BackupServer {
 	private static final int MULTICAST_PORT = 4444;
 	private static final int INTERVAL = 30;
 
-	private final FileOutputStream fileOutputStream;
+	private final Path dbDirectory;
+	private final String dbFilename;
 	private DataBaseManager context;
 
 	public BackupServer(String dbPath) {
-		try {
-			fileOutputStream = new FileOutputStream(dbPath);
-		} catch (FileNotFoundException e) {
-			throw new RuntimeException("Database file could not be created or opened: " + e.getMessage());
-		} catch (SecurityException e) {
-			throw new RuntimeException("No permission to create or open database file: " + e.getMessage());
-		}
+		Path path = Paths.get(dbPath);
+		this.dbDirectory = path.getParent();
+		this.dbFilename = path.getFileName().toString();
 	}
 
 	public static void main(String[] args) {
@@ -81,13 +81,21 @@ public class BackupServer {
 				InetAddress tcpAddress = packet.getAddress();
 				int tcpPort = heartbeat.tcpPort();
 
+				if (!dbDirectory.toFile().exists()) {
+					if (!dbDirectory.toFile().mkdirs()) {
+						System.err.println(getTimeTag() + "Failed to create database directory: " + dbDirectory);
+						return;
+					}
+				}
+				Path dbFilePath = dbDirectory.resolve(dbFilename);
+
 				try (
 						Socket tcpSocket = new Socket(tcpAddress, tcpPort);
 						InputStream inStream = tcpSocket.getInputStream();
 						DataInputStream dataIn = new DataInputStream(inStream);
-						FileOutputStream fileOut = fileOutputStream
+						FileOutputStream fileOut = new FileOutputStream(dbFilePath.toFile());
 				) {
-					System.out.println(getTimeTag() + "Downloading database...");
+					System.out.println(getTimeTag() + "Downloading database to '" + dbFilePath + "'...");
 
 					long fileSize;
 					try {
@@ -122,11 +130,42 @@ public class BackupServer {
 
 					if (totalBytesRead == fileSize) {
 						System.out.println(getTimeTag() + "Database downloaded successfully");
+						context = new DataBaseManager(dbFilePath.toAbsolutePath().toString(), null);
 					} else {
 						System.err.println(getTimeTag() + "Incomplete file transfer: received " +
 								                   totalBytesRead + " of " + fileSize + " bytes");
+						return;
 					}
 
+					while (true) {
+						packet = new DatagramPacket(new byte[BYTE_LENGTH], BYTE_LENGTH, group, MULTICAST_PORT);
+
+						try {
+							socket.receive(packet);
+						} catch (SocketTimeoutException e) {
+							System.err.println(getTimeTag() + "Timeout waiting for server heartbeat: " + e.getMessage());
+							return;
+						} catch (IOException e) {
+							System.err.println(getTimeTag() + "Error receiving heartbeat packet: " + e.getMessage());
+							return;
+						}
+
+						try (ObjectInputStream objIn = new ObjectInputStream(
+								new ByteArrayInputStream(packet.getData(), 0, packet.getLength()))) {
+							heartbeat = (Heartbeat) objIn.readObject();
+
+							System.out.println("Received heartbeat: " + heartbeat);
+						} catch (ClassNotFoundException e) {
+							System.err.println(getTimeTag() + "Invalid heartbeat format: " + e.getMessage());
+							return;
+						} catch (InvalidClassException e) {
+							System.err.println(getTimeTag() + "Heartbeat class version mismatch: " + e.getMessage());
+							return;
+						} catch (IOException e) {
+							System.err.println(getTimeTag() + "Error reading heartbeat data: " + e.getMessage());
+							return;
+						}
+					}
 				} catch (ConnectException e) {
 					System.err.println(getTimeTag() + "Could not connect to server: " + e.getMessage());
 				} catch (SocketTimeoutException e) {
