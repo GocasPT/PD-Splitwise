@@ -11,7 +11,9 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
-public class GUI extends Application {
+public class MainGUI extends Application {
+	private final ModelManager modelManager = ModelManager.getInstance();
+
 	@Override
 	public void init() throws Exception {
 		super.init();
@@ -27,9 +29,9 @@ public class GUI extends Application {
 		try {
 			InetAddress serverAdder = InetAddress.getByName(args[0]);
 			int port = Integer.parseInt(args[1]);
-			ModelManager.getInstance().connect(serverAdder, port);
+			modelManager.connect(serverAdder, port);
 			//TODO: Improve catch blocks
-			// show error message on GUI/Popup
+			// show error message on MainGUI/Popup
 		} catch ( UnknownHostException e ) {
 			System.out.println("UnknownHostException on 'init': " + e.getMessage());
 			Platform.exit();
@@ -44,9 +46,9 @@ public class GUI extends Application {
 
 	@Override
 	public void start(Stage stage) throws IOException {
-		FXMLLoader fxmlLoader = new FXMLLoader(GUI.class.getResource("root-view.fxml"));
+		FXMLLoader fxmlLoader = new FXMLLoader(MainGUI.class.getResource("root-view.fxml"));
 		Scene scene = new Scene(fxmlLoader.load()); //TODO: set scene size
-		stage.setOnCloseRequest(e -> ModelManager.getInstance().close());
+		stage.setOnCloseRequest(e -> modelManager.close());
 		stage.setTitle("PD_Splitwise");
 		stage.setScene(scene);
 		stage.setResizable(false); //TODO: see this latter

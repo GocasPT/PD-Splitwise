@@ -11,8 +11,10 @@ import java.net.InetAddress;
 
 public class ModelManager {
 	private static ModelManager instance;
+
 	private final SocketManager socketManager;
 	private final PropertyChangeSupport pcs;
+
 	private EState state;
 	private String emailLoggedUser;
 	private Group groupInView;
@@ -24,8 +26,7 @@ public class ModelManager {
 	}
 
 	public static synchronized ModelManager getInstance() {
-		if (instance == null)
-			instance = new ModelManager();
+		if (instance == null) instance = new ModelManager();
 		return instance;
 	}
 
@@ -76,6 +77,7 @@ public class ModelManager {
 
 	//TODO: improve this method
 	// maybe should be private and add other methods for each situation?
+	// throw exceptions and handle them on GUI
 	public Response sendRequest(Request request) {
 		try {
 			return socketManager.sendRequest(request);

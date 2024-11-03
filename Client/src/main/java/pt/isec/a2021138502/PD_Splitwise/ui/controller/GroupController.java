@@ -21,7 +21,7 @@ import pt.isec.a2021138502.PD_Splitwise.Message.Request.Group.InviteUser;
 import pt.isec.a2021138502.PD_Splitwise.Message.Response.Response;
 import pt.isec.a2021138502.PD_Splitwise.model.EState;
 import pt.isec.a2021138502.PD_Splitwise.model.ModelManager;
-import pt.isec.a2021138502.PD_Splitwise.ui.GUI;
+import pt.isec.a2021138502.PD_Splitwise.ui.MainGUI;
 
 public class GroupController extends Controller {
 	@FXML
@@ -84,7 +84,7 @@ public class GroupController extends Controller {
 			User[] members = groupInView.getUserList().toArray(User[]::new);
 			try {
 				for (User member : members) {
-					FXMLLoader fxmlLoader = new FXMLLoader(GUI.class.getResource("user_preview.fxml"));
+					FXMLLoader fxmlLoader = new FXMLLoader(MainGUI.class.getResource("user_preview.fxml"));
 					Pane userPreview = fxmlLoader.load();
 					UserPreviewController controller = fxmlLoader.getController();
 					controller.build(member);

@@ -21,7 +21,7 @@ import pt.isec.a2021138502.PD_Splitwise.Message.Response.ListResponse;
 import pt.isec.a2021138502.PD_Splitwise.Message.Response.Response;
 import pt.isec.a2021138502.PD_Splitwise.model.EState;
 import pt.isec.a2021138502.PD_Splitwise.model.ModelManager;
-import pt.isec.a2021138502.PD_Splitwise.ui.GUI;
+import pt.isec.a2021138502.PD_Splitwise.ui.MainGUI;
 
 public class GroupsController extends Controller {
 	@FXML
@@ -57,7 +57,7 @@ public class GroupsController extends Controller {
 
 	private void createGroupPopUp() {
 		try {
-			FXMLLoader fxmlLoader = new FXMLLoader(GUI.class.getResource("create_group_popup.fxml"));
+			FXMLLoader fxmlLoader = new FXMLLoader(MainGUI.class.getResource("create_group_popup.fxml"));
 			DialogPane popup = fxmlLoader.load();
 
 			Stage popupStage = new Stage();
@@ -110,7 +110,7 @@ public class GroupsController extends Controller {
 		Group[] groups = listResponse.getList();
 		try {
 			for (Group group : groups) {
-				FXMLLoader fxmlLoader = new FXMLLoader(GUI.class.getResource("group_preview.fxml"));
+				FXMLLoader fxmlLoader = new FXMLLoader(MainGUI.class.getResource("group_preview.fxml"));
 				Pane groupPreview = fxmlLoader.load();
 				GroupPreviewController controller = fxmlLoader.getController();
 				controller.build(group);
