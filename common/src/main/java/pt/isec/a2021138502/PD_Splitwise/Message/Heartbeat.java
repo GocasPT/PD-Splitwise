@@ -2,9 +2,8 @@ package pt.isec.a2021138502.PD_Splitwise.Message;
 
 import java.io.Serializable;
 
-//TODO: record or final class (?)
 public record Heartbeat(int version, int tcpPort, String query, Object... params) implements Serializable {
-	public static final int BYTE_LENGTH = 8192;
+	public static final int BUFFER_SIZE = 8192;
 
 	@Override
 	public String toString() {

@@ -17,7 +17,6 @@ public class DataBaseManager {
 	private final IDatabaseChangeObserver databaseChangeObserver;
 	//TODO: object to sync (database manager - server)
 	// when server receive a new backup server, wait until "download" is complete
-	// when database manager make a new SQL query, notify server to send new heartbeat with query
 	// when insert invite (and other events), notify server to send notification to user
 
 
@@ -48,6 +47,7 @@ public class DataBaseManager {
 		return "(" + this.getClass().getSimpleName() + "): ";
 	}
 
+	//TODO: dynamic tables: class with all tables + columns (?)
 	private void createTables(Connection conn) throws SQLException {
 		try ( Statement stmt = conn.createStatement() ) {
 			// Version table
@@ -150,28 +150,6 @@ public class DataBaseManager {
 		}
 	}
 
-	//TODO: notify server new SQL query have been made
-	//TODO: sync
-	public void insert(String query, Object... params) throws SQLException {
-		try (
-				PreparedStatement pstmt = conn.prepareStatement(query)
-		) {
-			for (int i = 0; i < params.length; i++) {
-				pstmt.setObject(i + 1, params[i]);
-			}
-			pstmt.executeUpdate();
-			incrementVersion(conn);
-			databaseChange(query, params);
-		}
-	}
-
-	private void incrementVersion(Connection conn) throws SQLException {
-		int newVersion = getVersion() + 1;
-		PreparedStatement pstmt = conn.prepareStatement("UPDATE version SET value = ?");
-		pstmt.setInt(1, newVersion);
-		pstmt.executeUpdate();
-	}
-
 	//TODO: throw exception on error
 	public int getVersion() {
 		int version = -1;
@@ -185,6 +163,19 @@ public class DataBaseManager {
 		}
 
 		return version;
+	}
+
+	private void incrementVersion(Connection conn) throws SQLException {
+		int newVersion = getVersion() + 1;
+		PreparedStatement pstmt = conn.prepareStatement("UPDATE version SET value = ?");
+		pstmt.setInt(1, newVersion);
+		pstmt.executeUpdate();
+	}
+
+	//TODO: sync
+	public void insert(String query, Object... params) throws SQLException {
+		updateDatabase(query, params);
+		databaseChange(query, params);
 	}
 
 	//Note: Returning ResultSet when Statement is on try-with-resources will close the Statement, so close the ResultSet and cannot access the data on database
@@ -211,40 +202,21 @@ public class DataBaseManager {
 	}
 
 	private void databaseChange(String query, Object... params) {
-		System.out.println("DEBUG: databaseChange(" + query + ") " + databaseChangeObserver);
 		if (databaseChangeObserver == null) return; //TODO: throw exception (?)
 
 		databaseChangeObserver.onDatabaseChange(query, params);
 	}
 
-	//TODO: notify server new SQL query have been made
 	//TODO: sync
 	public void update(String query, Object... params) throws SQLException {
-		try (
-				PreparedStatement pstmt = conn.prepareStatement(query)
-		) {
-			for (int i = 0; i < params.length; i++) {
-				pstmt.setObject(i + 1, params[i]);
-			}
-			pstmt.executeUpdate();
-			incrementVersion(conn);
-			databaseChange(query, params);
-		}
+		updateDatabase(query, params);
+		databaseChange(query, params);
 	}
 
-	//TODO: notify server new SQL query have been made
 	//TODO: sync
 	public void delete(String query, Object... params) throws SQLException {
-		try (
-				PreparedStatement pstmt = conn.prepareStatement(query)
-		) {
-			for (int i = 0; i < params.length; i++) {
-				pstmt.setObject(i + 1, params[i]);
-			}
-			pstmt.executeUpdate();
-			incrementVersion(conn);
-			databaseChange(query, params);
-		}
+		updateDatabase(query, params);
+		databaseChange(query, params);
 	}
 
 	public void updateDatabase(String query, Object... params) throws SQLException {
@@ -259,11 +231,11 @@ public class DataBaseManager {
 		}
 	}
 
-	public void createInvite(String invetedEmal) {
-		System.out.println("DEBUG: createInvite(" + invetedEmal + ") " + notificationObserver);
+	//TODO: this trigger should be on DataBaseManger (?)
+	public void triggerNotification(String email, String text) {
 		if (notificationObserver == null) return; //TODO: throw exception (?)
 
-		NotificaionResponse notification = new NotificaionResponse(invetedEmal, "You have been invited to a group");
+		NotificaionResponse notification = new NotificaionResponse(email, text);
 		notificationObserver.onNotification(notification);
 	}
 }

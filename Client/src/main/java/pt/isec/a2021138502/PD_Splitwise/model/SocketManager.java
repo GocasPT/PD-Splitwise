@@ -13,7 +13,6 @@ import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketException;
-import java.net.SocketTimeoutException;
 
 public class SocketManager {
 	private final Object lock = new Object();
@@ -25,8 +24,8 @@ public class SocketManager {
 
 	public SocketManager() {}
 
-	public void connect(InetAddress serverAddr, int port) throws IOException { //TODO: add other exceptions
-		socket = new Socket(serverAddr, port);
+	public void connect(InetAddress serverAdder, int port) throws IOException { //TODO: add other exceptions
+		socket = new Socket(serverAdder, port);
 		output = new ObjectOutputStream(socket.getOutputStream());
 		output.flush();
 		input = new ObjectInputStream(socket.getInputStream());

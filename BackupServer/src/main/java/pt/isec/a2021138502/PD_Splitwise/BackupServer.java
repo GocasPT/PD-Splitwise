@@ -11,7 +11,7 @@ import java.sql.SQLException;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
-import static pt.isec.a2021138502.PD_Splitwise.Message.Heartbeat.BYTE_LENGTH;
+import static pt.isec.a2021138502.PD_Splitwise.Message.Heartbeat.BUFFER_SIZE;
 
 public class BackupServer {
 	private static final String MULTICAST_ADDRESS = "230.44.44.44";
@@ -26,6 +26,15 @@ public class BackupServer {
 		Path path = Paths.get(dbPath);
 		this.dbDirectory = path.getParent();
 		this.dbFilename = path.getFileName().toString();
+
+		File directory = dbDirectory.toFile();
+		if (!directory.exists() || !directory.isDirectory()) {
+			throw new IllegalArgumentException("Directory does not exist: " + dbDirectory);
+		}
+
+		File[] files = directory.listFiles();
+		if (files == null || files.length == 0)
+			throw new IllegalArgumentException("Directory is empty: " + dbDirectory);
 	}
 
 	public static void main(String[] args) {
@@ -34,185 +43,155 @@ public class BackupServer {
 			return;
 		}
 
-		String dbPath = args[0];
-
-		new BackupServer(dbPath).start();
-	}
-
-	private void start() {
-		InetAddress group;
-		NetworkInterface nif;
-
 		try {
-			group = InetAddress.getByName(MULTICAST_ADDRESS);
-			nif = NetworkInterface.getByName(MULTICAST_ADDRESS);
-
-			try (MulticastSocket socket = new MulticastSocket(MULTICAST_PORT)) {
-				socket.joinGroup(new InetSocketAddress(group, MULTICAST_PORT), nif);
-				socket.setSoTimeout(INTERVAL * 1000);
-
-				DatagramPacket packet = new DatagramPacket(new byte[BYTE_LENGTH], BYTE_LENGTH, group, MULTICAST_PORT);
-
-				try {
-					socket.receive(packet);
-				} catch (SocketTimeoutException e) {
-					System.err.println(getTimeTag() + "Timeout waiting for server heartbeat: " + e.getMessage());
-					return;
-				} catch (IOException e) {
-					System.err.println(getTimeTag() + "Error receiving heartbeat packet: " + e.getMessage());
-					return;
-				}
-
-				Heartbeat heartbeat;
-				try (ObjectInputStream objIn = new ObjectInputStream(
-						new ByteArrayInputStream(packet.getData(), 0, packet.getLength()))) {
-					heartbeat = (Heartbeat) objIn.readObject();
-				} catch (ClassNotFoundException e) {
-					System.err.println(getTimeTag() + "Invalid heartbeat format: " + e.getMessage());
-					return;
-				} catch (InvalidClassException e) {
-					System.err.println(getTimeTag() + "Heartbeat class version mismatch: " + e.getMessage());
-					return;
-				} catch (IOException e) {
-					System.err.println(getTimeTag() + "Error reading heartbeat data: " + e.getMessage());
-					return;
-				}
-
-				InetAddress tcpAddress = packet.getAddress();
-				int tcpPort = heartbeat.tcpPort();
-
-				if (!dbDirectory.toFile().exists()) {
-					if (!dbDirectory.toFile().mkdirs()) {
-						System.err.println(getTimeTag() + "Failed to create database directory: " + dbDirectory);
-						return;
-					}
-				}
-				Path dbFilePath = dbDirectory.resolve(dbFilename);
-
-				try (
-						Socket tcpSocket = new Socket(tcpAddress, tcpPort);
-						InputStream inStream = tcpSocket.getInputStream();
-						DataInputStream dataIn = new DataInputStream(inStream);
-						FileOutputStream fileOut = new FileOutputStream(dbFilePath.toFile())
-				) {
-					System.out.println(getTimeTag() + "Downloading database to '" + dbFilePath + "'...");
-
-					long fileSize;
-					try {
-						fileSize = dataIn.readLong();
-						System.out.println(getTimeTag() + "File size: " + fileSize + " bytes");
-					} catch (EOFException e) {
-						System.err.println(getTimeTag() + "Failed to read file size from server: " + e.getMessage());
-						return;
-					}
-
-					byte[] buffer = new byte[BYTE_LENGTH];
-					int bytesRead;
-					long totalBytesRead = 0;
-
-					try {
-						while (totalBytesRead < fileSize &&
-								(bytesRead = dataIn.read(buffer)) != -1) {
-							fileOut.write(buffer, 0, bytesRead);
-							totalBytesRead += bytesRead;
-							//TODO: make it as progress bar
-							System.out.println(getTimeTag() + "Received " + bytesRead +
-									                   " bytes (" + totalBytesRead + "/" + fileSize + ")");
-						}
-						fileOut.flush();
-					} catch (SocketException e) {
-						System.err.println(getTimeTag() + "Connection lost during file transfer: " + e.getMessage());
-						return;
-					} catch (IOException e) {
-						System.err.println(getTimeTag() + "Error during file transfer: " + e.getMessage());
-						return;
-					}
-
-					if (totalBytesRead == fileSize) {
-						System.out.println(getTimeTag() + "Database downloaded successfully");
-						context = new DataBaseManager(dbFilePath.toAbsolutePath().toString(), null, null);
-					} else {
-						System.err.println(getTimeTag() + "Incomplete file transfer: received " +
-								                   totalBytesRead + " of " + fileSize + " bytes");
-						return;
-					}
-
-					while (true) {
-						packet = new DatagramPacket(new byte[BYTE_LENGTH], BYTE_LENGTH, group, MULTICAST_PORT);
-
-						try {
-							socket.receive(packet);
-						} catch (SocketTimeoutException e) {
-							System.err.println(getTimeTag() + "Timeout waiting for server heartbeat: " + e.getMessage());
-							return;
-						} catch (IOException e) {
-							System.err.println(getTimeTag() + "Error receiving heartbeat packet: " + e.getMessage());
-							return;
-						}
-
-						try (ObjectInputStream objIn = new ObjectInputStream(
-								new ByteArrayInputStream(packet.getData(), 0, packet.getLength()))) {
-							heartbeat = (Heartbeat) objIn.readObject();
-
-							System.out.println("Received heartbeat: " + heartbeat);
-
-							if (heartbeat.query() != null) {
-								if (heartbeat.version() == context.getVersion()) {
-									System.out.println(getTimeTag() + "Server is up-to-date, closing connection");
-								} else {
-									System.out.println(getTimeTag() + "Server version mismatch, updating database...");
-									context.updateDatabase(heartbeat.query(), heartbeat.params());
-								}
-							} else if (heartbeat.version() != context.getVersion()) {
-								System.out.println(getTimeTag() + "Server version mismatch, closing connection");
-								return;
-							}
-						} catch (ClassNotFoundException e) {
-							System.err.println(getTimeTag() + "Invalid heartbeat format: " + e.getMessage());
-							return;
-						} catch (InvalidClassException e) {
-							System.err.println(getTimeTag() + "Heartbeat class version mismatch: " + e.getMessage());
-							return;
-						} catch (IOException e) {
-							System.err.println(getTimeTag() + "Error reading heartbeat data: " + e.getMessage());
-							return;
-
-							//TODO: see this later
-						} catch ( SQLException e ) {
-							throw new RuntimeException(e);
-						}
-					}
-				} catch (ConnectException e) {
-					System.err.println(getTimeTag() + "Could not connect to server: " + e.getMessage());
-				} catch (SocketTimeoutException e) {
-					System.err.println(getTimeTag() + "Connection timed out: " + e.getMessage());
-				} catch (IOException e) {
-					System.err.println(getTimeTag() + "Error in TCP connection: " + e.getMessage());
-				}
-
-				//TODO: Recive heartbeats from server
-				// if no query AND different version -> close
-				// if query AND same version -> close
-				// if no query AND same version -> do nothing (still alive)
-				// if query AND different version -> update
-
-				/*while (true) {
-
-				}*/
-
-			} catch (SocketException e) {
-				System.err.println(getTimeTag() + "Error configuring multicast socket: " + e.getMessage());
-			} catch (IOException e) {
-				System.err.println(getTimeTag() + "Error with multicast operations: " + e.getMessage());
-			}
-		} catch (UnknownHostException e) {
-			System.err.println(getTimeTag() + "Invalid multicast address: " + MULTICAST_ADDRESS);
-		} catch (SocketException e) {
-			System.err.println(getTimeTag() + "Error creating network interface: " + e.getMessage());
+			new BackupServer(args[0]).start();
+		} catch ( IllegalArgumentException e ) {
+			System.out.println(getTimeTag() + "[Server Error] " + e.getMessage());
 		}
 	}
 
-	public static String getTimeTag() {
+	private void start() {
+		try {
+			InetAddress group = InetAddress.getByName(MULTICAST_ADDRESS);
+			NetworkInterface nif = NetworkInterface.getByName(MULTICAST_ADDRESS);
+
+			try ( MulticastSocket socket = new MulticastSocket(MULTICAST_PORT) ) {
+				socket.joinGroup(new InetSocketAddress(group, MULTICAST_PORT), nif);
+				socket.setSoTimeout(INTERVAL * 1000);
+
+				DatagramPacket packet = getPacket(socket, group);
+				Heartbeat heartbeat = getHeartbeat(packet);
+
+				InetAddress tcpAddress = packet.getAddress();
+				int tcpPort = heartbeat.tcpPort();
+				Path dbFilePath = dbDirectory.resolve(dbFilename);
+
+				if (downloadDBFile(tcpAddress, tcpPort, dbFilePath)) return;
+
+				while (true) {
+					heartbeat = getHeartbeat(getPacket(socket, group));
+					processHeartbeat(heartbeat);
+				}
+
+			} catch ( SocketException e ) {
+				System.err.println(getTimeTag() + "Error configuring multicast socket: " + e.getMessage());
+			} catch ( SQLException e ) {
+				System.err.println(getTimeTag() + "Error with database operations: " + e.getMessage());
+			} catch ( IOException e ) {
+				System.err.println(getTimeTag() + "Error with multicast operations: " + e.getMessage());
+			}
+		} catch ( UnknownHostException e ) {
+			System.err.println(getTimeTag() + "Invalid multicast address: " + MULTICAST_ADDRESS);
+		} catch ( SocketException e ) {
+			System.err.println(getTimeTag() + "Error creating network interface: " + e.getMessage());
+		} catch ( RuntimeException e ) {
+			System.out.println(getTimeTag() + e.getMessage());
+		}
+	}
+
+	private static String getTimeTag() {
 		return "<" + LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")) + "> ";
+	}
+
+	private DatagramPacket getPacket(MulticastSocket socket, InetAddress group) {
+		DatagramPacket newPacket = new DatagramPacket(new byte[BUFFER_SIZE], BUFFER_SIZE, group, MULTICAST_PORT);
+
+		try {
+			socket.receive(newPacket);
+		} catch ( SocketTimeoutException e ) {
+			throw new RuntimeException("Timeout waiting for server heartbeat: " + e.getMessage());
+		} catch ( IOException e ) {
+			throw new RuntimeException("Error receiving heartbeat packet: " + e.getMessage());
+		}
+
+		return newPacket;
+	}
+
+	private Heartbeat getHeartbeat(DatagramPacket packet) {
+		try (
+				ObjectInputStream objIn = new ObjectInputStream(
+						new ByteArrayInputStream(packet.getData(), 0, packet.getLength()))
+		) {
+			return (Heartbeat) objIn.readObject();
+		} catch ( ClassNotFoundException e ) {
+			throw new IllegalArgumentException("Invalid heartbeat format: " + e.getMessage());
+		} catch ( InvalidClassException e ) {
+			throw new RuntimeException("Heartbeat class version mismatch: " + e.getMessage());
+		} catch ( IOException e ) {
+			throw new RuntimeException("Error reading heartbeat data: " + e.getMessage());
+		}
+	}
+
+	private boolean downloadDBFile(InetAddress tcpAddress, int tcpPort, Path dbFilePath) {
+		try (
+				Socket tcpSocket = new Socket(tcpAddress, tcpPort);
+				InputStream inStream = tcpSocket.getInputStream();
+				DataInputStream dataIn = new DataInputStream(inStream);
+				FileOutputStream fileOut = new FileOutputStream(dbFilePath.toFile())
+		) {
+			System.out.println(getTimeTag() + "Downloading database to '" + dbFilePath + "'...");
+
+			long fileSize;
+			fileSize = dataIn.readLong();
+			System.out.println(getTimeTag() + "File size: " + fileSize + " bytes");
+
+			byte[] buffer = new byte[BUFFER_SIZE];
+			int bytesRead;
+			long totalBytesRead = 0;
+
+			while (totalBytesRead < fileSize &&
+					(bytesRead = dataIn.read(buffer)) != -1) {
+				fileOut.write(buffer, 0, bytesRead);
+				totalBytesRead += bytesRead;
+				printProgress(totalBytesRead, fileSize);
+			}
+			fileOut.flush();
+
+			if (totalBytesRead == fileSize) {
+				System.out.println(getTimeTag() + "Database downloaded successfully");
+				context = new DataBaseManager(dbFilePath.toAbsolutePath().toString(), null, null);
+				return true;
+			} else
+				throw new RuntimeException(
+						"Incomplete file transfer: received " + totalBytesRead + " of " + fileSize + " bytes");
+
+		} catch ( EOFException e ) {
+			System.err.println(getTimeTag() + "Failed to read file size from server: " + e.getMessage());
+		} catch ( ConnectException e ) {
+			System.err.println(getTimeTag() + "Could not connect to server: " + e.getMessage());
+		} catch ( SocketException e ) {
+			System.err.println(getTimeTag() + "Connection lost: " + e.getMessage());
+		} catch ( SocketTimeoutException e ) {
+			System.err.println(getTimeTag() + "Connection timed out: " + e.getMessage());
+		} catch ( IOException e ) {
+			System.err.println(getTimeTag() + "Error in TCP connection: " + e.getMessage());
+		}
+
+		return false;
+	}
+
+	private void processHeartbeat(Heartbeat heartbeat) throws SQLException {
+		if (heartbeat.version() != context.getVersion())
+			if (heartbeat.query() != null)
+				handleDatabaseUpdate(heartbeat);
+			else
+				throw new RuntimeException("Version mismatch but no update query provided");
+		else if (heartbeat.query() != null)
+			throw new RuntimeException("No version mismatch but update query provided");
+	}
+
+	private void printProgress(long current, long total) {
+		int percentage = (int) ((current * 100.0) / total);
+		int progressChars = (int) ((60.0 * current) / total);
+		String progress = "\r[" +
+				"=".repeat(progressChars) +
+				" ".repeat(60 - progressChars) +
+				String.format("] %d%% (%d/%d bytes)", percentage, current, total);
+		System.out.print(progress);
+	}
+
+	private void handleDatabaseUpdate(Heartbeat heartbeat) throws SQLException {
+		System.out.println(getTimeTag() + "Updating database with new data: " + heartbeat.query());
+		context.updateDatabase(heartbeat.query(), heartbeat.params());
 	}
 }

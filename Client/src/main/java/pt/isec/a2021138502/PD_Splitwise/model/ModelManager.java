@@ -81,13 +81,10 @@ public class ModelManager {
 			return socketManager.sendRequest(request);
 		} catch ( IOException e ) {
 			System.err.println("IOException while sending request: " + e.getMessage());
-			// Handle IOException specifically if needed
 		} catch ( InterruptedException e ) {
 			System.err.println("InterruptedException while sending request: " + e.getMessage());
-			// Handle InterruptedException specifically if needed
 		} catch ( Exception e ) {
 			System.err.println("Unexpected exception while sending request: " + e.getMessage());
-			// Handle any other unexpected exceptions
 		}
 
 		return null;

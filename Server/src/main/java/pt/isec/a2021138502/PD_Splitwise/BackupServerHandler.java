@@ -6,7 +6,7 @@ import java.io.*;
 import java.net.Socket;
 import java.net.SocketException;
 
-import static pt.isec.a2021138502.PD_Splitwise.Message.Heartbeat.BYTE_LENGTH;
+import static pt.isec.a2021138502.PD_Splitwise.Message.Heartbeat.BUFFER_SIZE;
 import static pt.isec.a2021138502.PD_Splitwise.Server.getTimeTag;
 
 public class BackupServerHandler implements Runnable {
@@ -39,16 +39,18 @@ public class BackupServerHandler implements Runnable {
 
 			System.out.println("[BackupServerThread] File size: " + fileSize);
 
-			byte[] buffer = new byte[BYTE_LENGTH];
+			byte[] buffer = new byte[BUFFER_SIZE];
 			int bytesRead;
 			long totalBytesSent = 0;
 
 			while ((bytesRead = fileIn.read(buffer)) != -1) {
 				dataOut.write(buffer, 0, bytesRead);
 				totalBytesSent += bytesRead;
-				//TODO: make it as progress bar
-				System.out.println("[BackupServerThread] Sending " + bytesRead + " bytes (" +
-						                   totalBytesSent + "/" + fileSize + ")");
+				int percentage = (int) ((totalBytesSent * 100.0) / fileSize);
+				System.out.println(getTimeTag() + "[" +
+						                   "=".repeat(percentage / 2) +
+						                   " ".repeat(50 - (percentage / 2)) +
+						                   "] " + percentage + "% " + totalBytesSent + "/" + fileSize + " bytes");
 			}
 			dataOut.flush();
 
