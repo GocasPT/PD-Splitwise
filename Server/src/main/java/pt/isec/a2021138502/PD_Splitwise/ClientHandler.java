@@ -44,6 +44,7 @@ public class ClientHandler implements Runnable {
 				// Need to be logged in to access other requests
 				while (email == null) {
 					request = (Request) in.readObject();
+					System.out.println(getTimeTag() + "Client '" + host + "': " + request);
 					if (request instanceof Login) {
 						Response response = request.execute(context);
 						email = ((Login) request).email();
