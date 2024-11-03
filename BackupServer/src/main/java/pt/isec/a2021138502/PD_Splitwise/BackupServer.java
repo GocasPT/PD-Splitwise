@@ -9,7 +9,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
 
 import static pt.isec.a2021138502.PD_Splitwise.Message.Heartbeat.BYTE_LENGTH;
 
@@ -93,7 +92,7 @@ public class BackupServer {
 						Socket tcpSocket = new Socket(tcpAddress, tcpPort);
 						InputStream inStream = tcpSocket.getInputStream();
 						DataInputStream dataIn = new DataInputStream(inStream);
-						FileOutputStream fileOut = new FileOutputStream(dbFilePath.toFile());
+						FileOutputStream fileOut = new FileOutputStream(dbFilePath.toFile())
 				) {
 					System.out.println(getTimeTag() + "Downloading database to '" + dbFilePath + "'...");
 
@@ -130,7 +129,7 @@ public class BackupServer {
 
 					if (totalBytesRead == fileSize) {
 						System.out.println(getTimeTag() + "Database downloaded successfully");
-						context = new DataBaseManager(dbFilePath.toAbsolutePath().toString(), null);
+						context = new DataBaseManager(dbFilePath.toAbsolutePath().toString(), null, null);
 					} else {
 						System.err.println(getTimeTag() + "Incomplete file transfer: received " +
 								                   totalBytesRead + " of " + fileSize + " bytes");
