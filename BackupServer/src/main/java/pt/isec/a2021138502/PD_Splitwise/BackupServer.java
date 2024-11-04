@@ -109,7 +109,9 @@ public class BackupServer {
 				ObjectInputStream objIn = new ObjectInputStream(
 						new ByteArrayInputStream(packet.getData(), 0, packet.getLength()))
 		) {
-			return (Heartbeat) objIn.readObject();
+			Heartbeat heartbeat = (Heartbeat) objIn.readObject();
+			System.out.println(getTimeTag() + "Received heartbeat: " + heartbeat);
+			return heartbeat;
 		} catch ( ClassNotFoundException e ) {
 			throw new IllegalArgumentException("Invalid heartbeat format: " + e.getMessage());
 		} catch ( InvalidClassException e ) {
@@ -169,8 +171,6 @@ public class BackupServer {
 	}
 
 	private void processHeartbeat(Heartbeat heartbeat) throws SQLException {
-		System.out.println(getTimeTag() + "Received heartbeat: " + heartbeat);
-
 		if (heartbeat.version() != context.getVersion())
 			if (heartbeat.query() != null)
 				handleDatabaseUpdate(heartbeat);

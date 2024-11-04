@@ -15,7 +15,7 @@ public class HeartbeatManager {
 	private final MulticastSocket multicastSocket;
 	private final ServerSocket backupServerSocket;
 	private final InetAddress group = InetAddress.getByName(MULTICAST_ADDRESS);
-	private final DataBaseManager dbManager;
+	private final DataBaseManager dbManager; //TODO: check if this is needed
 	private boolean isRunning;
 	private final HeartbeatSender heartbeatSender;
 	private final BackupServerReceiver backupServerReceiver;
@@ -51,29 +51,6 @@ public class HeartbeatManager {
 		} catch ( IOException e ) {
 			System.err.println(getTimeTag() + "Heartbeat sender error: " + e.getMessage());
 		}
-	}
-
-	public void sendUpdate(String query /*, Object... params*/) {
-		//TODO: implement this method
-		// send heartbeat with the query
-		/*try {
-			Heartbeat heartbeat = new Heartbeat(context.getVersion(), serverSocket.getLocalPort(), query, params);
-			ByteArrayOutputStream bOut = new ByteArrayOutputStream();
-			ObjectOutputStream out = new ObjectOutputStream(bOut);
-			out.writeObject(heartbeat);
-			out.flush();
-
-			System.out.println(getTimeTag() + "Sending heartbeat: " + heartbeat);
-
-			DatagramPacket packet = new DatagramPacket(bOut.toByteArray(), bOut.size(), group, MULTICAST_PORT);
-			socket.send(packet);
-		} catch ( IOException e ) { //TODO: improve exception handling
-			throw new RuntimeException(e);
-		}*/
-	}
-
-	private void heartbeatSend() {
-
 	}
 
 	public HeartbeatSender getHeartbeatSender() {
