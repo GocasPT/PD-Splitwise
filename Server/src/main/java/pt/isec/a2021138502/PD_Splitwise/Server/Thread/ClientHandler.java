@@ -4,7 +4,6 @@ import pt.isec.a2021138502.PD_Splitwise.Data.DataBaseManager;
 import pt.isec.a2021138502.PD_Splitwise.Message.Request.Request;
 import pt.isec.a2021138502.PD_Splitwise.Message.Request.User.Login;
 import pt.isec.a2021138502.PD_Splitwise.Message.Request.User.Register;
-import pt.isec.a2021138502.PD_Splitwise.Message.Response.NotificaionResponse;
 import pt.isec.a2021138502.PD_Splitwise.Message.Response.Response;
 import pt.isec.a2021138502.PD_Splitwise.Server.Manager.SessionManager;
 
@@ -41,7 +40,7 @@ public class ClientHandler implements Runnable {
 	public void run() {
 		System.out.println(getTimeTag() + "Client '" + host + "' connected");
 
-		try ( ObjectInputStream in = new ObjectInputStream(clientSocket.getInputStream()) ) {
+		try {
 			Request request;
 
 			try {
@@ -104,8 +103,8 @@ public class ClientHandler implements Runnable {
 		//TODO: implement this method
 	}
 
-	public void sendNotification(NotificaionResponse notification) {
-		/*try {
+	/*public void sendNotification(NotificaionResponse notification) {
+		try {
 			synchronized (out) {
 				System.out.println("[ClientThread] Sending notification to '" + email + "': " + notification);
 				out.writeObject(notification);
@@ -113,7 +112,7 @@ public class ClientHandler implements Runnable {
 			}
 		} catch ( IOException e ) {
 			System.out.println("[ClientThread] Ocorreu um erro ao enviar a notificação:\n\t" + e);
-		}*/
-	}
+		}
+	}*/
 }
 

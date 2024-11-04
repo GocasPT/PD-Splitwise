@@ -12,12 +12,11 @@ import static pt.isec.a2021138502.PD_Splitwise.Terminal.utils.getTimeTag;
 public class HeartbeatManager {
 	private final String MULTICAST_ADDRESS = "230.44.44.44";
 	private final int MULTICAST_PORT = 4444;
-
 	private final MulticastSocket multicastSocket;
 	private final ServerSocket backupServerSocket;
 	private final InetAddress group = InetAddress.getByName(MULTICAST_ADDRESS);
-	private boolean isRunning;
 	private final DataBaseManager dbManager;
+	private boolean isRunning;
 	private Thread heartbeatSender;
 	private Thread backupServerReceiver;
 

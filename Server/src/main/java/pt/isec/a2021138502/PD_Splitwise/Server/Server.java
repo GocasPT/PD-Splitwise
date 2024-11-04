@@ -8,16 +8,17 @@ import pt.isec.a2021138502.PD_Splitwise.Server.Thread.ClientHandler;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 
 import static pt.isec.a2021138502.PD_Splitwise.Terminal.utils.getTimeTag;
 
 public class Server {
 	public static final int TIMEOUT_CLIENT_SOCKET = 60;
-	private volatile boolean isRunning;
 	private final ServerSocket serverSocket;
 	private final HeartbeatManager heartbeatManager;
 	private final SessionManager sessionManager;
 	private final DataBaseManager dbManager;
+	private volatile boolean isRunning;
 
 	public Server(int listeningPort, String dbPath) {
 		try {
@@ -36,34 +37,29 @@ public class Server {
 	}
 
 	private void start() {
-		//TODO:
-		// - create heartbeat thread
-		// client receiver routine
 		heartbeatManager.startHeartbeat();
 
+		//TODO: see if this can be improved
 		System.out.println(getTimeTag() + "Server ready to receive clients...");
-
-		//TODO: need to add something where? (flag to stop loop?)
 		try {
 			while (isRunning) {
 				Socket clientSocket = serverSocket.accept();
 				clientSocket.setSoTimeout(Server.TIMEOUT_CLIENT_SOCKET * 1000);
+				//TODO: Runnable VS Thread
 				new Thread(
 						new ClientHandler(clientSocket, sessionManager, dbManager),
 						clientSocket.getInetAddress().toString()
 				).start();
 			}
-		/*} catch ( SocketException e ) {
-			throw new RuntimeException(e);*/
+		} catch ( SocketException e ) {
+			throw new RuntimeException(e); //TODO: improve this
 		} catch ( IOException e ) {
-			throw new RuntimeException(e);
+			throw new RuntimeException(e); //TODO: improve this
 		}
 	}
 
+	//TODO: check this method
 	private void stop() {
-		//TODO:
-		// - wait to finish all threads
-		// - close server socket
 		isRunning = false;
 
 		try {
