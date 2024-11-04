@@ -26,6 +26,8 @@ public class Server {
 			dbManager = new DataBaseManager(dbPath);
 			serverSocket = new ServerSocket(listeningPort);
 			heartbeatManager = new HeartbeatManager(isRunning, dbManager);
+			if (!dbManager.addDBChangeObserver(heartbeatManager.getHeartbeatSender()))
+				throw new RuntimeException("Failed to add observer to DataBaseManager"); //TODO: improve this
 			sessionManager = new SessionManager();
 
 			start();

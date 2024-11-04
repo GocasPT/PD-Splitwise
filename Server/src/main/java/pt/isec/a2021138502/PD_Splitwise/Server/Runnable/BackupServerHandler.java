@@ -9,15 +9,16 @@ import java.net.SocketException;
 
 import static pt.isec.a2021138502.PD_Splitwise.Message.Heartbeat.BUFFER_SIZE;
 import static pt.isec.a2021138502.PD_Splitwise.Terminal.utils.getTimeTag;
+import static pt.isec.a2021138502.PD_Splitwise.Terminal.utils.printProgress;
 
 public class BackupServerHandler implements Runnable {
 	private final Socket backupServerSocket;
-	private final DataBaseManager context;
+	private final DataBaseManager dbManager;
 	private final String host;
 
-	public BackupServerHandler(Socket backupServerSocket, DataBaseManager context) {
+	public BackupServerHandler(Socket backupServerSocket, DataBaseManager dbManager) {
 		this.backupServerSocket = backupServerSocket;
-		this.context = context;
+		this.dbManager = dbManager;
 		this.host = backupServerSocket.getInetAddress().getHostAddress() + ":" +
 				backupServerSocket.getPort() + " - " +
 				backupServerSocket.getInetAddress().getHostName();
@@ -26,15 +27,15 @@ public class BackupServerHandler implements Runnable {
 	@Override
 	public void run() {
 		System.out.println(getTimeTag() + "Backup Server '" + host + "' connected");
-		DatabaseSyncManager syncManager = context.getSyncManager();
+		DatabaseSyncManager syncManager = dbManager.getSyncManager();
 		syncManager.startBackupTransfer();
 
 		try (
 				OutputStream outStream = backupServerSocket.getOutputStream();
 				DataOutputStream dataOut = new DataOutputStream(outStream);
-				BufferedInputStream fileIn = new BufferedInputStream(new FileInputStream(context.getDBFile()))
+				BufferedInputStream fileIn = new BufferedInputStream(new FileInputStream(dbManager.getDBFile()))
 		) {
-			File dbFile = context.getDBFile();
+			File dbFile = dbManager.getDBFile();
 			long fileSize = dbFile.length();
 
 			dataOut.writeLong(fileSize);
@@ -49,11 +50,7 @@ public class BackupServerHandler implements Runnable {
 			while ((bytesRead = fileIn.read(buffer)) != -1) {
 				dataOut.write(buffer, 0, bytesRead);
 				totalBytesSent += bytesRead;
-				int percentage = (int) ((totalBytesSent * 100.0) / fileSize);
-				System.out.println(getTimeTag() + "[" +
-						                   "=".repeat(percentage / 2) +
-						                   " ".repeat(50 - (percentage / 2)) +
-						                   "] " + percentage + "% " + totalBytesSent + "/" + fileSize + " bytes");
+				printProgress(totalBytesSent, fileSize);
 			}
 			dataOut.flush();
 

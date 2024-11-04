@@ -17,8 +17,8 @@ public class HeartbeatManager {
 	private final InetAddress group = InetAddress.getByName(MULTICAST_ADDRESS);
 	private final DataBaseManager dbManager;
 	private boolean isRunning;
-	private Thread heartbeatSender;
-	private Thread backupServerReceiver;
+	private final HeartbeatSender heartbeatSender;
+	private final BackupServerReceiver backupServerReceiver;
 
 	public HeartbeatManager(boolean isRunnig, DataBaseManager dbManager) throws IOException {
 		this.isRunning = isRunnig;
@@ -29,12 +29,12 @@ public class HeartbeatManager {
 		);
 		this.backupServerSocket = new ServerSocket(0);
 		this.dbManager = dbManager;
+		heartbeatSender = new HeartbeatSender(isRunning, multicastSocket, group, backupServerSocket, dbManager);
+		backupServerReceiver = new BackupServerReceiver(isRunning, backupServerSocket, dbManager);
 	}
 
 	public void startHeartbeat() {
-		heartbeatSender = new HeartbeatSender(isRunning, multicastSocket, group, backupServerSocket, dbManager);
 		heartbeatSender.start();
-		backupServerReceiver = new BackupServerReceiver(isRunning, backupServerSocket, dbManager);
 		backupServerReceiver.start();
 	}
 
@@ -74,5 +74,13 @@ public class HeartbeatManager {
 
 	private void heartbeatSend() {
 
+	}
+
+	public HeartbeatSender getHeartbeatSender() {
+		return heartbeatSender;
+	}
+
+	public BackupServerReceiver getBackupServerReceiver() {
+		return backupServerReceiver;
 	}
 }

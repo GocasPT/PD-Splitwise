@@ -14,7 +14,7 @@ public class DataBaseManager {
 	private final String dbPath;
 	private final Connection conn;
 	private final INotificationObserver notificationObserver;
-	private final IDatabaseChangeObserver databaseChangeObserver;
+	private IDatabaseChangeObserver databaseChangeObserver;
 	private final DatabaseSyncManager syncManager = new DatabaseSyncManager();
 	//TODO: object to sync (database manager - server)
 	// when server receive a new backup server, wait until "download" is complete
@@ -25,6 +25,7 @@ public class DataBaseManager {
 		this(dbPath, null, null);
 	}
 
+	//TODO: verbose + loading steps
 	public DataBaseManager(String dbPath, INotificationObserver notificationObserver, IDatabaseChangeObserver databaseChangeObserver) {
 		this.dbPath = dbPath;
 
@@ -43,10 +44,15 @@ public class DataBaseManager {
 		this.databaseChangeObserver = databaseChangeObserver;
 	}
 
-	//TODO: verbose + loading steps
-
 	private String getClassTag() {
 		return "(" + this.getClass().getSimpleName() + "): ";
+	}
+
+	public boolean addDBChangeObserver(IDatabaseChangeObserver observer) {
+		if (databaseChangeObserver != null) return false; //TODO: throw exception (?)
+
+		databaseChangeObserver = observer;
+		return true;
 	}
 
 	//TODO: dynamic tables: class with all tables + columns (?)

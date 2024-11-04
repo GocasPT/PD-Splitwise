@@ -11,7 +11,7 @@ public class utils {
 				"=".repeat(progressChars) +
 				" ".repeat(60 - progressChars) +
 				String.format("] %d%% (%d/%d bytes)", percentage, current, total);
-		System.out.println(getTimeTag() + progress);
+		System.out.println(progress);
 	}
 
 	public static String getTimeTag() {
