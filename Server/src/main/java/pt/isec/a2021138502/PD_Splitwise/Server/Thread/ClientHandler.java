@@ -1,39 +1,45 @@
 package pt.isec.a2021138502.PD_Splitwise.Server.Thread;
 
+import pt.isec.a2021138502.PD_Splitwise.Data.DataBaseManager;
+import pt.isec.a2021138502.PD_Splitwise.Message.Request.Request;
+import pt.isec.a2021138502.PD_Splitwise.Message.Request.User.Login;
+import pt.isec.a2021138502.PD_Splitwise.Message.Request.User.Register;
 import pt.isec.a2021138502.PD_Splitwise.Message.Response.NotificaionResponse;
+import pt.isec.a2021138502.PD_Splitwise.Message.Response.Response;
 import pt.isec.a2021138502.PD_Splitwise.Server.Manager.SessionManager;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.net.SocketException;
+
+import static pt.isec.a2021138502.PD_Splitwise.Terminal.utils.getTimeTag;
 
 public class ClientHandler implements Runnable {
 	private final Socket clientSocket;
 	private final ObjectOutputStream out;
 	private final ObjectInputStream in;
 	private final SessionManager sessionManager;
-
-	//private final DataBaseManager context;
-	//private final String host;
-	//private String email;
+	private final DataBaseManager context;
+	private final String host;
+	private String email;
 
 	//TODO: improve exception handling
-	public ClientHandler(Socket clientSocket, SessionManager sessionManager /*, DataBaseManager context*/) throws IOException {
+	public ClientHandler(Socket clientSocket, SessionManager sessionManager, DataBaseManager context) throws IOException {
 		this.clientSocket = clientSocket;
 		this.out = new ObjectOutputStream(clientSocket.getOutputStream());
 		this.in = new ObjectInputStream(clientSocket.getInputStream());
 		this.sessionManager = sessionManager;
-
-		/*this.context = context;
+		this.context = context;
 		this.host = clientSocket.getInetAddress().getHostAddress() + ":" +
 				clientSocket.getPort() + " - " +
-				clientSocket.getInetAddress().getHostName();*/
+				clientSocket.getInetAddress().getHostName();
 	}
 
 	@Override
 	public void run() {
-		/*System.out.println(getTimeTag() + "Client '" + host + "' connected");
+		System.out.println(getTimeTag() + "Client '" + host + "' connected");
 
 		try ( ObjectInputStream in = new ObjectInputStream(clientSocket.getInputStream()) ) {
 			Request request;
@@ -52,7 +58,7 @@ public class ClientHandler implements Runnable {
 						} else {
 							email = ((Login) request).email();
 							out.writeObject(response);
-							Server.getNotificationManager().registerClient(email, this);
+							sessionManager.addSession(email, this);
 						}
 					} else if (request instanceof Register) {
 						Response response = request.execute(context);
@@ -84,13 +90,13 @@ public class ClientHandler implements Runnable {
 		} finally {
 			System.out.println(getTimeTag() + "Client '" + host + "' disconnected");
 			if (email != null)
-				Server.getNotificationManager().unregisterClient(email);
+				sessionManager.removeSession(email);
 			try {
 				clientSocket.close();
 			} catch ( IOException e ) {
 				System.out.println("[ClientThread] Ocorreu um erro ao fechar o socket:\n\t" + e);
 			}
-		}*/
+		}
 	}
 
 	//TODO: what this method have as argument?

@@ -45,11 +45,11 @@ public class Server {
 
 		//TODO: need to add something where? (flag to stop loop?)
 		try {
-			while (true) {
+			while (isRunning) {
 				Socket clientSocket = serverSocket.accept();
 				clientSocket.setSoTimeout(Server.TIMEOUT_CLIENT_SOCKET * 1000);
 				new Thread(
-						new ClientHandler(clientSocket, sessionManager),
+						new ClientHandler(clientSocket, sessionManager, dbManager),
 						clientSocket.getInetAddress().toString()
 				).start();
 			}
