@@ -37,13 +37,6 @@ public class SocketManager {
 		listenerThread.start();
 	}
 
-	public void close() throws IOException {
-		if (socket != null && !socket.isClosed())
-			socket.close();
-		if (listenerThread != null && listenerThread.isAlive())
-			listenerThread.interrupt();
-	}
-
 	//TODO: improve catch blocks
 	// throw exception
 	// maybe this gonna be deleted
@@ -75,6 +68,13 @@ public class SocketManager {
 			//Platform.runLater(() -> ); //TODO: show error message
 			Platform.exit();
 		}
+	}
+
+	public void close() throws IOException {
+		if (socket != null && !socket.isClosed())
+			socket.close();
+		if (listenerThread != null && listenerThread.isAlive())
+			listenerThread.interrupt();
 	}
 
 	public boolean addObservers(ClientObserver observer) {
