@@ -1,4 +1,4 @@
-package pt.isec.a2021138502.PD_Splitwise.Server.Thread;
+package pt.isec.a2021138502.PD_Splitwise.Server.Runnable;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

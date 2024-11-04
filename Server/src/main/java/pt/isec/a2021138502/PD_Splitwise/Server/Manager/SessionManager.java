@@ -2,7 +2,7 @@ package pt.isec.a2021138502.PD_Splitwise.Server.Manager;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pt.isec.a2021138502.PD_Splitwise.Server.Thread.ClientHandler;
+import pt.isec.a2021138502.PD_Splitwise.Server.Runnable.ClientHandler;
 
 import java.util.HashMap;
 import java.util.Map;
