@@ -15,8 +15,6 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.SocketException;
 
-import static pt.isec.a2021138502.PD_Splitwise.Terminal.utils.getTimeTag;
-
 public class ClientHandler implements Runnable {
 	private static final Logger logger = LoggerFactory.getLogger(ClientHandler.class);
 	private final Socket clientSocket;
@@ -76,7 +74,7 @@ public class ClientHandler implements Runnable {
 					request = (Request) in.readObject();
 					logger.info("({}) request: {}", email, request);
 					Response response = request.execute(context);
-					System.out.println(getTimeTag() + response);
+					logger.info("({}) response: {}", email, response);
 					out.writeObject(response);
 				}
 			} catch ( ClassNotFoundException e ) {
