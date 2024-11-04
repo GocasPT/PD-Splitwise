@@ -25,7 +25,7 @@ public record GetUser(String email) implements Request {
 			);
 
 		} catch ( Exception e ) {
-			System.out.println("Error on 'GetUser.execute': " + e.getMessage());
+			logger.error("GetUser: {}", e.getMessage());
 			return new ValueResponse<>("Error getting user");
 		}
 

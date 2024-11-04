@@ -18,7 +18,7 @@ public record InviteUser(int groupID, String guestEmail, String inviteeEmail) im
 			context.setData(queryInsert, groupID, userID);
 			context.triggerNotification(guestEmail, "You have been invited to a group"); //TODO: check (exceptions, etc)
 		} catch ( SQLException e ) {
-			System.out.println("Error on 'InviteUser.execute': " + e.getMessage());
+			logger.error("InviteUser: {}", e.getMessage());
 			return new Response(false, "Failed to invite user to group");
 		}
 

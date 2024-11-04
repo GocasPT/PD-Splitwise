@@ -1,14 +1,12 @@
 package pt.isec.a2021138502.PD_Splitwise.Message.Request.Group;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import pt.isec.a2021138502.PD_Splitwise.Data.*;
 import pt.isec.a2021138502.PD_Splitwise.Message.Request.Request;
 import pt.isec.a2021138502.PD_Splitwise.Message.Response.Response;
 import pt.isec.a2021138502.PD_Splitwise.Message.Response.ValueResponse;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
@@ -97,11 +95,8 @@ public record GetGroup(int groupId) implements Request {
 
 			group = new Group((int) groupData.get("id"), (String) groupData.get("name"), members, expenses, payments);
 
-		} catch ( SQLException e ) {
-			System.out.println("Error on 'GetGroup.execute': " + e.getMessage());
-			return new ValueResponse<>("Failed to get group");
-		} catch ( JsonSyntaxException e ) {
-			System.out.println("Error on parsing: " + e.getMessage());
+		} catch ( Exception e ) {
+			logger.error("GetGroup: {}", e.getMessage());
 			return new ValueResponse<>("Failed to get group");
 		}
 

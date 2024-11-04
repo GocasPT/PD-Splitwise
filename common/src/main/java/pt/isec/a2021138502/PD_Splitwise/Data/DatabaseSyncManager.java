@@ -1,8 +1,13 @@
 package pt.isec.a2021138502.PD_Splitwise.Data;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import pt.isec.a2021138502.PD_Splitwise.Terminal.utils;
+
 import java.sql.SQLException;
 
 public class DatabaseSyncManager {
+	private static final Logger logger = LoggerFactory.getLogger(utils.class);
 	private final Object syncLock = new Object();
 	private int activeBackupTransfers = 0;
 

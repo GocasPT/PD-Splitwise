@@ -6,7 +6,6 @@ import pt.isec.a2021138502.PD_Splitwise.Message.Request.Request;
 import pt.isec.a2021138502.PD_Splitwise.Message.Response.ListResponse;
 import pt.isec.a2021138502.PD_Splitwise.Message.Response.Response;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -43,8 +42,8 @@ public record GetGroups(String email) implements Request {
 				groupList.add(group);
 			}
 
-		} catch ( SQLException e ) {
-			System.out.println("Error on 'GetGroups.execute': " + e.getMessage());
+		} catch ( Exception e ) {
+			logger.error("GetGroups: {}", e.getMessage());
 			return new ListResponse<>("Failed to get groups");
 		}
 

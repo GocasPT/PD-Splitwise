@@ -17,8 +17,8 @@ public record EditUser(String username, String phone, String email, String passw
 			if (e.getErrorCode() == 19 && e.getMessage().toLowerCase().contains("unique")) {
 				return new Response(false, "Email already in use");
 			}
-
-			System.out.println("Error on 'EditUser.execute': " + e.getMessage());
+		} catch ( Exception e ) {
+			logger.error("EditUser: {}", e.getMessage());
 			return new Response(false, "Error editing user");
 		}
 

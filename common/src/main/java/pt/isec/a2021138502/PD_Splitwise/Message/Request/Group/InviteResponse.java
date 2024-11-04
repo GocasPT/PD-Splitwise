@@ -4,7 +4,6 @@ import pt.isec.a2021138502.PD_Splitwise.Data.DataBaseManager;
 import pt.isec.a2021138502.PD_Splitwise.Message.Request.Request;
 import pt.isec.a2021138502.PD_Splitwise.Message.Response.Response;
 
-import java.sql.SQLException;
 import java.util.Map;
 
 public record InviteResponse(int inviteId, boolean isAccepted) implements Request {
@@ -22,8 +21,8 @@ public record InviteResponse(int inviteId, boolean isAccepted) implements Reques
 				int userId = (int) inviteDate.get("user_id");
 				context.setData(queryInsert, groupId, userId);
 			}
-		} catch ( SQLException e ) {
-			System.out.println("Error on 'InviteResponse.execute': " + e.getMessage());
+		} catch ( Exception e ) {
+			logger.error("InviteResponse: {}", e.getMessage());
 			return new Response(false, "Failed to update invite");
 		}
 

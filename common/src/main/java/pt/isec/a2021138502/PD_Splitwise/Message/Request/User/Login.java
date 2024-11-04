@@ -4,7 +4,6 @@ import pt.isec.a2021138502.PD_Splitwise.Data.DataBaseManager;
 import pt.isec.a2021138502.PD_Splitwise.Message.Request.Request;
 import pt.isec.a2021138502.PD_Splitwise.Message.Response.Response;
 
-import java.sql.SQLException;
 import java.util.Map;
 
 public record Login(String email, String password) implements Request {
@@ -21,8 +20,8 @@ public record Login(String email, String password) implements Request {
 			if (!userEmail.equals(email) || !userPassword.equals(password))
 				return new Response(false, "Invalid email or password");
 
-		} catch ( SQLException e ) {
-			System.out.println("Error on 'Login.execute': " + e.getMessage());
+		} catch ( Exception e ) {
+			logger.error("Login: {}", e.getMessage());
 			return new Response(false, "Error on login");
 		}
 
