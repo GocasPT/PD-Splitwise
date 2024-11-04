@@ -1,5 +1,7 @@
 package pt.isec.a2021138502.PD_Splitwise.Server;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pt.isec.a2021138502.PD_Splitwise.Data.DataBaseManager;
 import pt.isec.a2021138502.PD_Splitwise.Server.Manager.HeartbeatManager;
 import pt.isec.a2021138502.PD_Splitwise.Server.Manager.SessionManager;
@@ -10,9 +12,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 
-import static pt.isec.a2021138502.PD_Splitwise.Terminal.utils.getTimeTag;
-
 public class Server {
+	private static final Logger logger = LoggerFactory.getLogger(Server.class);
 	public static final int TIMEOUT_CLIENT_SOCKET = 60;
 	private final ServerSocket serverSocket;
 	private final HeartbeatManager heartbeatManager;
@@ -42,7 +43,7 @@ public class Server {
 		heartbeatManager.startHeartbeat();
 
 		//TODO: see if this can be improved
-		System.out.println(getTimeTag() + "Server ready to receive clients...");
+		logger.info("Server ready to receive clients...");
 		try {
 			while (isRunning) {
 				Socket clientSocket = serverSocket.accept();
@@ -69,7 +70,7 @@ public class Server {
 
 			serverSocket.close();
 		} catch ( Exception e ) {
-			System.out.println("Exception in 'Server.stop': " + e.getMessage());
+			logger.error(e.getMessage());
 		}
 	}
 }

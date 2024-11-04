@@ -1,5 +1,7 @@
 package pt.isec.a2021138502.PD_Splitwise.Server.Thread;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pt.isec.a2021138502.PD_Splitwise.Data.DataBaseManager;
 import pt.isec.a2021138502.PD_Splitwise.Data.IDatabaseChangeObserver;
 import pt.isec.a2021138502.PD_Splitwise.Message.Heartbeat;
@@ -12,9 +14,8 @@ import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.net.ServerSocket;
 
-import static pt.isec.a2021138502.PD_Splitwise.Terminal.utils.getTimeTag;
-
 public class HeartbeatSender extends Thread implements IDatabaseChangeObserver {
+	private static final Logger logger = LoggerFactory.getLogger(HeartbeatSender.class);
 	private final int HEARTBEAT_INTERVAL = 10;
 	private final MulticastSocket multicastSocket;
 	private final InetAddress group;
@@ -35,7 +36,7 @@ public class HeartbeatSender extends Thread implements IDatabaseChangeObserver {
 	@Override
 	public void run() {
 		try {
-			System.out.println(getTimeTag() + "Heartbeat sender started");
+			logger.info("Heartbeat sender started");
 
 			//TODO: break loop when server is stopped
 			while (isRunning) {
@@ -43,9 +44,9 @@ public class HeartbeatSender extends Thread implements IDatabaseChangeObserver {
 				sendHeartbeat(null);
 			}
 		} catch ( InterruptedException e ) {
-			System.out.println(getTimeTag() + "Heartbeat sender stopped");
+			logger.error("Heartbeat sender stopped"); //TODO: improve this maybe (throw?)
 		} catch ( RuntimeException e ) {
-			System.err.println(getTimeTag() + "Heartbeat sender error: " + e.getMessage());
+			logger.error("RuntimeException: {}", e.getMessage()); //TODO: improve this maybe (throw?)
 		}
 	}
 
@@ -58,7 +59,7 @@ public class HeartbeatSender extends Thread implements IDatabaseChangeObserver {
 			                                    params);
 			out.writeObject(heartbeat);
 			out.flush();
-			System.out.println(getTimeTag() + "Sending heartbeat: " + heartbeat);
+			logger.info("Sending heartbeat: {}", heartbeat); //TODO: info or debug?
 			DatagramPacket packet = new DatagramPacket(bOut.toByteArray(), bOut.size(), group,
 			                                           multicastSocket.getLocalPort());
 			multicastSocket.send(packet);

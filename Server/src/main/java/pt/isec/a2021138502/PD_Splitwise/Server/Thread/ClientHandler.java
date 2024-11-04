@@ -1,5 +1,7 @@
 package pt.isec.a2021138502.PD_Splitwise.Server.Thread;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pt.isec.a2021138502.PD_Splitwise.Data.DataBaseManager;
 import pt.isec.a2021138502.PD_Splitwise.Message.Request.Request;
 import pt.isec.a2021138502.PD_Splitwise.Message.Request.User.Login;
@@ -16,12 +18,12 @@ import java.net.SocketException;
 import static pt.isec.a2021138502.PD_Splitwise.Terminal.utils.getTimeTag;
 
 public class ClientHandler implements Runnable {
+	private static final Logger logger = LoggerFactory.getLogger(ClientHandler.class);
 	private final Socket clientSocket;
 	private final ObjectOutputStream out;
 	private final ObjectInputStream in;
 	private final SessionManager sessionManager;
 	private final DataBaseManager context;
-	private final String host;
 	private String email;
 
 	//TODO: improve exception handling
@@ -31,14 +33,11 @@ public class ClientHandler implements Runnable {
 		this.in = new ObjectInputStream(clientSocket.getInputStream());
 		this.sessionManager = sessionManager;
 		this.context = context;
-		this.host = clientSocket.getInetAddress().getHostAddress() + ":" +
-				clientSocket.getPort() + " - " +
-				clientSocket.getInetAddress().getHostName();
 	}
 
 	@Override
 	public void run() {
-		System.out.println(getTimeTag() + "Client '" + host + "' connected");
+		logger.info("Client connected");
 
 		try {
 			Request request;
@@ -48,7 +47,7 @@ public class ClientHandler implements Runnable {
 				// Need to be logged in to access other requests
 				while (email == null) {
 					request = (Request) in.readObject();
-					System.out.println(getTimeTag() + "Client '" + host + "': " + request);
+					logger.info("Request: {}", request);
 					if (request instanceof Login) {
 						Response response = request.execute(context);
 						if (!response.isSuccess()) {
@@ -63,7 +62,9 @@ public class ClientHandler implements Runnable {
 						Response response = request.execute(context);
 						out.writeObject(response);
 					} else {
-						System.out.println(getTimeTag() + "Client '" + host + "' not logged in");
+						logger.info("Client not logged in");
+						Response response = new Response(false, "Not logged in");
+						out.writeObject(response);
 						return;
 					}
 				}
@@ -73,27 +74,27 @@ public class ClientHandler implements Runnable {
 				// Main loop
 				while (!clientSocket.isClosed()) {
 					request = (Request) in.readObject();
-					System.out.println(getTimeTag() + "(" + email + ")" + "'" + host + "': " + request);
+					logger.info("({}) request: {}", email, request);
 					Response response = request.execute(context);
 					System.out.println(getTimeTag() + response);
 					out.writeObject(response);
 				}
 			} catch ( ClassNotFoundException e ) {
-				System.out.println("[ClientThread] Ocorreu um erro ao ler o objeto recebido:\n\t" + e);
+				logger.error("ClassNotFoundException: {}", e.getMessage());
 			}
 
 		} catch ( SocketException e ) {
-			System.out.println("[ClientThread] Ocorreu um erro ao nível do socket TCP:\n\t" + e);
+			logger.error("SocketException: {}", e.getMessage());
 		} catch ( IOException e ) {
-			System.out.println("[ClientThread] Ocorreu um erro no acesso ao socket:\n\t" + e);
+			logger.error("IOException: {}", e.getMessage());
 		} finally {
-			System.out.println(getTimeTag() + "Client '" + host + "' disconnected");
+			logger.info("Client disconnected");
 			if (email != null)
 				sessionManager.removeSession(email);
 			try {
 				clientSocket.close();
 			} catch ( IOException e ) {
-				System.out.println("[ClientThread] Ocorreu um erro ao fechar o socket:\n\t" + e);
+				logger.error("Closing socket: {}", e.getMessage());
 			}
 		}
 	}

@@ -1,5 +1,7 @@
 package pt.isec.a2021138502.PD_Splitwise.Server.Thread;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pt.isec.a2021138502.PD_Splitwise.Data.DataBaseManager;
 import pt.isec.a2021138502.PD_Splitwise.Server.Runnable.BackupServerHandler;
 
@@ -8,9 +10,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 
-import static pt.isec.a2021138502.PD_Splitwise.Terminal.utils.getTimeTag;
-
 public class BackupServerReceiver extends Thread {
+	private static final Logger logger = LoggerFactory.getLogger(BackupServerReceiver.class);
 	private final ServerSocket serverSocket;
 	private final DataBaseManager context;
 	private final boolean isRunning;
@@ -25,7 +26,7 @@ public class BackupServerReceiver extends Thread {
 	@Override
 	public void run() {
 		try {
-			System.out.println(getTimeTag() + "Backup server receiver started");
+			logger.info("Backup server receiver started");
 
 			//TODO: need to add something where? (flag to stop loop?)
 			while (isRunning) {
@@ -36,16 +37,16 @@ public class BackupServerReceiver extends Thread {
 				).start();
 			}
 		} catch ( NumberFormatException e ) {
-			System.out.println("[HeartbeatThread] O porto de escuta deve ser um inteiro positivo");
+			logger.error("O porto de escuta deve ser um inteiro positivo");
 		} catch ( SocketException e ) {
-			System.out.println("[HeartbeatThread] Ocorreu um erro ao nível do backupServerSocket TCP:\n\t" + e);
+			logger.error("backupServerSocket TCP: {}", e.getMessage());
 		} catch ( IOException e ) {
-			System.out.println("[HeartbeatThread] Ocorreu um erro no acesso ao backupServerSocket:\n\t" + e);
+			logger.error("IOException: {}", e.getMessage());
 		} finally {
 			try {
 				serverSocket.close();
 			} catch ( IOException e ) {
-				System.out.println("[HeartbeatThread] Ocorreu um erro ao fechar o socket:\n\t" + e);
+				logger.error("Fechar o socket: {}", e.getMessage());
 			}
 		}
 	}
