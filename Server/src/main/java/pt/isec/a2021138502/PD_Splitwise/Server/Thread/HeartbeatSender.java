@@ -1,4 +1,4 @@
-package pt.isec.a2021138502.PD_Splitwise.Server;
+package pt.isec.a2021138502.PD_Splitwise.Server.Thread;
 
 import pt.isec.a2021138502.PD_Splitwise.Data.DataBaseManager;
 import pt.isec.a2021138502.PD_Splitwise.Message.Heartbeat;

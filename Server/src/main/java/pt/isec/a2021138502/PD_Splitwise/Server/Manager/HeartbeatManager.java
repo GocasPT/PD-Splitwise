@@ -1,8 +1,8 @@
 package pt.isec.a2021138502.PD_Splitwise.Server.Manager;
 
 import pt.isec.a2021138502.PD_Splitwise.Data.DataBaseManager;
-import pt.isec.a2021138502.PD_Splitwise.Server.HeartbeatSender;
 import pt.isec.a2021138502.PD_Splitwise.Server.Thread.BackupServerReceiver;
+import pt.isec.a2021138502.PD_Splitwise.Server.Thread.HeartbeatSender;
 
 import java.io.IOException;
 import java.net.*;
