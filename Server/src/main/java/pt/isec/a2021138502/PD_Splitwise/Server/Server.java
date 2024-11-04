@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 import pt.isec.a2021138502.PD_Splitwise.Data.DataBaseManager;
 import pt.isec.a2021138502.PD_Splitwise.Server.Manager.HeartbeatManager;
 import pt.isec.a2021138502.PD_Splitwise.Server.Manager.SessionManager;
-import pt.isec.a2021138502.PD_Splitwise.Server.Thread.ClientHandler;
+import pt.isec.a2021138502.PD_Splitwise.Server.Runnable.ClientHandler;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -51,7 +51,7 @@ public class Server {
 				//TODO: Runnable VS Thread
 				new Thread(
 						new ClientHandler(clientSocket, sessionManager, dbManager),
-						clientSocket.getInetAddress().toString()
+						clientSocket.getInetAddress().toString().replaceFirst("/", "")
 				).start();
 			}
 		} catch ( SocketException e ) {
