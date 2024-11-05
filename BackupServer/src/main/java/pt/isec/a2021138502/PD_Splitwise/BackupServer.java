@@ -1,5 +1,7 @@
 package pt.isec.a2021138502.PD_Splitwise;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pt.isec.a2021138502.PD_Splitwise.Data.DataBaseManager;
 import pt.isec.a2021138502.PD_Splitwise.Message.Heartbeat;
 
@@ -11,10 +13,10 @@ import java.sql.SQLException;
 import java.util.Arrays;
 
 import static pt.isec.a2021138502.PD_Splitwise.Message.Heartbeat.BUFFER_SIZE;
-import static pt.isec.a2021138502.PD_Splitwise.Terminal.utils.getTimeTag;
 import static pt.isec.a2021138502.PD_Splitwise.Terminal.utils.printProgress;
 
 public class BackupServer {
+	private static final Logger logger = LoggerFactory.getLogger(BackupServer.class);
 	private static final String MULTICAST_ADDRESS = "230.44.44.44";
 	private static final int MULTICAST_PORT = 4444;
 	private static final int INTERVAL = 30;
@@ -30,24 +32,24 @@ public class BackupServer {
 
 		File directory = dbDirectory.toFile();
 		if (!directory.exists() || !directory.isDirectory()) {
-			throw new IllegalArgumentException("Directory does not exist: " + dbDirectory);
+			throw new IllegalArgumentException("Directory does not exist");
 		}
 
 		File[] files = directory.listFiles();
 		if (files == null || files.length != 0)
-			throw new IllegalArgumentException("Directory is not empty: " + dbDirectory);
+			throw new IllegalArgumentException("Directory is not empty");
 	}
 
 	public static void main(String[] args) {
 		if (args.length != 1) {
-			System.out.println("Usage: java BackupServer.BackupServer <path_to_database>");
+			logger.error("Usage: java BackupServer.BackupServer <path_to_database>"); //TODO: check this later
 			return;
 		}
 
 		try {
 			new BackupServer(args[0]).start();
 		} catch ( IllegalArgumentException e ) {
-			System.out.println(getTimeTag() + "[Server Error] " + e.getMessage());
+			logger.error(e.getMessage());
 		}
 	}
 
@@ -75,18 +77,18 @@ public class BackupServer {
 				}
 
 			} catch ( SocketException e ) {
-				System.err.println(getTimeTag() + "Error configuring multicast socket: " + e.getMessage());
+				logger.error("Configuring multicast socket: {}", e.getMessage());
 			} catch ( SQLException e ) {
-				System.err.println(getTimeTag() + "Error with database operations: " + e.getMessage());
+				logger.error("Database operations: {}", e.getMessage());
 			} catch ( IOException e ) {
-				System.err.println(getTimeTag() + "Error with multicast operations: " + e.getMessage());
+				logger.error("Multicast operations: {}", e.getMessage());
 			}
 		} catch ( UnknownHostException e ) {
-			System.err.println(getTimeTag() + "Invalid multicast address: " + MULTICAST_ADDRESS);
+			logger.error("Invalid multicast address: {}", MULTICAST_ADDRESS);
 		} catch ( SocketException e ) {
-			System.err.println(getTimeTag() + "Error creating network interface: " + e.getMessage());
+			logger.error("Creating network interface: {}", e.getMessage());
 		} catch ( RuntimeException e ) {
-			System.out.println(getTimeTag() + e.getMessage());
+			logger.error("{}", e.getMessage());
 		}
 	}
 
@@ -96,9 +98,9 @@ public class BackupServer {
 		try {
 			socket.receive(newPacket);
 		} catch ( SocketTimeoutException e ) {
-			throw new RuntimeException("Timeout waiting for server heartbeat: " + e.getMessage());
+			throw new RuntimeException("Timeout");
 		} catch ( IOException e ) {
-			throw new RuntimeException("Error receiving heartbeat packet: " + e.getMessage());
+			throw new RuntimeException("Receiving heartbeat packet: " + e.getMessage());
 		}
 
 		return newPacket;
@@ -110,14 +112,14 @@ public class BackupServer {
 						new ByteArrayInputStream(packet.getData(), 0, packet.getLength()))
 		) {
 			Heartbeat heartbeat = (Heartbeat) objIn.readObject();
-			System.out.println(getTimeTag() + "Received heartbeat: " + heartbeat);
+			logger.info("Received heartbeat: \n\t{}", heartbeat);
 			return heartbeat;
 		} catch ( ClassNotFoundException e ) {
 			throw new IllegalArgumentException("Invalid heartbeat format: " + e.getMessage());
 		} catch ( InvalidClassException e ) {
 			throw new RuntimeException("Heartbeat class version mismatch: " + e.getMessage());
 		} catch ( IOException e ) {
-			throw new RuntimeException("Error reading heartbeat data: " + e.getMessage());
+			throw new RuntimeException("Reading heartbeat data: " + e.getMessage());
 		}
 	}
 
@@ -128,12 +130,12 @@ public class BackupServer {
 				DataInputStream dataIn = new DataInputStream(inStream);
 				FileOutputStream fileOut = new FileOutputStream(dbFilePath.toFile())
 		) {
-			System.out.println(getTimeTag() + "Connected to server at " + tcpAddress + ":" + tcpPort);
-			System.out.println(getTimeTag() + "Downloading database to '" + dbFilePath + "'...");
+			logger.info("Connected to server at {}:{}", tcpAddress, tcpPort);
+			logger.info("Downloading database to '{}'...", dbFilePath);
 
 			long fileSize;
 			fileSize = dataIn.readLong();
-			System.out.println(getTimeTag() + "File size: " + fileSize + " bytes");
+			logger.info("File size: {} bytes", fileSize);
 
 			byte[] buffer = new byte[BUFFER_SIZE];
 			int bytesRead;
@@ -148,7 +150,7 @@ public class BackupServer {
 			fileOut.flush();
 
 			if (totalBytesRead == fileSize) {
-				System.out.println(getTimeTag() + "Database downloaded successfully");
+				logger.info("Database downloaded successfully");
 				context = new DataBaseManager(dbFilePath.toAbsolutePath().toString(), null, null);
 				return true;
 			} else
@@ -156,15 +158,15 @@ public class BackupServer {
 						"Incomplete file transfer: received " + totalBytesRead + " of " + fileSize + " bytes");
 
 		} catch ( EOFException e ) {
-			System.err.println(getTimeTag() + "Failed to read file size from server: " + e.getMessage());
+			logger.error("Failed to read file size from server: {}", e.getMessage());
 		} catch ( ConnectException e ) {
-			System.err.println(getTimeTag() + "Could not connect to server: " + e.getMessage());
+			logger.error("Could not connect to server: {}", e.getMessage());
 		} catch ( SocketException e ) {
-			System.err.println(getTimeTag() + "Connection lost: " + e.getMessage());
+			logger.error("Connection lost: {}", e.getMessage());
 		} catch ( SocketTimeoutException e ) {
-			System.err.println(getTimeTag() + "Connection timed out: " + e.getMessage());
+			logger.error("Connection timed out: {}", e.getMessage());
 		} catch ( IOException e ) {
-			System.err.println(getTimeTag() + "Error in TCP connection: " + e.getMessage());
+			logger.error("TCP connection: {}", e.getMessage());
 		}
 
 		return false;
@@ -177,13 +179,12 @@ public class BackupServer {
 			else
 				throw new RuntimeException("Version mismatch but no update query provided");
 		else if (heartbeat.query() != null)
-			throw new RuntimeException("No version mismatch but update query provided");
+			throw new RuntimeException("Same version but provided query");
 	}
 
 	private void handleDatabaseUpdate(Heartbeat heartbeat) throws SQLException {
-		System.out.println(
-				getTimeTag() + "Updating database with new data: " + heartbeat.query() + " " + Arrays.toString(
-						heartbeat.params()));
+		logger.info("Updating database with new data: \n\t{}\n\t{}", heartbeat.query(), Arrays.toString(
+				heartbeat.params()));
 		context.updateDatabase(heartbeat.query(), heartbeat.params());
 	}
 }

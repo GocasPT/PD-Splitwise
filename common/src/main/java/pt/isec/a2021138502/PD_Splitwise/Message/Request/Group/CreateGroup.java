@@ -5,8 +5,6 @@ import pt.isec.a2021138502.PD_Splitwise.Data.DataBaseManager;
 import pt.isec.a2021138502.PD_Splitwise.Message.Request.Request;
 import pt.isec.a2021138502.PD_Splitwise.Message.Response.Response;
 
-import java.sql.SQLException;
-
 public record CreateGroup(String groupName, String userEmail) implements Request {
 	@Override
 	public Response execute(DataBaseManager context) {
@@ -20,8 +18,8 @@ public record CreateGroup(String groupName, String userEmail) implements Request
 			int groupID = (int) context.getData(queryGetGroupID, groupName).getFirst().get("id");
 			int userID = (int) context.getData(queryGetUserID, userEmail).getFirst().get("id");
 			context.setData(queryInsertGroupUser, groupID, userID);
-		} catch ( SQLException e ) {
-			System.out.println("Error on 'CreateGroup.execute': " + e.getMessage());
+		} catch ( Exception e ) {
+			logger.error("CreateGroup: {}", e.getMessage());
 			return new Response(false, "Failed to create group");
 		}
 

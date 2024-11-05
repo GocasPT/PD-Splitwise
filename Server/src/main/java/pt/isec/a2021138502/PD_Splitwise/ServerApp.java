@@ -1,11 +1,15 @@
 package pt.isec.a2021138502.PD_Splitwise;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pt.isec.a2021138502.PD_Splitwise.Server.Server;
 
 public class ServerApp {
+	private static final Logger logger = LoggerFactory.getLogger(ServerApp.class);
+
 	public static void main(String[] args) {
 		if (args.length != 2) {
-			System.out.println("Usage: java Server.Server <port> <path_to_database>");
+			logger.error("Usage: java Server.Server <port> <path_to_database>"); //TODO: check this later
 			return;
 		}
 
@@ -15,7 +19,7 @@ public class ServerApp {
 		try {
 			new Server(listeningPort, dbPath);
 		} catch ( RuntimeException e ) {
-			System.out.println("RuntimeException in 'Server': " + e.getMessage());
+			logger.error(e.getMessage());
 		}
 	}
 }

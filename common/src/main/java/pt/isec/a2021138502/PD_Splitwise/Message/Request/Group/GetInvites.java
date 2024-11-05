@@ -46,7 +46,7 @@ public record GetInvites(String email) implements Request {
 			}
 
 		} catch ( Exception e ) {
-			System.out.println("Error on 'GetInvites.execute': " + e.getMessage());
+			logger.error("GetInvites: {}", e.getMessage());
 			return new ListResponse<>("Failed to get invites");
 		}
 

@@ -1,5 +1,7 @@
 package pt.isec.a2021138502.PD_Splitwise.Server.Runnable;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pt.isec.a2021138502.PD_Splitwise.Data.DataBaseManager;
 import pt.isec.a2021138502.PD_Splitwise.Data.DatabaseSyncManager;
 
@@ -8,10 +10,10 @@ import java.net.Socket;
 import java.net.SocketException;
 
 import static pt.isec.a2021138502.PD_Splitwise.Message.Heartbeat.BUFFER_SIZE;
-import static pt.isec.a2021138502.PD_Splitwise.Terminal.utils.getTimeTag;
 import static pt.isec.a2021138502.PD_Splitwise.Terminal.utils.printProgress;
 
 public class BackupServerHandler implements Runnable {
+	private static final Logger logger = LoggerFactory.getLogger(BackupServerHandler.class);
 	private final Socket backupServerSocket;
 	private final DataBaseManager dbManager;
 	private final String host;
@@ -26,7 +28,7 @@ public class BackupServerHandler implements Runnable {
 
 	@Override
 	public void run() {
-		System.out.println(getTimeTag() + "Backup Server '" + host + "' connected");
+		logger.info("Backup Server '{}' connected", host);
 		DatabaseSyncManager syncManager = dbManager.getSyncManager();
 		syncManager.startBackupTransfer();
 
@@ -41,7 +43,7 @@ public class BackupServerHandler implements Runnable {
 			dataOut.writeLong(fileSize);
 			dataOut.flush();
 
-			System.out.println("[BackupServerThread] File size: " + fileSize);
+			logger.info("File size: {}", fileSize);
 
 			byte[] buffer = new byte[BUFFER_SIZE];
 			int bytesRead;
@@ -55,16 +57,16 @@ public class BackupServerHandler implements Runnable {
 			dataOut.flush();
 
 		} catch ( SocketException e ) {
-			System.out.println("[BackupServerThread] Socket error: " + e.getMessage());
+			logger.error("SocketException: {}", e.getMessage());
 		} catch ( IOException e ) {
-			System.out.println("[BackupServerThread] I/O error: " + e.getMessage());
+			logger.error("IOException: {}", e.getMessage());
 		} finally {
-			System.out.println(getTimeTag() + "Backup Server '" + host + "' disconnected");
+			logger.info("Backup Server '{}' disconnected", host);
 			syncManager.endBackupTransfer();
 			try {
 				backupServerSocket.close();
 			} catch ( IOException e ) {
-				System.out.println("[BackupServerThread] Error closing socket: " + e.getMessage());
+				logger.error("Closing socket: {}", e.getMessage());
 			}
 		}
 	}

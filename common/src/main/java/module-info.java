@@ -1,6 +1,7 @@
 module common {
 	requires com.google.gson;
-	requires java.sql;
+	requires org.xerial.sqlitejdbc;
+	requires org.slf4j;
 
 	exports pt.isec.a2021138502.PD_Splitwise.Data;
 	exports pt.isec.a2021138502.PD_Splitwise.Message;

@@ -14,7 +14,7 @@ public record ExitGroup(String userEmail, int groupId) implements Request {
 			int userId = (int) context.getData(querySelect, userEmail).getFirst().get("id");
 			context.setData(queryDelete, userId, groupId);
 		} catch ( Exception e ) {
-			System.out.println("Error on 'ExitGroup.execute': " + e.getMessage());
+			logger.error("ExitGroup: {}", e.getMessage());
 			return new Response(false, "Failed to exit group");
 		}
 

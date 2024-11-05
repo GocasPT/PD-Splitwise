@@ -1,5 +1,7 @@
 package pt.isec.a2021138502.PD_Splitwise.Data;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pt.isec.a2021138502.PD_Splitwise.Message.Response.NotificaionResponse;
 
 import java.io.File;
@@ -11,6 +13,7 @@ import java.util.Map;
 
 //TODO: Singleton Pattern (?)
 public class DataBaseManager {
+	private static final Logger logger = LoggerFactory.getLogger(DataBaseManager.class);
 	private final String dbPath;
 	private final Connection conn;
 	private final INotificationObserver notificationObserver;
@@ -29,25 +32,21 @@ public class DataBaseManager {
 	public DataBaseManager(String dbPath, INotificationObserver notificationObserver, IDatabaseChangeObserver databaseChangeObserver) {
 		this.dbPath = dbPath;
 
-		System.out.println(getClassTag() + "Initializing database...");
+		logger.info("Initializing database...");
 
 		try {
 			//Note: getConnection() will create the database if it doesn't exist
 			//conn = DriverManager.getConnection("jdbc:sqlite:" + Paths.get(dbPath).toAbsolutePath());
 			conn = DriverManager.getConnection("jdbc:sqlite:" + this.dbPath);
-			System.out.println(getClassTag() + "Connected to the database");
+			logger.info("Connected to the database");
 			createTables(conn);
 		} catch ( SQLException e ) {
-			throw new RuntimeException("Database error: " + e.getMessage()); //TODO: improve error message
+			throw new RuntimeException("SQLException: " + e.getMessage()); //TODO: improve error message
 		}
 		this.notificationObserver = notificationObserver;
 		this.databaseChangeObserver = databaseChangeObserver;
 	}
-
-	private String getClassTag() {
-		return "(" + this.getClass().getSimpleName() + "): ";
-	}
-
+	
 	public boolean addDBChangeObserver(IDatabaseChangeObserver observer) {
 		if (databaseChangeObserver != null) return false; //TODO: throw exception (?)
 
@@ -213,7 +212,7 @@ public class DataBaseManager {
 			List<Map<String, Object>> rs = getData(query);
 			version = (int) rs.getFirst().get("value");
 		} catch ( SQLException e ) {
-			System.err.println(getClassTag() + "Error getting version: " + e.getMessage());
+			logger.error("Getting version: {}", e.getMessage());
 		}
 
 		return version;
