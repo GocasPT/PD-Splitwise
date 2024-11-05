@@ -33,7 +33,7 @@ public class BackupServerReceiver extends Thread {
 				Socket backupServerSocket = serverSocket.accept();
 				new Thread(
 						new BackupServerHandler(backupServerSocket, context),
-						backupServerSocket.getInetAddress().toString()
+						backupServerSocket.getInetAddress().getHostAddress()
 				).start();
 			}
 		} catch ( NumberFormatException e ) {

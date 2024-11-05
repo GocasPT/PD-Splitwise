@@ -51,7 +51,7 @@ public class Server {
 				//TODO: Runnable VS Thread
 				new Thread(
 						new ClientHandler(clientSocket, sessionManager, dbManager),
-						clientSocket.getInetAddress().toString().replaceFirst("/", "")
+						clientSocket.getInetAddress().getHostAddress()
 				).start();
 			}
 		} catch ( SocketException e ) {
