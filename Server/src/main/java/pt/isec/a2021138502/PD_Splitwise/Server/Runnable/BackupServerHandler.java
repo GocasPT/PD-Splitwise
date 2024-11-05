@@ -52,7 +52,7 @@ public class BackupServerHandler implements Runnable {
 			while ((bytesRead = fileIn.read(buffer)) != -1) {
 				dataOut.write(buffer, 0, bytesRead);
 				totalBytesSent += bytesRead;
-				printProgress(totalBytesSent, fileSize);
+				logger.info(printProgress(totalBytesSent, fileSize));
 			}
 			dataOut.flush();
 

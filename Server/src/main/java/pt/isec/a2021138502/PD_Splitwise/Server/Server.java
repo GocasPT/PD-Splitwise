@@ -16,20 +16,21 @@ public class Server {
 	private static final Logger logger = LoggerFactory.getLogger(Server.class);
 	public static final int TIMEOUT_CLIENT_SOCKET = 60;
 	private final ServerSocket serverSocket;
-	private final HeartbeatManager heartbeatManager;
 	private final SessionManager sessionManager;
 	private final DataBaseManager dbManager;
+	private final HeartbeatManager heartbeatManager;
 	private volatile boolean isRunning;
 
 	public Server(int listeningPort, String dbPath) {
 		try {
 			isRunning = true;
-			dbManager = new DataBaseManager(dbPath);
 			serverSocket = new ServerSocket(listeningPort);
-			heartbeatManager = new HeartbeatManager(isRunning, dbManager);
-			if (!dbManager.addDBChangeObserver(heartbeatManager.getHeartbeatSender()))
-				throw new RuntimeException("Failed to add observer to DataBaseManager"); //TODO: improve this
 			sessionManager = new SessionManager();
+			dbManager = new DataBaseManager(dbPath, sessionManager);
+			heartbeatManager = new HeartbeatManager(isRunning, dbManager);
+			if (!dbManager.addDBChangeObserver(heartbeatManager.getHeartbeatSender())) {
+				throw new RuntimeException("Failed to add observer to DataBaseManager"); //TODO: improve this
+			}
 
 			start();
 		} catch ( IOException e ) {

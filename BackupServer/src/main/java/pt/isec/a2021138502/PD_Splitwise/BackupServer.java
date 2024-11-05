@@ -10,7 +10,6 @@ import java.net.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.SQLException;
-import java.util.Arrays;
 
 import static pt.isec.a2021138502.PD_Splitwise.Message.Heartbeat.BUFFER_SIZE;
 import static pt.isec.a2021138502.PD_Splitwise.Terminal.utils.printProgress;
@@ -23,7 +22,7 @@ public class BackupServer {
 
 	private final Path dbDirectory;
 	private final String dbFilename;
-	private DataBaseManager context;
+	private DataBaseManager dbManager;
 
 	public BackupServer(String dbPath) {
 		Path path = Paths.get(dbPath);
@@ -112,7 +111,7 @@ public class BackupServer {
 						new ByteArrayInputStream(packet.getData(), 0, packet.getLength()))
 		) {
 			Heartbeat heartbeat = (Heartbeat) objIn.readObject();
-			logger.info("Received heartbeat: \n\t{}", heartbeat);
+			logger.info("Received heartbeat: {}", heartbeat);
 			return heartbeat;
 		} catch ( ClassNotFoundException e ) {
 			throw new IllegalArgumentException("Invalid heartbeat format: " + e.getMessage());
@@ -123,6 +122,7 @@ public class BackupServer {
 		}
 	}
 
+	//TODO: get database file name from server
 	private boolean downloadDBFile(InetAddress tcpAddress, int tcpPort, Path dbFilePath) {
 		try (
 				Socket tcpSocket = new Socket(tcpAddress, tcpPort);
@@ -145,13 +145,13 @@ public class BackupServer {
 					(bytesRead = dataIn.read(buffer)) != -1) {
 				fileOut.write(buffer, 0, bytesRead);
 				totalBytesRead += bytesRead;
-				printProgress(totalBytesRead, fileSize);
+				logger.info(printProgress(totalBytesRead, fileSize));
 			}
 			fileOut.flush();
 
 			if (totalBytesRead == fileSize) {
 				logger.info("Database downloaded successfully");
-				context = new DataBaseManager(dbFilePath.toAbsolutePath().toString(), null, null);
+				dbManager = new DataBaseManager(dbFilePath.toAbsolutePath().toString(), null);
 				return true;
 			} else
 				throw new RuntimeException(
@@ -173,18 +173,12 @@ public class BackupServer {
 	}
 
 	private void processHeartbeat(Heartbeat heartbeat) throws SQLException {
-		if (heartbeat.version() != context.getVersion())
+		if (heartbeat.version() != dbManager.getVersion())
 			if (heartbeat.query() != null)
-				handleDatabaseUpdate(heartbeat);
+				dbManager.updateDatabase(heartbeat.query(), heartbeat.params());
 			else
 				throw new RuntimeException("Version mismatch but no update query provided");
 		else if (heartbeat.query() != null)
 			throw new RuntimeException("Same version but provided query");
-	}
-
-	private void handleDatabaseUpdate(Heartbeat heartbeat) throws SQLException {
-		logger.info("Updating database with new data: \n\t{}\n\t{}", heartbeat.query(), Arrays.toString(
-				heartbeat.params()));
-		context.updateDatabase(heartbeat.query(), heartbeat.params());
 	}
 }

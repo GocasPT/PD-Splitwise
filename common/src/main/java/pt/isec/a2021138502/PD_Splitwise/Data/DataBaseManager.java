@@ -23,13 +23,8 @@ public class DataBaseManager {
 	// when server receive a new backup server, wait until "download" is complete
 	// when insert invite (and other events), notify server to send notification to user
 
-	//TODO: check this later
-	public DataBaseManager(String dbPath) {
-		this(dbPath, null, null);
-	}
-
 	//TODO: verbose + loading steps
-	public DataBaseManager(String dbPath, INotificationObserver notificationObserver, IDatabaseChangeObserver databaseChangeObserver) {
+	public DataBaseManager(String dbPath, INotificationObserver notificationObserver) {
 		this.dbPath = dbPath;
 
 		logger.info("Initializing database...");
@@ -44,7 +39,6 @@ public class DataBaseManager {
 			throw new RuntimeException("SQLException: " + e.getMessage()); //TODO: improve error message
 		}
 		this.notificationObserver = notificationObserver;
-		this.databaseChangeObserver = databaseChangeObserver;
 	}
 	
 	public boolean addDBChangeObserver(IDatabaseChangeObserver observer) {
@@ -165,37 +159,6 @@ public class DataBaseManager {
 		return syncManager;
 	}
 
-	//TODO: sync
-	public void setData(String query, Object... params) throws SQLException {
-		try {
-			syncManager.executeOperation(() -> {
-				updateDatabase(query, params);
-				databaseChange(query, params);
-			});
-		} catch ( InterruptedException e ) {
-			Thread.currentThread().interrupt();
-			throw new SQLException("Operation interrupted", e);
-		}
-	}
-
-	public void updateDatabase(String query, Object... params) throws SQLException {
-		try (
-				PreparedStatement pstmt = conn.prepareStatement(query)
-		) {
-			for (int i = 0; i < params.length; i++) {
-				pstmt.setObject(i + 1, params[i]);
-			}
-			pstmt.executeUpdate();
-			incrementVersion(conn);
-		}
-	}
-
-	private void databaseChange(String query, Object... params) {
-		if (databaseChangeObserver == null) return; //TODO: throw exception (?)
-
-		databaseChangeObserver.onDatabaseChange(query, params);
-	}
-
 	private void incrementVersion(Connection conn) throws SQLException {
 		int newVersion = getVersion() + 1;
 		PreparedStatement pstmt = conn.prepareStatement("UPDATE version SET value = ?");
@@ -241,8 +204,42 @@ public class DataBaseManager {
 		return results;
 	}
 
+	//TODO: sync
+	public void setData(String query, Object... params) throws SQLException {
+		try {
+			logger.debug("Executing query: {}", query);
+			syncManager.executeOperation(() -> {
+				updateDatabase(query, params);
+				databaseChange(query, params);
+			});
+			logger.debug("Query executed successfully");
+		} catch ( InterruptedException e ) {
+			Thread.currentThread().interrupt();
+			throw new SQLException("Operation interrupted", e);
+		}
+	}
+
+	public void updateDatabase(String query, Object... params) throws SQLException {
+		try (
+				PreparedStatement pstmt = conn.prepareStatement(query)
+		) {
+			for (int i = 0; i < params.length; i++) {
+				pstmt.setObject(i + 1, params[i]);
+			}
+			pstmt.executeUpdate();
+			incrementVersion(conn);
+		}
+	}
+
+	private void databaseChange(String query, Object... params) {
+		if (databaseChangeObserver == null) return; //TODO: throw exception (?)
+
+		databaseChangeObserver.onDatabaseChange(query, params);
+	}
+
 	//TODO: this trigger should be on DataBaseManger (?)
 	public void triggerNotification(String email, String text) {
+		logger.debug("Triggering notification for {} ({})", email, notificationObserver);
 		if (notificationObserver == null) return; //TODO: throw exception (?)
 
 		NotificaionResponse notification = new NotificaionResponse(email, text);

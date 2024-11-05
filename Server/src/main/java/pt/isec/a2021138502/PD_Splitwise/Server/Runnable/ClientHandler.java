@@ -6,6 +6,7 @@ import pt.isec.a2021138502.PD_Splitwise.Data.DataBaseManager;
 import pt.isec.a2021138502.PD_Splitwise.Message.Request.Request;
 import pt.isec.a2021138502.PD_Splitwise.Message.Request.User.Login;
 import pt.isec.a2021138502.PD_Splitwise.Message.Request.User.Register;
+import pt.isec.a2021138502.PD_Splitwise.Message.Response.NotificaionResponse;
 import pt.isec.a2021138502.PD_Splitwise.Message.Response.Response;
 import pt.isec.a2021138502.PD_Splitwise.Server.Manager.SessionManager;
 
@@ -98,8 +99,11 @@ public class ClientHandler implements Runnable {
 	}
 
 	//TODO: what this method have as argument?
-	public void sendMessage() {
+	public void sendMessage(NotificaionResponse notification) throws IOException {
 		//TODO: implement this method
+		logger.debug("Sending notification to user");
+		out.writeObject(notification);
+		out.flush();
 	}
 
 	/*public void sendNotification(NotificaionResponse notification) {
