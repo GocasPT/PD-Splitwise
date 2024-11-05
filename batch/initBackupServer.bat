@@ -1,6 +1,6 @@
 @echo off
 
-set database_path=../db/BackupServer/backup_server.db
+set database_path=../db/BackupServer
 
 echo Starting up Backup Server with database at '%database_path%'...
 

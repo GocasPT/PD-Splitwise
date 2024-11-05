@@ -7,7 +7,6 @@ import pt.isec.a2021138502.PD_Splitwise.Message.Heartbeat;
 
 import java.io.*;
 import java.net.*;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.SQLException;
 
@@ -20,22 +19,18 @@ public class BackupServerApp {
 	private static final int MULTICAST_PORT = 4444;
 	private static final int INTERVAL = 30;
 
-	private final Path dbDirectory;
-	private final String dbFilename;
+	private final File dbDirectory;
 	private DataBaseManager dbManager;
 
 	public BackupServerApp(String dbPath) {
-		Path path = Paths.get(dbPath);
-		this.dbDirectory = path.getParent();
-		this.dbFilename = path.getFileName().toString();
-
-		File directory = dbDirectory.toFile();
-		if (!directory.exists() || !directory.isDirectory()) {
+		dbDirectory = new File(dbPath);
+		if (!dbDirectory.isDirectory()) {
 			throw new IllegalArgumentException("Directory does not exist");
 		}
 
-		File[] files = directory.listFiles();
-		if (files == null || files.length != 0)
+		String[] files = dbDirectory.getAbsoluteFile().list();
+		if (files == null) return;
+		if (files.length > 0)
 			throw new IllegalArgumentException("Directory is not empty");
 	}
 
@@ -66,9 +61,8 @@ public class BackupServerApp {
 
 				InetAddress tcpAddress = packet.getAddress();
 				int tcpPort = heartbeat.tcpPort();
-				Path dbFilePath = dbDirectory.resolve(dbFilename);
 
-				if (!downloadDBFile(tcpAddress, tcpPort, dbFilePath)) return;
+				if (!downloadDBFile(tcpAddress, tcpPort)) return;
 
 				while (true) {
 					heartbeat = getHeartbeat(getPacket(socket, group));
@@ -123,19 +117,21 @@ public class BackupServerApp {
 	}
 
 	//TODO: get database file name from server
-	private boolean downloadDBFile(InetAddress tcpAddress, int tcpPort, Path dbFilePath) {
+	private boolean downloadDBFile(InetAddress tcpAddress, int tcpPort) {
 		try (
 				Socket tcpSocket = new Socket(tcpAddress, tcpPort);
 				InputStream inStream = tcpSocket.getInputStream();
-				DataInputStream dataIn = new DataInputStream(inStream);
-				FileOutputStream fileOut = new FileOutputStream(dbFilePath.toFile())
+				DataInputStream dataIn = new DataInputStream(inStream)
 		) {
 			logger.info("Connected to server at {}:{}", tcpAddress, tcpPort);
-			logger.info("Downloading database to '{}'...", dbFilePath);
+			logger.info("Downloading database to '{}'...", dbDirectory);
 
-			long fileSize;
-			fileSize = dataIn.readLong();
+			String dbFilename = dataIn.readUTF();
+			logger.info("Database file name: {}", dbFilename);
+			long fileSize = dataIn.readLong();
 			logger.info("File size: {} bytes", fileSize);
+
+			FileOutputStream fileOut = new FileOutputStream(dbDirectory + "/" + dbFilename);
 
 			byte[] buffer = new byte[BUFFER_SIZE];
 			int bytesRead;
@@ -148,10 +144,12 @@ public class BackupServerApp {
 				logger.info(printProgress(totalBytesRead, fileSize));
 			}
 			fileOut.flush();
+			fileOut.close();
 
 			if (totalBytesRead == fileSize) {
 				logger.info("Database downloaded successfully");
-				dbManager = new DataBaseManager(dbFilePath.toAbsolutePath().toString(), null);
+				dbManager = new DataBaseManager(Paths.get(dbDirectory + "/" + dbFilename).toAbsolutePath().toString(),
+				                                null);
 				return true;
 			} else
 				throw new RuntimeException(

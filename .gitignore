@@ -125,3 +125,4 @@ dependency-reduced-pom.xml
 /Client/target/*
 /Server/target/*
 /BackupServer/target/*
+*.jar

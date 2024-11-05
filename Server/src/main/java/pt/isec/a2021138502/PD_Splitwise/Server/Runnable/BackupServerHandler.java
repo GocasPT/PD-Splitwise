@@ -38,12 +38,16 @@ public class BackupServerHandler implements Runnable {
 				BufferedInputStream fileIn = new BufferedInputStream(new FileInputStream(dbManager.getDBFile()))
 		) {
 			File dbFile = dbManager.getDBFile();
+			String dbFilename = dbFile.getName();
 			long fileSize = dbFile.length();
 
+			logger.info("File name: {}", dbFilename);
+			logger.info("File size: {}", fileSize);
+
+			dataOut.writeUTF(dbFilename);
 			dataOut.writeLong(fileSize);
 			dataOut.flush();
 
-			logger.info("File size: {}", fileSize);
 
 			byte[] buffer = new byte[BUFFER_SIZE];
 			int bytesRead;
