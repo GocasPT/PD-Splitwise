@@ -14,8 +14,8 @@ import java.sql.SQLException;
 import static pt.isec.a2021138502.PD_Splitwise.Message.Heartbeat.BUFFER_SIZE;
 import static pt.isec.a2021138502.PD_Splitwise.Terminal.utils.printProgress;
 
-public class BackupServer {
-	private static final Logger logger = LoggerFactory.getLogger(BackupServer.class);
+public class BackupServerApp {
+	private static final Logger logger = LoggerFactory.getLogger(BackupServerApp.class);
 	private static final String MULTICAST_ADDRESS = "230.44.44.44";
 	private static final int MULTICAST_PORT = 4444;
 	private static final int INTERVAL = 30;
@@ -24,7 +24,7 @@ public class BackupServer {
 	private final String dbFilename;
 	private DataBaseManager dbManager;
 
-	public BackupServer(String dbPath) {
+	public BackupServerApp(String dbPath) {
 		Path path = Paths.get(dbPath);
 		this.dbDirectory = path.getParent();
 		this.dbFilename = path.getFileName().toString();
@@ -41,12 +41,12 @@ public class BackupServer {
 
 	public static void main(String[] args) {
 		if (args.length != 1) {
-			logger.error("Usage: java BackupServer.BackupServer <path_to_database>"); //TODO: check this later
+			logger.error("Usage: java BackupServerApp.BackupServerApp <path_to_database>"); //TODO: check this later
 			return;
 		}
 
 		try {
-			new BackupServer(args[0]).start();
+			new BackupServerApp(args[0]).start();
 		} catch ( IllegalArgumentException e ) {
 			logger.error(e.getMessage());
 		}

@@ -7,20 +7,18 @@
         <groupId>pt.isec.a2021138502</groupId>
         <artifactId>PD_Splitwise</artifactId>
         <version>1.0</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>BackupServer</artifactId>
+    <packaging>jar</packaging>
+    <name>BackupServer</name>
 
     <dependencies>
         <dependency>
             <groupId>pt.isec.a2021138502</groupId>
             <artifactId>common</artifactId>
             <version>1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>1.5.12</version>
         </dependency>
     </dependencies>
 
@@ -29,7 +27,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.2.4</version>
+                <version>3.6.0</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -40,20 +38,14 @@
                             <transformers>
                                 <transformer
                                         implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>pt.isec.a2021138502.PD_Splitwise.BackupServer</mainClass>
+                                    <mainClass>pt.isec.a2021138502.PD_Splitwise.BackupServerApp</mainClass>
                                 </transformer>
                             </transformers>
+                            <outputFile>${project.parent.basedir}/target/BackupServer.jar</outputFile>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
         </plugins>
     </build>
-    <repositories>
-        <repository>
-            <id>maven_central</id>
-            <name>Maven Central</name>
-            <url>https://repo.maven.apache.org/maven2/</url>
-        </repository>
-    </repositories>
 </project>

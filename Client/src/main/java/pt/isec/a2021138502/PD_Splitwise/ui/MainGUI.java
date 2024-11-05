@@ -21,7 +21,7 @@ public class MainGUI extends Application {
 
 		if (args.length != 2) {
 			//TODO: show this message on java error box
-			System.out.println("Usage: java Client <server> <port>");
+			System.out.println("Usage: java ClientApp <server> <port>");
 			Platform.exit();
 			return;
 		}

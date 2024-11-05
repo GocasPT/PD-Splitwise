@@ -33,7 +33,7 @@ public class DataBaseManager {
 			//Note: getConnection() will create the database if it doesn't exist
 			//conn = DriverManager.getConnection("jdbc:sqlite:" + Paths.get(dbPath).toAbsolutePath());
 			conn = DriverManager.getConnection("jdbc:sqlite:" + this.dbPath);
-			logger.info("Connected to the database");
+			logger.debug("Connected to the database");
 			createTables(conn);
 		} catch ( SQLException e ) {
 			throw new RuntimeException("SQLException: " + e.getMessage()); //TODO: improve error message

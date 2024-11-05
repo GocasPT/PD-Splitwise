@@ -13,8 +13,8 @@ import java.net.Socket;
 import java.net.SocketException;
 
 public class Server {
-	private static final Logger logger = LoggerFactory.getLogger(Server.class);
 	public static final int TIMEOUT_CLIENT_SOCKET = 60;
+	private static final Logger logger = LoggerFactory.getLogger(Server.class);
 	private final ServerSocket serverSocket;
 	private final SessionManager sessionManager;
 	private final DataBaseManager dbManager;
@@ -67,7 +67,8 @@ public class Server {
 		isRunning = false;
 
 		try {
-			heartbeatManager.stopHeartbeat();
+			if (heartbeatManager != null)
+				heartbeatManager.stopHeartbeat();
 
 			serverSocket.close();
 		} catch ( Exception e ) {
