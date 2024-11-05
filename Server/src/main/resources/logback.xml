@@ -1,12 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
+    <if condition='property("VERBOSE").equals("true")'>
+        <then>
+            <property name="root.level" value="DEBUG"/>
+        </then>
+        <else>
+            <property name="root.level" value="INFO"/>
+        </else>
+    </if>
+
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>&lt;%d{HH:mm:ss}&gt; [%thread] %-5level - %msg%n</pattern>
         </encoder>
     </appender>
 
-    <root level="info">
+    <root level="${root.level}">
         <appender-ref ref="STDOUT"/>
     </root>
+
+
 </configuration>
