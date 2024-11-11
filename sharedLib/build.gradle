@@ -1,0 +1,10 @@
+plugins {
+    id 'java'
+}
+
+group = 'pt.isec.pd'
+version = '1.0'
+
+repositories {
+    mavenCentral()
+}

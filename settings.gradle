@@ -1,2 +1,5 @@
 rootProject.name = 'Splitwsie'
-
+include 'sharedLib'
+include 'Client'
+include 'Server'
+include 'BackupServer'
