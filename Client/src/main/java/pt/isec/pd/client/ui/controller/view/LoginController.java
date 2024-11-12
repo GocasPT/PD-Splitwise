@@ -40,7 +40,7 @@ public class LoginController extends BaseController {
 		});
 		hpSignUp.setOnAction(e -> {
 			try {
-				viewManager.showView("signup_view");
+				viewManager.showView("register_view");
 			} catch ( Exception ex ) {
 				viewManager.showError("Failed to show sign up view: " + ex.getMessage());
 			}

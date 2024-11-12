@@ -171,6 +171,7 @@ public class BackupServerApp {
 		return false;
 	}
 
+	//TODO: SQL return problem
 	private void processHeartbeat(Heartbeat heartbeat) throws SQLException {
 		if (heartbeat.version() != dbManager.getVersion())
 			if (heartbeat.query() != null)
