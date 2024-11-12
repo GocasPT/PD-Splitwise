@@ -1,4 +1,4 @@
-package pt.isec.pd.server.PLACE_HOLDER.Thread;
+package pt.isec.pd.server.Thread;
 
 
 import org.slf4j.Logger;

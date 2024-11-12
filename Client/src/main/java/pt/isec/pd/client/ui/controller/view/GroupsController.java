@@ -58,7 +58,7 @@ public class GroupsController extends BaseController {
 				fetchGroups();
 			});
 		} catch ( IOException e ) {
-			viewManager.showError("Failed to create group dialog: " + e.getMessage());
+			viewManager.showError("Failed to create group dialog: " + e);
 		}
 	}
 

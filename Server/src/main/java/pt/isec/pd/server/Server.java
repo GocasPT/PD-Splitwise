@@ -1,10 +1,10 @@
-package pt.isec.pd.server.PLACE_HOLDER;
+package pt.isec.pd.server;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pt.isec.pd.server.PLACE_HOLDER.Manager.HeartbeatManager;
-import pt.isec.pd.server.PLACE_HOLDER.Manager.SessionManager;
-import pt.isec.pd.server.PLACE_HOLDER.Runnable.ClientHandler;
+import pt.isec.pd.server.Manager.HeartbeatManager;
+import pt.isec.pd.server.Manager.SessionManager;
+import pt.isec.pd.server.Runnable.ClientHandler;
 import pt.isec.pd.sharedLib.database.DataBaseManager;
 
 import java.io.IOException;
@@ -20,6 +20,19 @@ public class Server {
 	private final DataBaseManager dbManager;
 	private final HeartbeatManager heartbeatManager;
 	private volatile boolean isRunning;
+
+	public static void main(String[] args) {
+		if (args.length != 2) {
+			logger.error("Usage: java Server <listening_port> <db_path>"); //TODO: check this later
+			return;
+		}
+
+		try {
+			new Server(Integer.parseInt(args[0]), args[1]);
+		} catch ( NumberFormatException e ) {
+			logger.error("Invalid port number: {}", args[0]);
+		}
+	}
 
 	public Server(int listeningPort, String dbPath) {
 		try {

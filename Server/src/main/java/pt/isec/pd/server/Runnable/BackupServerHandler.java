@@ -1,4 +1,4 @@
-package pt.isec.pd.server.PLACE_HOLDER.Runnable;
+package pt.isec.pd.server.Runnable;
 
 
 import org.slf4j.Logger;

@@ -1,4 +1,4 @@
-package pt.isec.pd.backupserver.PLACE_HOLDER;
+package pt.isec.pd.backupserver;
 
 
 import org.slf4j.Logger;

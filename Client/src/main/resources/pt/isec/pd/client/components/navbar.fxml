@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
 <VBox xmlns:fx="http://javafx.com/fxml/1" BorderPane.alignment="CENTER" xmlns="http://javafx.com/javafx/20.0.1"
-      fx:controller="pt.isec.a2021138502.PD_Splitwise.ui.controller.NavBarController">
+      fx:controller="pt.isec.pd.client.ui.controller.NavBarController">
     <BorderPane.margin>
         <Insets/>
     </BorderPane.margin>

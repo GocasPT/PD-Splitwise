@@ -1,9 +1,9 @@
-package pt.isec.pd.server.PLACE_HOLDER.Manager;
+package pt.isec.pd.server.Manager;
 
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pt.isec.pd.server.PLACE_HOLDER.Runnable.ClientHandler;
+import pt.isec.pd.server.Runnable.ClientHandler;
 import pt.isec.pd.sharedLib.database.Observer.NotificationObserver;
 import pt.isec.pd.sharedLib.network.response.NotificaionResponse;
 

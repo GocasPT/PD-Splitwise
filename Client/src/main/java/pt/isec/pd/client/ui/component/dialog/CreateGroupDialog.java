@@ -20,8 +20,7 @@ public class CreateGroupDialog extends Dialog<String> {
 	private ButtonType btnFinish;
 
 	public CreateGroupDialog(Window owner) throws IOException {
-		FXMLLoader loader = new FXMLLoader();
-		loader.setLocation(ClientApp.class.getResource("components/dialogs/create_group_dialog.fxml"));
+		FXMLLoader loader = new FXMLLoader(ClientApp.class.getResource("components/dialogs/create_group_dialog.fxml"));
 		loader.setController(this);
 
 		DialogPane dialogPane = loader.load();

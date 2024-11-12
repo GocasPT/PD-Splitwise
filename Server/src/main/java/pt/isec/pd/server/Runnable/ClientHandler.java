@@ -1,9 +1,9 @@
-package pt.isec.pd.server.PLACE_HOLDER.Runnable;
+package pt.isec.pd.server.Runnable;
 
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pt.isec.pd.server.PLACE_HOLDER.Manager.SessionManager;
+import pt.isec.pd.server.Manager.SessionManager;
 import pt.isec.pd.sharedLib.database.DataBaseManager;
 import pt.isec.pd.sharedLib.network.request.Request;
 import pt.isec.pd.sharedLib.network.request.User.Login;

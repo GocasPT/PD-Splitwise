@@ -1,9 +1,9 @@
-package pt.isec.pd.server.PLACE_HOLDER.Manager;
+package pt.isec.pd.server.Manager;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pt.isec.pd.server.PLACE_HOLDER.Thread.BackupServerReceiver;
-import pt.isec.pd.server.PLACE_HOLDER.Thread.HeartbeatSender;
+import pt.isec.pd.server.Thread.BackupServerReceiver;
+import pt.isec.pd.server.Thread.HeartbeatSender;
 import pt.isec.pd.sharedLib.database.DataBaseManager;
 
 import java.io.IOException;
