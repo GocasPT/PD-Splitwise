@@ -1,7 +1,7 @@
 plugins {
     id 'java'
+    id 'io.freefair.lombok' version '8.10.2' apply false
     id 'org.openjfx.javafxplugin' version '0.1.0' apply false
-    id("io.freefair.lombok") version "8.10.2" apply false
 }
 
 allprojects {
@@ -22,4 +22,6 @@ subprojects {
     }
 }
 
-//TODO: each project → each jar file (?)
+//TODO:
+// - build each project to JAR file and put on root-project build folder (3 JAR files)
+// - build the root project to a JAR file with all projects (1 JAR file for all projects)

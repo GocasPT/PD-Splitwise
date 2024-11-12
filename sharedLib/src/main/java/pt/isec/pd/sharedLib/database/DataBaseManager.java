@@ -1,5 +1,6 @@
 package pt.isec.pd.sharedLib.database;
 
+import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pt.isec.pd.sharedLib.database.DAO.*;
@@ -20,12 +21,18 @@ public class DataBaseManager {
 	private static final int RETRY_DELAY_MS = 100;
 	private final String dbPath;
 	private final Connection conn;
+	@Getter
 	private final UserDAO userDAO;
+	@Getter
 	private final GroupDAO groupDAO;
+	@Getter
 	private final InviteDAO inviteDAO; //TODO: I need this or use groupDAO directly?
+	@Getter
 	private final ExpenseDAO expenseDAO;
+	@Getter
 	private final PaymentDAO paymentDAO;
 	private final NotificationObserver notificationObserver;
+	@Getter
 	private final DatabaseSyncManager syncManager;
 	private DatabaseChangeObserver databaseChangeObserver;
 	//TODO: object to sync (database manager - server)
@@ -42,11 +49,11 @@ public class DataBaseManager {
 		try {
 			//Note: getConnection() will create the database if it doesn't exist
 			conn = DriverManager.getConnection("jdbc:sqlite:" + this.dbPath);
-			try ( Statement stmt = conn.createStatement() ) {
+			/*try ( Statement stmt = conn.createStatement() ) {
 				stmt.execute("PRAGMA journal_mode=WAL;");
 				// Set busy timeout
 				stmt.execute("PRAGMA busy_timeout=5000;");
-			}
+			}*/
 			logger.debug("Connected to the database");
 			syncManager = new DatabaseSyncManager();
 			createTables(conn);
@@ -196,38 +203,7 @@ public class DataBaseManager {
 	}
 
 	public File getDBFile() {
-		logger.debug("Getting database file {}", dbPath);
 		return new File(dbPath);
-	}
-
-	public DatabaseSyncManager getSyncManager() {
-		logger.debug("Getting sync manager {}", syncManager);
-		return syncManager;
-	}
-
-	public Connection getConnection() {
-		logger.debug("Getting connection {}", conn);
-		return conn;
-	}
-
-	public UserDAO getUserDAO() {
-		return userDAO;
-	}
-
-	public GroupDAO getGroupDAO() {
-		return groupDAO;
-	}
-
-	public InviteDAO getInviteDAO() {
-		return inviteDAO;
-	}
-
-	public ExpenseDAO getExpenseDAO() {
-		return expenseDAO;
-	}
-
-	public PaymentDAO getPaymentDAO() {
-		return paymentDAO;
 	}
 
 	public int executeWriteWithId(String query, Object... params) throws SQLException {

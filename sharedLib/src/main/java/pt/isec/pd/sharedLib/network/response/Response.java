@@ -1,11 +1,15 @@
 package pt.isec.pd.sharedLib.network.response;
 
+import lombok.Getter;
+
 import java.io.Serializable;
 
+@Getter
 public class Response implements Serializable {
 	private final boolean success;
 	private final String errorDescription;
 
+	//TODO: check constructor later (is true or false + errorDescription)
 	public Response(boolean success) {
 		this.success = success;
 		this.errorDescription = "";
@@ -18,14 +22,6 @@ public class Response implements Serializable {
 
 		this.success = success;
 		this.errorDescription = errorDescription;
-	}
-
-	public boolean isSuccess() {
-		return success;
-	}
-
-	public String getErrorDescription() {
-		return errorDescription;
 	}
 
 	@Override

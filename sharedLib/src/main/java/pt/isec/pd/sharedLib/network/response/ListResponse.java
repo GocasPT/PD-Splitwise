@@ -1,7 +1,10 @@
 package pt.isec.pd.sharedLib.network.response;
 
+import lombok.Getter;
+
 import java.util.Arrays;
 
+@Getter
 public class ListResponse<T> extends Response {
 	private final T[] list;
 
@@ -13,10 +16,6 @@ public class ListResponse<T> extends Response {
 	public ListResponse(String errorDescription) {
 		super(false, errorDescription);
 		this.list = null;
-	}
-
-	public T[] getList() {
-		return list;
 	}
 
 	public boolean isEmpty() {

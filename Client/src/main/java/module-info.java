@@ -15,6 +15,7 @@ module pt.isec.pd.client {
     opens pt.isec.pd.client.model to javafx.fxml;
     opens pt.isec.pd.client.ui to javafx.graphics;
 	opens pt.isec.pd.client.ui.component to javafx.fxml;
+	opens pt.isec.pd.client.ui.component.dialog to javafx.fxml;
     opens pt.isec.pd.client.ui.controller to javafx.fxml;
     opens pt.isec.pd.client.ui.controller.view to javafx.fxml;
 

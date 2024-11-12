@@ -1,5 +1,8 @@
 package pt.isec.pd.sharedLib.network.response;
 
+import lombok.Getter;
+
+@Getter
 public class ValueResponse<T> extends Response {
 	private final T value;
 
@@ -11,10 +14,6 @@ public class ValueResponse<T> extends Response {
 	public ValueResponse(String errorDescription) {
 		super(false, errorDescription);
 		this.value = null;
-	}
-
-	public T getValue() {
-		return value;
 	}
 
 	@Override

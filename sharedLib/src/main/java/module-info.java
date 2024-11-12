@@ -1,6 +1,7 @@
 module Splitwsie.sharedLib.main {
 	requires org.slf4j;
 	requires java.sql;
+	requires static lombok;
 
 	exports pt.isec.pd.sharedLib.database;
 	exports pt.isec.pd.sharedLib.database.DAO;

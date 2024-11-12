@@ -1,5 +1,8 @@
 package pt.isec.pd.sharedLib.network.response;
 
+import lombok.Getter;
+
+@Getter
 public class NotificaionResponse extends Response {
 	private final String email;
 	private final String notifyDescription;
@@ -8,18 +11,10 @@ public class NotificaionResponse extends Response {
 		super(true);
 
 		if (email == null || text == null)
-			throw new IllegalArgumentException("Email and text must not be null");
+			throw new IllegalArgumentException("Email and text must not be null"); //TODO: throw custom exception (?)
 
 		this.email = email;
 		this.notifyDescription = text;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public String getNotifyDescription() {
-		return notifyDescription;
 	}
 
 	@Override
