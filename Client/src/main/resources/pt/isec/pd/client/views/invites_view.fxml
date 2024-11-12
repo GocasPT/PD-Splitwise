@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+<BorderPane xmlns:fx="http://javafx.com/fxml/1" fx:id="homePane" prefHeight="600.0" prefWidth="400.0"
+            xmlns="http://javafx.com/javafx/20.0.1"
+            fx:controller="pt.isec.pd.client.ui.controller.view.InvitesController">
+    <center>
+        <VBox fx:id="vbInvites" alignment="CENTER"/>
+    </center>
+    <bottom>
+        <fx:include source="../components/navbar.fxml"/>
+    </bottom>
+</BorderPane>

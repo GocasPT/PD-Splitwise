@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" fx:id="registerPane" prefHeight="600.0" prefWidth="400.0"
+            xmlns="http://javafx.com/javafx/20.0.1"
+            fx:controller="pt.isec.pd.client.ui.controller.view.RegisterController">
+    <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="5.0" AnchorPane.bottomAnchor="0.0"
+          AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="0.0">
+        <TextField fx:id="tfUsername" promptText="Enter username"/>
+        <TextField fx:id="tfPhoneNumber" promptText="Enter phone number"/>
+        <TextField fx:id="tfEmail" promptText="Enter email"/>
+        <PasswordField fx:id="tfPassword" promptText="Enter password"/>
+        <Button fx:id="btnRegiste" mnemonicParsing="false" text="Registe"/>
+        <Hyperlink fx:id="hpSignIn" text="Sign in"/>
+    </VBox>
+</AnchorPane>
