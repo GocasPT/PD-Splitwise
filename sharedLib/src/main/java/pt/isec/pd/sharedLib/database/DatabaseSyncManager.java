@@ -44,7 +44,10 @@ public class DatabaseSyncManager {
 					             currentThread.getName(), activeBackupTransfers);
 					syncLock.wait();
 				}
-				return operation.execute();
+				if (operation != null)
+					return operation.execute();
+				else
+					return null;
 			} finally {
 				waitingThreads.remove(currentThread);
 			}

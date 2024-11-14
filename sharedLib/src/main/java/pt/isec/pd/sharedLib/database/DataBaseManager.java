@@ -22,6 +22,9 @@ public class DataBaseManager {
 	private final String dbPath;
 	private final Connection conn;
 	@Getter
+	private final DatabaseSyncManager syncManager;
+	private final NotificationObserver notificationObserver;
+	@Getter
 	private final UserDAO userDAO;
 	@Getter
 	private final GroupDAO groupDAO;
@@ -31,10 +34,8 @@ public class DataBaseManager {
 	private final ExpenseDAO expenseDAO;
 	@Getter
 	private final PaymentDAO paymentDAO;
-	private final NotificationObserver notificationObserver;
-	@Getter
-	private final DatabaseSyncManager syncManager;
 	private DatabaseChangeObserver databaseChangeObserver;
+
 	//TODO: object to sync (database manager - server)
 	// when server receive a new backup server, wait until "download" is complete
 	// when insert invite (and other events), notify server to send notification to user
@@ -206,6 +207,21 @@ public class DataBaseManager {
 		return new File(dbPath);
 	}
 
+	public Connection getConnection() throws SQLException, InterruptedException {
+		//TODO: sync block
+		syncManager.executeOperation(null);
+		return conn;
+	}
+
+	public void updateVersion() throws SQLException {
+		int newVersion = getVersion() + 1;
+		logger.debug("Incrementing version from {} to {}", getVersion(), newVersion);
+		//language=SQLite
+		PreparedStatement pstmt = conn.prepareStatement("UPDATE version SET value = ?");
+		pstmt.setInt(1, newVersion);
+		pstmt.executeUpdate();
+	}
+
 	public int executeWriteWithId(String query, Object... params) throws SQLException {
 		int retryCount = 0;
 		SQLException lastException;
@@ -276,69 +292,18 @@ public class DataBaseManager {
 		return e.getErrorCode() == SQLiteErrorCode.SQLITE_BUSY.code;
 	}
 
+	private void incrementVersion(Connection conn) throws SQLException {
+		int newVersion = getVersion() + 1;
+		logger.debug("Incrementing version from {} to {}", getVersion(), newVersion);
+		//language=SQLite
+		PreparedStatement pstmt = conn.prepareStatement("UPDATE version SET value = ?");
+		pstmt.setInt(1, newVersion);
+		pstmt.executeUpdate();
+	}
+
 	private void notifyDatabaseChange(String query, Object... params) {
 		if (databaseChangeObserver != null) {
 			databaseChangeObserver.onDBChange(query, params);
-		}
-	}
-
-	public int executeWrite(String query, Object... params) throws SQLException {
-		int retryCount = 0;
-		SQLException lastException;
-
-		do {
-			try {
-				return executeWriteTransaction(query, params);
-			} catch ( SQLException e ) {
-				lastException = e;
-				if (isSQLiteBusy(e)) {
-					logger.warn("Database busy, attempt {} of {}", retryCount + 1, MAX_RETRIES);
-					try {
-						Thread.sleep((long) RETRY_DELAY_MS * (retryCount + 1));
-					} catch ( InterruptedException ie ) {
-						Thread.currentThread().interrupt();
-						throw new SQLException("Operation interrupted during retry", ie);
-					}
-				} else {
-					throw e;
-				}
-			}
-		} while (++retryCount < MAX_RETRIES);
-
-		throw new SQLException("Failed after " + MAX_RETRIES + " attempts", lastException);
-	}
-
-	private int executeWriteTransaction(String query, Object... params) throws SQLException {
-		try {
-			return syncManager.executeOperation(() -> {
-				conn.setAutoCommit(false);
-				try {
-					int affectedRows;
-					try ( PreparedStatement pstmt = conn.prepareStatement(query) ) {
-						for (int i = 0; i < params.length; i++) {
-							pstmt.setObject(i + 1, params[i]);
-						}
-						affectedRows = pstmt.executeUpdate();
-					}
-
-					incrementVersion(conn);
-					notifyDatabaseChange(query, params);
-					conn.commit();
-					return affectedRows;
-				} catch ( SQLException e ) {
-					try {
-						conn.rollback();
-					} catch ( SQLException rollbackEx ) {
-						logger.error("Error rolling back transaction", rollbackEx);
-					}
-					throw e;
-				} finally {
-					conn.setAutoCommit(true);
-				}
-			});
-		} catch ( InterruptedException e ) {
-			Thread.currentThread().interrupt();
-			throw new SQLException("Operation interrupted", e);
 		}
 	}
 
@@ -380,6 +345,32 @@ public class DataBaseManager {
 			}
 		}
 		return results;
+	}
+
+	public int executeWrite(String query, Object... params) throws SQLException {
+		int retryCount = 0;
+		SQLException lastException;
+
+		do {
+			try {
+				return executeWriteTransaction(query, params);
+			} catch ( SQLException e ) {
+				lastException = e;
+				if (isSQLiteBusy(e)) {
+					logger.warn("Database busy, attempt {} of {}", retryCount + 1, MAX_RETRIES);
+					try {
+						Thread.sleep((long) RETRY_DELAY_MS * (retryCount + 1));
+					} catch ( InterruptedException ie ) {
+						Thread.currentThread().interrupt();
+						throw new SQLException("Operation interrupted during retry", ie);
+					}
+				} else {
+					throw e;
+				}
+			}
+		} while (++retryCount < MAX_RETRIES);
+
+		throw new SQLException("Failed after " + MAX_RETRIES + " attempts", lastException);
 	}
 
 	//TODO: sync
@@ -425,23 +416,47 @@ public class DataBaseManager {
 		databaseChangeObserver.onDBChange(query, params);
 	}*/
 
-	private void incrementVersion(Connection conn) throws SQLException {
-		int newVersion = getVersion() + 1;
-		logger.debug("Incrementing version from {} to {}", getVersion(), newVersion);
-		//language=SQLite
-		PreparedStatement pstmt = conn.prepareStatement("UPDATE version SET value = ?");
-		pstmt.setInt(1, newVersion);
-		pstmt.executeUpdate();
+	private int executeWriteTransaction(String query, Object... params) throws SQLException {
+		try {
+			return syncManager.executeOperation(() -> {
+				conn.setAutoCommit(false);
+				try {
+					int affectedRows;
+					try ( PreparedStatement pstmt = conn.prepareStatement(query) ) {
+						for (int i = 0; i < params.length; i++) {
+							pstmt.setObject(i + 1, params[i]);
+						}
+						affectedRows = pstmt.executeUpdate();
+					}
+
+					incrementVersion(conn);
+					notifyDatabaseChange(query, params);
+					conn.commit();
+					return affectedRows;
+				} catch ( SQLException e ) {
+					try {
+						conn.rollback();
+					} catch ( SQLException rollbackEx ) {
+						logger.error("Error rolling back transaction", rollbackEx);
+					}
+					throw e;
+				} finally {
+					conn.setAutoCommit(true);
+				}
+			});
+		} catch ( InterruptedException e ) {
+			Thread.currentThread().interrupt();
+			throw new SQLException("Operation interrupted", e);
+		}
 	}
 
-	private enum SQLiteErrorCode {
-		SQLITE_BUSY(5);
+	//TODO: this trigger should be on DataBaseManger (?)
+	public void triggerNotification(String email, String text) {
+		logger.debug("Triggering notification for {} ({})", email, notificationObserver);
+		if (notificationObserver == null) return; //TODO: throw exception (?)
 
-		final int code;
-
-		SQLiteErrorCode(int code) {
-			this.code = code;
-		}
+		NotificaionResponse notification = new NotificaionResponse(email, text);
+		notificationObserver.onNotification(notification);
 	}
 
 	//TODO: throw exception on error
@@ -469,12 +484,13 @@ public class DataBaseManager {
 		return results;
 	}*/
 
-	//TODO: this trigger should be on DataBaseManger (?)
-	public void triggerNotification(String email, String text) {
-		logger.debug("Triggering notification for {} ({})", email, notificationObserver);
-		if (notificationObserver == null) return; //TODO: throw exception (?)
+	private enum SQLiteErrorCode {
+		SQLITE_BUSY(5);
 
-		NotificaionResponse notification = new NotificaionResponse(email, text);
-		notificationObserver.onNotification(notification);
+		final int code;
+
+		SQLiteErrorCode(int code) {
+			this.code = code;
+		}
 	}
 }

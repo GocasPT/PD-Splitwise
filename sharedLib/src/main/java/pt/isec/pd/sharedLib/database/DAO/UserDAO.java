@@ -3,6 +3,8 @@ package pt.isec.pd.sharedLib.database.DAO;
 import pt.isec.pd.sharedLib.database.DataBaseManager;
 import pt.isec.pd.sharedLib.database.Entity.User;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,17 +22,24 @@ public class UserDAO extends DAO {
 		             phoneNumber, password);
 		//language=SQLite
 		String query = "INSERT INTO users (username, email, phone_number, password) VALUES (?, ?, ?, ?)";
-		/*Connection connection = dbManager.getConnection();
-		try ( PreparedStatement pstmt = connection.prepareStatement(query) ) {
+
+		try ( Connection connection = dbManager.getConnection();
+		      PreparedStatement pstmt = connection.prepareStatement(query) ) {
 			pstmt.setString(1, username);
 			pstmt.setString(2, email);
 			pstmt.setString(3, phoneNumber);
 			pstmt.setString(4, password);
 			int id = pstmt.executeUpdate();
-			//TODO: update version
+			dbManager.updateVersion();
 			return id;
-		}*/
-		return dbManager.executeWrite(query, username, email, phoneNumber, password);
+		} catch ( SQLException e ) {
+			logger.error("Error creating user [SQL]", e);
+			throw new RuntimeException(e);
+		} catch ( InterruptedException e ) {
+			logger.error("Error creating user [sync problem]", e);
+			throw new RuntimeException(e);
+		}
+		//return dbManager.executeWrite(query, username, email, phoneNumber, password);
 	}
 
 	public List<User> getAllUsers() throws SQLException {

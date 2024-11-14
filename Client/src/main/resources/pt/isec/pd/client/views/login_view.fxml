@@ -6,7 +6,7 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
-<AnchorPane xmlns:fx="http://javafx.com/fxml/1" fx:id="loginPane" prefHeight="600.0" prefWidth="400.0"
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="600.0" prefWidth="400.0"
             xmlns="http://javafx.com/javafx/20.0.1"
             fx:controller="pt.isec.pd.client.ui.controller.view.LoginController">
     <VBox alignment="TOP_CENTER" spacing="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="100.0"

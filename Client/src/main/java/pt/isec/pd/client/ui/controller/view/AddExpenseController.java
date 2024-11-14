@@ -118,6 +118,8 @@ public class AddExpenseController extends BaseController {
 		btnCancel.setOnAction(e -> {
 			viewManager.showView("group");
 		});
+
+		viewManager.hideLoadingIndicator();
 	}
 
 	@Override
@@ -158,5 +160,6 @@ public class AddExpenseController extends BaseController {
 		);
 		Response response = modelManager.sendRequest(request);
 		handleResponse(response);
+		viewManager.hideLoadingIndicator();
 	}
 }

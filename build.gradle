@@ -11,6 +11,27 @@ allprojects {
     repositories {
         mavenCentral()
     }
+
+    /*// Configure JAR task for each subproject
+    tasks.named('jar') {
+        // Ensure each JAR is built into the root project's build directory
+        destinationDirectory = file("${rootProject.buildDir}/libs")
+
+        // Include dependencies in each JAR
+        from {
+            configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+        }
+
+        // Handle duplicate files
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+        // Make JARs executable if they have a main class
+        manifest {
+            if (project.hasProperty('mainClass')) {
+                attributes 'Main-Class': project.mainClass
+            }
+        }
+    }*/
 }
 
 subprojects {
@@ -25,3 +46,37 @@ subprojects {
 //TODO:
 // - build each project to JAR file and put on root-project build folder (3 JAR files)
 // - build the root project to a JAR file with all projects (1 JAR file for all projects)
+
+/*// Create a task for the unified JAR containing all projects
+tasks.register('uberJar', Jar) {
+    archiveClassifier = 'uber'
+
+    // Ensure the uber JAR is built after all subproject JARs
+dependsOn subprojects.jar
+
+// Set destination to root project's build directory
+destinationDirectory = file("${buildDir}/libs")
+
+// Merge service files instead of overwriting
+duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+// Include all subproject sources
+from sourceSets.main.output
+
+// Include all subproject dependencies
+subprojects.each { subproject ->
+    from {
+        subproject.configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+        subproject.sourceSets.main.output
+    }
+}
+
+// Exclude unwanted files
+exclude 'META-INF/*.RSA', 'META-INF/*.SF', 'META-INF/*.DSA'
+}
+
+// Add a task to build all JARs
+tasks.register('buildAllJars') {
+    dependsOn subprojects.jar
+    dependsOn tasks.named('uberJar')
+}*/

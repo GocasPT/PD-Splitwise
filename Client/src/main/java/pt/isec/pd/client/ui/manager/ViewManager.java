@@ -1,27 +1,33 @@
 package pt.isec.pd.client.ui.manager;
 
+import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.ProgressIndicator;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import pt.isec.pd.client.ClientApp;
 import pt.isec.pd.client.model.ModelManager;
 import pt.isec.pd.client.ui.controller.BaseController;
 import pt.isec.pd.client.ui.controller.ControllerFactory;
+import pt.isec.pd.sharedLib.network.request.Request;
+import pt.isec.pd.sharedLib.network.response.Response;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 public class ViewManager {
 	private final Stage primaryStage;
 	private final ModelManager modelManager;
-	private final Map<String, FXMLLoader> loaderCache;
+	private final ProgressIndicator loadingIndicator;
 
 	public ViewManager(Stage primaryStage, ModelManager modelManager) {
 		this.primaryStage = primaryStage;
 		this.modelManager = modelManager;
-		this.loaderCache = new HashMap<>();
+
+		loadingIndicator = new ProgressIndicator();
+		//loadingIndicator.setMaxSize(50, 50);
+		loadingIndicator.setVisible(false);
 	}
 
 	public void showView(String viewName) {
@@ -29,12 +35,13 @@ public class ViewManager {
 			Parent view = loadView(viewName);
 			Scene scene = primaryStage.getScene();
 			if (scene == null) {
-				scene = new Scene(view);
+				scene = new Scene(new StackPane(view, loadingIndicator));
 				primaryStage.setScene(scene);
 			} else
-				scene.setRoot(view);
+				scene.setRoot(new StackPane(view, loadingIndicator));
 			primaryStage.show();
 		} catch ( Exception e ) {
+			loadingIndicator.setVisible(false);
 			showError("Failed to show " + viewName + ": " + e);
 		}
 	}
@@ -46,7 +53,6 @@ public class ViewManager {
 					ClientApp.class.getResource(fxmlPath)
 			);
 			loader.setControllerFactory(this::createController);
-			loaderCache.put(viewName, loader);
 			return loader.load();
 		} catch ( IOException e ) {
 			e.printStackTrace();
@@ -65,15 +71,33 @@ public class ViewManager {
 		return ControllerFactory.getController(type.asSubclass(BaseController.class), this, modelManager);
 	}
 
-	public <T extends BaseController> T getController(String viewName) {
-		FXMLLoader loader = loaderCache.get(viewName);
-		if (loader == null) {
-			throw new IllegalStateException("View " + viewName + " has not been loaded");
-		}
-		return loader.getController();
+	public void sendRequestAsync(Request request, HandlerResponseInterface handleResponse) {
+		loadingIndicator.setVisible(true);
+
+		Task<Response> requestTask = new Task<>() {
+			@Override
+			protected Response call() {
+				return modelManager.sendRequest(request);
+			}
+		};
+
+		requestTask.setOnSucceeded(e -> {
+			loadingIndicator.setVisible(false);
+			Response response = requestTask.getValue();
+			handleResponse.onResponseReceived(response);
+		});
+
+		requestTask.setOnFailed(e -> {
+			loadingIndicator.setVisible(false);
+			showError("Request failed: " + requestTask.getException().getMessage());
+		});
+
+		Thread requestThread = new Thread(requestTask);
+		requestThread.setDaemon(true);
+		requestThread.start();
 	}
 
-	public void clearCache() {
-		loaderCache.clear();
+	public interface HandlerResponseInterface {
+		void onResponseReceived(Response response);
 	}
 }

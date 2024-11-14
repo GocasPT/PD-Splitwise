@@ -1,5 +1,7 @@
 package pt.isec.pd.client.model;
 
+import lombok.Getter;
+import lombok.Setter;
 import pt.isec.pd.sharedLib.network.request.Request;
 import pt.isec.pd.sharedLib.network.response.Response;
 
@@ -7,36 +9,17 @@ import java.io.IOException;
 import java.net.InetAddress;
 
 public class ModelManager {
-	//private static ModelManager instance;
-
 	private final SocketManager socketManager;
 
+	@Setter
+	@Getter
 	private String emailLoggedUser;
+	@Setter
+	@Getter
 	private int groupInViewId;
 
 	public ModelManager() {
 		socketManager = new SocketManager();
-	}
-
-	/*public static synchronized ModelManager getInstance() {
-		if (instance == null) instance = new ModelManager();
-		return instance;
-	}*/
-
-	public String getEmailLoggedUser() {
-		return emailLoggedUser;
-	}
-
-	public void setEmailLoggedUser(String emailLoggedUser) {
-		this.emailLoggedUser = emailLoggedUser;
-	}
-
-	public int getGroupInViewId() {
-		return groupInViewId;
-	}
-
-	public void setGroupInViewId(int groupInViewId) {
-		this.groupInViewId = groupInViewId;
 	}
 
 	public void connect(InetAddress serverAddr, int port) {

@@ -204,6 +204,8 @@ public class GroupController extends BaseController {
 		fetchMembers();
 		fetchExpenses();
 		fetchPayments();
+
+		viewManager.hideLoadingIndicator();
 	}
 
 	//TODO: check this later
@@ -273,5 +275,7 @@ public class GroupController extends BaseController {
 		if (!response.isSuccess()) {
 			viewManager.showError(response.getErrorDescription());
 		}
+
+		viewManager.hideLoadingIndicator();
 	}
 }

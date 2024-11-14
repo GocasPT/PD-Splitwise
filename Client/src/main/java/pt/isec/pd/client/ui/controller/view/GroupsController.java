@@ -47,6 +47,8 @@ public class GroupsController extends BaseController {
 		try {
 			CreateGroupDialog dialog = new CreateGroupDialog(vbGroups.getScene().getWindow());
 			dialog.showAndWait().ifPresent(groupName -> {
+				//TODO: loading where?
+
 				Request request = new CreateGroup(groupName, modelManager.getEmailLoggedUser());
 				Response response = modelManager.sendRequest(request);
 
@@ -56,6 +58,8 @@ public class GroupsController extends BaseController {
 				}
 
 				fetchGroups();
+
+				//TODO: hide loading
 			});
 		} catch ( IOException e ) {
 			e.printStackTrace();
@@ -64,9 +68,8 @@ public class GroupsController extends BaseController {
 	}
 
 	private void fetchGroups() {
-		Request request = new GetGroups(modelManager.getEmailLoggedUser());
-		Response response = modelManager.sendRequest(request);
-		handleResponse(response);
+		GetGroups request = new GetGroups(modelManager.getEmailLoggedUser());
+		viewManager.sendRequestAsync(request, this::handleResponse);
 	}
 
 	@Override
