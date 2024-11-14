@@ -40,11 +40,13 @@ public class InviteDAO extends DAO {
 		List<Map<String, Object>> result = dbManager.executeRead(query, userEmail);
 		List<Invite> invites = new ArrayList<>();
 		for (Map<String, Object> row : result)
-			invites.add(new Invite(
-					(int) row.get("id"),
-					(int) row.get("group_id"),
-					(String) row.get("inviter_email")
-			));
+			invites.add(
+					Invite.builder()
+							.id((int) row.get("id"))
+							.groupId((int) row.get("group_id"))
+							.inverterEmail((String) row.get("inviter_email"))
+							.build()
+			);
 		return invites;
 	}
 

@@ -59,13 +59,13 @@ public class UserDAO extends DAO {
 		List<User> users = new ArrayList<>();
 		for (Map<String, Object> row : results)
 			users.add(
-					new User(
-							(int) row.get("id"),
-							(String) row.get("username"),
-							(String) row.get("email"),
-							(String) row.get("phone_number"),
-							(String) row.get("password")
-					)
+					User.builder()
+							.id((int) row.get("id"))
+							.username((String) row.get("username"))
+							.email((String) row.get("email"))
+							.phoneNumber((String) row.get("phone_number"))
+							.password((String) row.get("password"))
+							.build()
 			);
 		return users;
 	}
@@ -77,13 +77,13 @@ public class UserDAO extends DAO {
 		List<Map<String, Object>> results = dbManager.executeRead(query, email);
 		if (!results.isEmpty()) {
 			Map<String, Object> row = results.getFirst();
-			return new User(
-					(int) row.get("id"),
-					(String) row.get("username"),
-					(String) row.get("email"),
-					(String) row.get("phone_number"),
-					(String) row.get("password")
-			);
+			return User.builder()
+					.id((int) row.get("id"))
+					.username((String) row.get("username"))
+					.email((String) row.get("email"))
+					.phoneNumber((String) row.get("phone_number"))
+					.password((String) row.get("password"))
+					.build();
 		}
 		return null;
 	}
@@ -101,13 +101,13 @@ public class UserDAO extends DAO {
 		List<User> users = new ArrayList<>();
 		for (Map<String, Object> row : results)
 			users.add(
-					new User(
-							(int) row.get("id"),
-							(String) row.get("username"),
-							(String) row.get("email"),
-							(String) row.get("phone_number"),
-							(String) row.get("password")
-					)
+					User.builder()
+							.id((int) row.get("id"))
+							.username((String) row.get("username"))
+							.email((String) row.get("email"))
+							.phoneNumber((String) row.get("phone_number"))
+							.password((String) row.get("password"))
+							.build()
 			);
 		return users;
 	}

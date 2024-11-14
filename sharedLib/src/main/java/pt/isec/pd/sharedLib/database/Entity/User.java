@@ -1,70 +1,20 @@
 package pt.isec.pd.sharedLib.database.Entity;
 
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
+
 import java.util.Objects;
 
+@Setter
+@Getter
+@SuperBuilder
 public final class User extends Entity {
 	private String username;
 	private String email;
 	private String phoneNumber;
 	private String password;
-
-	public User(int id, String username) {
-		super(id);
-		this.username = username;
-	}
-
-	public User(int id, String username, String email) {
-		super(id);
-		this.username = username;
-		this.email = email;
-	}
-
-	public User(int id, String username, String email, String phoneNumber) {
-		super(id);
-		this.username = username;
-		this.email = email;
-		this.phoneNumber = phoneNumber;
-	}
-
-	public User(int id, String username, String email, String phoneNumber, String password) {
-		super(id);
-		this.username = username;
-		this.email = email;
-		this.phoneNumber = phoneNumber;
-		this.password = password;
-	}
-
-	public String getUsername() {
-		return username;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public String getPhoneNumber() {
-		return phoneNumber;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setUsername(String username) {
-		this.username = username;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-	public void setPhoneNumber(String phoneNumber) {
-		this.phoneNumber = phoneNumber;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
 
 	@Override
 	public int hashCode() {

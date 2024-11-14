@@ -1,74 +1,22 @@
 package pt.isec.pd.sharedLib.database.Entity;
 
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
+
 import java.util.List;
 import java.util.Objects;
 
+@Setter
+@Getter
+@SuperBuilder
 public final class Group extends Entity {
 	private String name;
 	private int numUsers;
 	private List<User> members;
 	private List<Expense> expenses;
 	private List<Payment> payments;
-
-	public Group(int id, String name) {
-		super(id);
-		this.name = name;
-	}
-
-	public Group(int id, String name, int numUsers) {
-		super(id);
-		this.name = name;
-		this.numUsers = numUsers;
-	}
-
-	public Group(int id, String name, List<User> members, List<Expense> expenses,
-	             List<Payment> payments) {
-		super(id);
-		this.name = name;
-		this.members = members;
-		this.expenses = expenses;
-		this.payments = payments;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public int getNumUsers() {
-		return numUsers;
-	}
-
-	public List<User> getMembers() {
-		return members;
-	}
-
-	public List<Expense> getExpenses() {
-		return expenses;
-	}
-
-	public List<Payment> getPayments() {
-		return payments;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public void setNumUsers(int numUsers) {
-		this.numUsers = numUsers;
-	}
-
-	public void setMembers(List<User> members) {
-		this.members = members;
-	}
-
-	public void setExpenseList(List<Expense> expeneseList) {
-		this.expenses = expeneseList;
-	}
-
-	public void setPayments(List<Payment> payments) {
-		this.payments = payments;
-	}
 
 	//TODO: refactor this
 	@Override

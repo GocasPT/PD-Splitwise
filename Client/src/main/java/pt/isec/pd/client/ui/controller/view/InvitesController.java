@@ -74,7 +74,6 @@ public class InvitesController extends BaseController {
 
 	private void fetchInvites() {
 		GetInvites request = new GetInvites(modelManager.getEmailLoggedUser());
-		Response response = modelManager.sendRequest(request);
-		handleResponse(response);
+		viewManager.sendRequestAsync(request, this::handleResponse);
 	}
 }

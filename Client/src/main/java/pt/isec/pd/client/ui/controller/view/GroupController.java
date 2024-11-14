@@ -179,6 +179,7 @@ public class GroupController extends BaseController {
 	@Override
 	protected void update() {
 		GetGroup request = new GetGroup(modelManager.getGroupInViewId());
+		//TODO: viewManager.sendRequestAsync(request, this::handleResponse);
 		Response response = modelManager.sendRequest(request);
 
 		if (!response.isSuccess()) {
@@ -204,8 +205,6 @@ public class GroupController extends BaseController {
 		fetchMembers();
 		fetchExpenses();
 		fetchPayments();
-
-		viewManager.hideLoadingIndicator();
 	}
 
 	//TODO: check this later
@@ -270,12 +269,11 @@ public class GroupController extends BaseController {
 	private void inviteUser(String inviteUserEmail) {
 		String loggedUserEmail = modelManager.getEmailLoggedUser();
 		InviteUser request = new InviteUser(groupInView.id(), inviteUserEmail, loggedUserEmail);
+		//TODO: viewManager.sendRequestAsync(request, this::handleResponse);
 		Response response = modelManager.sendRequest(request);
 
 		if (!response.isSuccess()) {
 			viewManager.showError(response.getErrorDescription());
 		}
-
-		viewManager.hideLoadingIndicator();
 	}
 }

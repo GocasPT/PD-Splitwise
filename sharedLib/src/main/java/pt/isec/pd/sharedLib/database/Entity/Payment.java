@@ -1,7 +1,15 @@
 package pt.isec.pd.sharedLib.database.Entity;
 
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
+
 import java.util.Objects;
 
+@Setter
+@Getter
+@SuperBuilder
 //TODO: name OR email → name (?)
 public final class Payment extends Entity {
 	private String groupName;
@@ -9,62 +17,6 @@ public final class Payment extends Entity {
 	private long date;
 	private String buyerName;
 	private String reciverName;
-
-	public Payment(int id, Double value, long date) {
-		super(id);
-		this.value = value;
-		this.date = date;
-	}
-
-	public Payment(int id, String groupName, Double value, long date, String buyerName,
-	               String reciverName) {
-		super(id);
-		this.groupName = groupName;
-		this.value = value;
-		this.date = date;
-		this.buyerName = buyerName;
-		this.reciverName = reciverName;
-	}
-
-	public String getGroupName() {
-		return groupName;
-	}
-
-	public Double getValue() {
-		return value;
-	}
-
-	public long getDate() {
-		return date;
-	}
-
-	public String getBuyerName() {
-		return buyerName;
-	}
-
-	public String getReciverName() {
-		return reciverName;
-	}
-
-	public void setGroupName(String groupName) {
-		this.groupName = groupName;
-	}
-
-	public void setValue(Double value) {
-		this.value = value;
-	}
-
-	public void setDate(long date) {
-		this.date = date;
-	}
-
-	public void setBuyerName(String buyerName) {
-		this.buyerName = buyerName;
-	}
-
-	public void setReciverName(String reciverName) {
-		this.reciverName = reciverName;
-	}
 
 	@Override
 	public int hashCode() {

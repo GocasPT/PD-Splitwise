@@ -1,32 +1,18 @@
 package pt.isec.pd.sharedLib.database.Entity;
 
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
+
 import java.util.Objects;
 
+@Setter
+@Getter
+@SuperBuilder
 public final class Invite extends Entity {
 	private int groupId;
 	private String inverterEmail;
-
-	public Invite(int id, int groupId, String inverterEmail) {
-		super(id);
-		this.groupId = groupId;
-		this.inverterEmail = inverterEmail;
-	}
-
-	public int getGroupId() {
-		return groupId;
-	}
-
-	public String getInverterEmail() {
-		return inverterEmail;
-	}
-
-	public void setGroupId(int groupId) {
-		this.groupId = groupId;
-	}
-
-	public void setInverterEmail(String inverterEmail) {
-		this.inverterEmail = inverterEmail;
-	}
 
 	@Override
 	public int hashCode() {

@@ -1,7 +1,12 @@
 package pt.isec.pd.sharedLib.database.Entity;
 
+import lombok.Getter;
+import lombok.experimental.SuperBuilder;
+
 import java.io.Serializable;
 
+@Getter
+@SuperBuilder
 public abstract class Entity implements Serializable {
 	protected int id;
 
@@ -9,7 +14,4 @@ public abstract class Entity implements Serializable {
 		this.id = id;
 	}
 
-	public int getId() {
-		return id;
-	}
 }

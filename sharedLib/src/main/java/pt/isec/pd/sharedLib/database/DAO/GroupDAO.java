@@ -35,10 +35,12 @@ public class GroupDAO extends DAO {
 		List<Map<String, Object>> results = dbManager.executeRead(query);
 		List<Group> groups = new ArrayList<>();
 		for (Map<String, Object> row : results) {
-			groups.add(new Group(
-					(int) row.get("id"),
-					(String) row.get("name")
-			));
+			groups.add(
+					Group.builder()
+							.id((int) row.get("id"))
+							.name((String) row.get("name"))
+							.build()
+			);
 		}
 		return groups;
 	}
@@ -60,11 +62,12 @@ public class GroupDAO extends DAO {
 		List<Map<String, Object>> results = dbManager.executeRead(query, email);
 		List<Group> groups = new ArrayList<>();
 		for (Map<String, Object> row : results) {
-			groups.add(new Group(
-					(int) row.get("id"),
-					(String) row.get("name"),
-					(int) row.get("member_count")
-			));
+			groups.add(
+					Group.builder()
+							.id((int) row.get("id"))
+							.name((String) row.get("name"))
+							.build()
+			);
 		}
 		return groups;
 	}
@@ -75,10 +78,10 @@ public class GroupDAO extends DAO {
 		String query = "SELECT * FROM groups WHERE id = ?";
 		List<Map<String, Object>> results = dbManager.executeRead(query, id);
 		for (Map<String, Object> row : results) {
-			return new Group(
-					(int) row.get("id"),
-					(String) row.get("name")
-			);
+			return Group.builder()
+					.id((int) row.get("id"))
+					.name((String) row.get("name"))
+					.build();
 		}
 		return null;
 	}

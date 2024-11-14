@@ -40,14 +40,14 @@ public class PaymentDAO extends DAO {
 		               WHERE payments.id = ?;
 		               """;
 		Map<String, Object> result = dbManager.executeRead(query, id).getFirst();
-		return new Payment(
-				(int) result.get("id"),
-				(String) result.get("group_name"),
-				(double) result.get("amount"),
-				(long) result.get("date"),
-				(String) result.get("from_user_id"),
-				(String) result.get("for_user_id")
-		);
+		return Payment.builder()
+				.id((int) result.get("id"))
+				.groupName((String) result.get("group_name"))
+				.value((double) result.get("amount"))
+				.date((long) result.get("date"))
+				.buyerName((String) result.get("from_user_id")) //TODO: id → email
+				.reciverName((String) result.get("for_user_id")) //TODO: id → email
+				.build();
 	}
 
 	public List<Payment> getPaymentsFromGroup(int groupId) throws SQLException {
@@ -69,14 +69,16 @@ public class PaymentDAO extends DAO {
 		List<Map<String, Object>> result = dbManager.executeRead(query);
 		List<Payment> payments = new ArrayList<>();
 		for (Map<String, Object> row : result)
-			payments.add(new Payment(
-					(int) row.get("id"),
-					(String) row.get("group_name"),
-					(double) row.get("amount"),
-					(long) row.get("date"),
-					(String) row.get("from_user_id"),
-					(String) row.get("for_user_id")
-			));
+			payments.add(
+					Payment.builder()
+							.id((int) row.get("id"))
+							.groupName((String) row.get("group_name"))
+							.value((double) row.get("amount"))
+							.date((long) row.get("date"))
+							.buyerName((String) row.get("from_user_id")) //TODO: id → email
+							.reciverName((String) row.get("for_user_id")) //TODO: id → email
+							.build()
+			);
 		return payments;
 	}
 

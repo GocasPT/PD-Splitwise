@@ -45,6 +45,7 @@ public class AddExpenseController extends BaseController {
 	protected void registerHandlers() {
 		int groupId = modelManager.getGroupInViewId();
 		GetUsersOnGroup request = new GetUsersOnGroup(groupId);
+		//TODO: viewManager.sendRequestAsync(request, this::handleResponse);
 		Response response = modelManager.sendRequest(request);
 		if (!response.isSuccess()) {
 			viewManager.showError(response.getErrorDescription());
@@ -118,8 +119,6 @@ public class AddExpenseController extends BaseController {
 		btnCancel.setOnAction(e -> {
 			viewManager.showView("group");
 		});
-
-		viewManager.hideLoadingIndicator();
 	}
 
 	@Override
@@ -158,8 +157,7 @@ public class AddExpenseController extends BaseController {
 				payerId,
 				associatedUsersId
 		);
-		Response response = modelManager.sendRequest(request);
-		handleResponse(response);
-		viewManager.hideLoadingIndicator();
+
+		viewManager.sendRequestAsync(request, this::handleResponse);
 	}
 }

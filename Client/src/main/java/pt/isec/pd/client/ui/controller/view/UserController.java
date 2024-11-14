@@ -80,6 +80,8 @@ public class UserController extends BaseController {
 								infoUserDTO.email(),
 								infoUserDTO.password()
 						);
+
+						//TODO: viewManager.sendRequestAsync(request, this::handleResponse);
 						Response response = modelManager.sendRequest(request);
 
 						if (!response.isSuccess()) {
@@ -95,8 +97,7 @@ public class UserController extends BaseController {
 	}
 
 	private void fetchUser() {
-		Request request = new GetUser(modelManager.getEmailLoggedUser());
-		Response response = modelManager.sendRequest(request);
-		handleResponse(response);
+		GetUser request = new GetUser(modelManager.getEmailLoggedUser());
+		viewManager.sendRequestAsync(request, this::handleResponse);
 	}
 }

@@ -50,6 +50,7 @@ public class GroupsController extends BaseController {
 				//TODO: loading where?
 
 				Request request = new CreateGroup(groupName, modelManager.getEmailLoggedUser());
+				//TODO: viewManager.sendRequestAsync(request, );
 				Response response = modelManager.sendRequest(request);
 
 				if (!response.isSuccess()) {

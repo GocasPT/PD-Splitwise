@@ -1,7 +1,15 @@
 package pt.isec.pd.sharedLib.database.Entity;
 
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
+
 import java.util.Objects;
 
+@Setter
+@Getter
+@SuperBuilder
 //TODO: name OR email → name (?)
 public final class Expense extends Entity {
 	private int groupId;
@@ -11,27 +19,6 @@ public final class Expense extends Entity {
 	private String buyerEmail;
 	private String[] participantsEmail;
 
-	public Expense(int id, double amount, long timestamp) {
-		super(id);
-		this.amount = amount;
-		this.timestamp = timestamp;
-	}
-
-	public Expense(int id, double amount, long timestamp, String buyerEmail) {
-		super(id);
-		this.amount = amount;
-		this.timestamp = timestamp;
-		this.buyerEmail = buyerEmail;
-	}
-
-	public Expense(int id, double amount, long timestamp, String buyerEmail, String[] participantsEmail) {
-		super(id);
-		this.amount = amount;
-		this.timestamp = timestamp;
-		this.buyerEmail = buyerEmail;
-		this.participantsEmail = participantsEmail;
-	}
-
 	public Expense(int id, int groupId, double amount, String description, long timestamp,
 	               String buyerEmail, String[] participantsEmail) {
 		super(id);
@@ -40,54 +27,6 @@ public final class Expense extends Entity {
 		this.description = description;
 		this.timestamp = timestamp;
 		this.buyerEmail = buyerEmail;
-		this.participantsEmail = participantsEmail;
-	}
-
-	public int getGroupId() {
-		return groupId;
-	}
-
-	public void setGroupId(int groupId) {
-		this.groupId = groupId;
-	}
-
-	public double getAmount() {
-		return amount;
-	}
-
-	public void setAmount(double amount) {
-		this.amount = amount;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	public long getTimestamp() {
-		return timestamp;
-	}
-
-	public void setTimestamp(long timestamp) {
-		this.timestamp = timestamp;
-	}
-
-	public String getBuyerEmail() {
-		return buyerEmail;
-	}
-
-	public void setBuyerEmail(String buyerEmail) {
-		this.buyerEmail = buyerEmail;
-	}
-
-	public String[] getParticipantsEmail() {
-		return participantsEmail;
-	}
-
-	public void setParticipantsEmail(String[] participantsEmail) {
 		this.participantsEmail = participantsEmail;
 	}
 
