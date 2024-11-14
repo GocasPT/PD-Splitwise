@@ -30,6 +30,9 @@ public class CreateGroupDialog extends Dialog<String> {
 		setTitle("Create Group");
 		setDialogPane(dialogPane);
 		setResultConverter(buttonType -> {
+			if (buttonType == null)
+				return null;
+
 			if (buttonType.equals(btnFinish))
 				return tfGroupName.getText();
 			else
