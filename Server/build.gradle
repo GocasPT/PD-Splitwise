@@ -4,7 +4,7 @@ plugins {
 }
 
 application {
-	mainClass = 'pt.isec.pd.server.Server'
+	mainClass = 'pt.isec.pd.splitwise.server.Server'
 }
 
 dependencies {

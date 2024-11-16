@@ -4,7 +4,7 @@ plugins {
 }
 
 application {
-    mainClass = 'pt.isec.pd.backupserver.BackupServerApp'
+    mainClass = 'pt.isec.pd.splitwise.backupserver.BackupServerApp'
 }
 
 dependencies {
