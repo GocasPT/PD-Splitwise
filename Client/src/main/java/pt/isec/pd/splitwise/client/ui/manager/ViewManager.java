@@ -5,6 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.ProgressIndicator;
+import javafx.scene.image.Image;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import pt.isec.pd.splitwise.client.ClientApp;
@@ -24,6 +25,7 @@ public class ViewManager {
 
 	public ViewManager(Stage primaryStage, ModelManager modelManager) {
 		this.primaryStage = primaryStage;
+		this.primaryStage.getIcons().add(new Image(ClientApp.class.getResource("img/logo.png").toString()));
 		this.modelManager = modelManager;
 
 		loadingIndicator = new ProgressIndicator();

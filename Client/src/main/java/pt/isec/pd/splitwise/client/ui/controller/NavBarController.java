@@ -53,6 +53,7 @@ public class NavBarController extends BaseController {
 		});
 	}
 
+	//TODO: hot fix (delay update)
 	@Override
 	protected void update() {
 		//TODO: if currentButton doesn't change, don't update (idk...performance?)
