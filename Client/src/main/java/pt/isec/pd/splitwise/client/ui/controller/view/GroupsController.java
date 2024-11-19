@@ -3,6 +3,7 @@ package pt.isec.pd.splitwise.client.ui.controller.view;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
+import pt.isec.pd.splitwise.client.model.ENavBarState;
 import pt.isec.pd.splitwise.client.model.ModelManager;
 import pt.isec.pd.splitwise.client.ui.component.Card;
 import pt.isec.pd.splitwise.client.ui.component.dialog.CreateGroupDialog;
@@ -97,6 +98,7 @@ public class GroupsController extends BaseController {
 								.onMouseClicked(e -> {
 									modelManager.setGroupInViewId(group.id());
 									viewManager.showView("group_view");
+									modelManager.getNavBarStateProperty().setValue(ENavBarState.NULL);
 								})
 								.addStyleClass("group-card")
 								.build()

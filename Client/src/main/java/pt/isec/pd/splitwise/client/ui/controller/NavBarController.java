@@ -1,82 +1,79 @@
 package pt.isec.pd.splitwise.client.ui.controller;
 
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import pt.isec.pd.splitwise.client.model.ENavBarState;
 import pt.isec.pd.splitwise.client.model.ModelManager;
 import pt.isec.pd.splitwise.client.ui.manager.ViewManager;
 import pt.isec.pd.splitwise.sharedLib.network.response.Response;
 
 public class NavBarController extends BaseController {
+	private static ObjectProperty<ENavBarState> currentButton;
 	@FXML
 	private Button btnGroups;
 	@FXML
 	private Button btnInvites;
 	@FXML
 	private Button btnUser;
-	private static NavButton currentButton = NavButton.GROUPS;
 
 	public NavBarController(ViewManager viewManager, ModelManager modelManager) {
 		super(viewManager, modelManager);
+		currentButton = new SimpleObjectProperty<>(modelManager.getNavBarState());
 	}
 
 	@Override
 	protected void registerHandlers() {
-		btnGroups.setOnAction(e -> {
-			try {
-				viewManager.showView("groups_view");
-				currentButton = NavButton.GROUPS;
-			} catch ( Exception ex ) {
-				viewManager.showError("Failed to show groups: " + ex.getMessage());
-			} finally {
-				update();
-			}
+		modelManager.getNavBarStateProperty().addListener((obs, oldVal, newVal) -> {
+			currentButton.set(newVal);
 		});
-		btnInvites.setOnAction(e -> {
-			try {
-				viewManager.showView("invites_view");
-				currentButton = NavButton.INVITES;
-			} catch ( Exception ex ) {
-				viewManager.showError("Failed to show invites: " + ex.getMessage());
-			} finally {
-				update();
-			}
+
+		btnGroups.setOnAction(e -> handleButtonClick("groups_view", ENavBarState.GROUPS));
+		btnInvites.setOnAction(e -> handleButtonClick("invites_view", ENavBarState.INVITES));
+		btnUser.setOnAction(e -> handleButtonClick("user_view", ENavBarState.USER));
+
+		currentButton.addListener((obs, oldVal, newVal) -> {
+			if (oldVal != newVal) updateButtonStyles();
 		});
-		btnUser.setOnAction(e -> {
-			try {
-				viewManager.showView("user_view");
-				currentButton = NavButton.USER;
-			} catch ( Exception ex ) {
-				viewManager.showError("Failed to show user: " + ex.getMessage());
-			} finally {
-				update();
-			}
-		});
+
+		updateButtonStyles();
 	}
 
-	//TODO: hot fix (delay update)
-	@Override
-	protected void update() {
-		//TODO: if currentButton doesn't change, don't update (idk...performance?)
+	private void handleButtonClick(String viewName, ENavBarState state) {
+		try {
+			viewManager.showView(viewName);
+			modelManager.setNavBarState(state);
+		} catch ( Exception ex ) {
+			viewManager.showError("Failed to show " + viewName + ": " + ex.getMessage());
+		} finally {
+			update();
+		}
+	}
 
+	private void updateButtonStyles() {
 		//TODO: remove style button
-		btnGroups.setStyle("-fx-background-color: #2196F3");
-		btnInvites.setStyle("-fx-background-color: #2196F3");
-		btnUser.setStyle("-fx-background-color: #2196F3");
+		String defaultStyle = "-fx-background-color: #2196F3";
+		String activeStyle = "-fx-background-color: #4CAF50";
 
 		//TODO: add style button
-		switch (currentButton) {
-			case GROUPS -> btnGroups.setStyle("-fx-background-color: #4CAF50");
-			case INVITES -> btnInvites.setStyle("-fx-background-color: #4CAF50");
-			case USER -> btnUser.setStyle("-fx-background-color: #4CAF50");
+		btnGroups.setStyle(defaultStyle);
+		btnInvites.setStyle(defaultStyle);
+		btnUser.setStyle(defaultStyle);
+
+		switch (currentButton.get()) {
+			case GROUPS -> btnGroups.setStyle(activeStyle);
+			case INVITES -> btnInvites.setStyle(activeStyle);
+			case USER -> btnUser.setStyle(activeStyle);
 		}
+	}
+
+	@Override
+	protected void update() {
 	}
 
 	@Override
 	protected void handleResponse(Response response) {
 
-	}
-
-	private enum NavButton {
-		NON, GROUPS, INVITES, USER
 	}
 }

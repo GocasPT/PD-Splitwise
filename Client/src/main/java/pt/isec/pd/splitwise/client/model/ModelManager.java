@@ -1,5 +1,7 @@
 package pt.isec.pd.splitwise.client.model;
 
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import lombok.Getter;
 import lombok.Setter;
 import pt.isec.pd.splitwise.sharedLib.network.request.Request;
@@ -10,16 +12,20 @@ import java.net.InetAddress;
 
 public class ModelManager {
 	private final SocketManager socketManager;
-
 	@Setter
 	@Getter
 	private String emailLoggedUser;
+
+	@Getter
+	private final ObjectProperty<ENavBarState> navBarStateProperty;
+
 	@Setter
 	@Getter
 	private int groupInViewId;
 
 	public ModelManager() {
 		socketManager = new SocketManager();
+		navBarStateProperty = new SimpleObjectProperty<>(ENavBarState.NULL);
 	}
 
 	public void connect(InetAddress serverAddr, int port) {
@@ -53,5 +59,13 @@ public class ModelManager {
 		}
 
 		return null;
+	}
+
+	public void setNavBarState(ENavBarState state) {
+		navBarStateProperty.set(state);
+	}
+
+	public ENavBarState getNavBarState() {
+		return navBarStateProperty.get();
 	}
 }

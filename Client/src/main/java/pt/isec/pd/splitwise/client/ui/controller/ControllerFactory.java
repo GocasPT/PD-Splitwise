@@ -4,6 +4,7 @@ import pt.isec.pd.splitwise.client.model.ModelManager;
 import pt.isec.pd.splitwise.client.ui.controller.view.*;
 import pt.isec.pd.splitwise.client.ui.manager.ViewManager;
 
+//TODO: try to improve this
 public class ControllerFactory {
 	public static BaseController getController(Class<? extends BaseController> controllerType, ViewManager viewManager, ModelManager modelManager) {
 		return switch (controllerType.getSimpleName()) {

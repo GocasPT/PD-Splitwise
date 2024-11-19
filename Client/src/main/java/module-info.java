@@ -12,6 +12,7 @@ module pt.isec.pd.client {
 	requires com.dlsc.phonenumberfx;
 	requires org.controlsfx.controls;
 	requires org.kordamp.ikonli.materialdesign;
+	requires java.desktop;
 
 	opens pt.isec.pd.splitwise.client to javafx.fxml;
 	opens pt.isec.pd.splitwise.client.model to javafx.fxml;
