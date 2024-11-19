@@ -112,7 +112,7 @@ public class AddExpenseController extends BaseController {
 		hbBtn.getChildren().addFirst(btnAddWrapper);
 
 		//TODO: fix
-		// - show username + email on selection
+		// - show username + userEmail on selection
 		// - show username on display
 		cbPayerUser.getItems().clear();
 		cbPayerUser.setButtonCell(new ListCell<>() {
@@ -123,7 +123,7 @@ public class AddExpenseController extends BaseController {
 				if (empty || item == null)
 					setText(null);
 				else
-					//setText(item.username() + " <" + item.email() + ">");
+					//setText(item.username() + " <" + item.userEmail() + ">");
 					setText(item.username());
 			}
 		});
@@ -135,20 +135,20 @@ public class AddExpenseController extends BaseController {
 				if (empty || item == null)
 					setText(null);
 				else
-					//setText(item.username() + " <" + item.email() + ">");
+					//setText(item.username() + " <" + item.userEmail() + ">");
 					setText(item.username());
 
 			}
 		});
 
 		//TODO: fix
-		// - show username + email on selection
+		// - show username + userEmail on selection
 		// - show username on display OR number of users when more than one (?) (e.g. "3 users")
 		ccbAssociatedUsers.getItems().clear();
 		ccbAssociatedUsers.setConverter(new StringConverter<>() {
 			@Override
 			public String toString(PreviewUserDTO object) {
-				//return object.username() + " <" + object.email() + ">";
+				//return object.username() + " <" + object.userEmail() + ">";
 				return object.username();
 			}
 

@@ -15,10 +15,12 @@ public class DatabaseSyncManager {
 
 	public void startBackupTransfer() {
 		logger.debug("Starting backup transfer");
+
 		synchronized (syncLock) {
 			activeBackupTransfers++;
 			logger.debug("Backup transfer started. Active transfers: {}", activeBackupTransfers);
 		}
+
 		logger.debug("Backup transfer started");
 	}
 
@@ -54,7 +56,7 @@ public class DatabaseSyncManager {
 		}
 	}
 
-	@FunctionalInterface
+	@FunctionalInterface //TODO: check this tag later
 	public interface DatabaseOperation<T> {
 		T execute() throws SQLException;
 	}

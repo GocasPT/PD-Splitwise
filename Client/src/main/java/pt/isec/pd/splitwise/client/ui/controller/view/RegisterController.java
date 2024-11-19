@@ -65,7 +65,7 @@ public class RegisterController extends BaseController {
 			return;
 		}
 
-		Register registerRequest = new Register(username, phoneNumber, email, password);
+		Register registerRequest = new Register(username, email, phoneNumber, password);
 		viewManager.sendRequestAsync(registerRequest, this::handleResponse);
 	}
 

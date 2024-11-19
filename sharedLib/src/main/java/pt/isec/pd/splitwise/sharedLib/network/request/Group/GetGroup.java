@@ -11,7 +11,7 @@ import pt.isec.pd.splitwise.sharedLib.network.response.ValueResponse;
 public record GetGroup(int groupId) implements Request {
 	@Override
 	public Response execute(DataBaseManager context) {
-		logger.debug("GetGroup: {}", this);
+		logger.debug("Getting group {} info", groupId);
 
 		DetailGroupDTO group;
 		try {
@@ -19,13 +19,13 @@ public record GetGroup(int groupId) implements Request {
 			group = new DetailGroupDTO(
 					groupData.getId(),
 					groupData.getName(),
-					context.getExpenseDAO().getExpensesFromGroup(groupId).stream().map(
+					context.getExpenseDAO().getAllExpensesFromGroup(groupId).stream().map(
 							expense -> new PreviewExpenseDTO(
 									expense.getId(),
 									expense.getAmount(),
 									expense.getDate(),
 									//TODO: context.getUserDAO().getUserById(expense.getPaidByUserId()).getUsername()
-									expense.getBuyerEmail()
+									expense.getBuyerEmail() //TODO: Pair<string, string> (userEmail, username)
 							)
 					).toList()
 			);

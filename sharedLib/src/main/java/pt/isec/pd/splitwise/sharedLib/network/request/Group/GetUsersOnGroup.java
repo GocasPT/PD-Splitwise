@@ -17,13 +17,12 @@ public record GetUsersOnGroup(int groupId) implements Request {
 	public Response execute(DataBaseManager context) {
 		logger.debug("Getting users on group {}", groupId);
 
-		Map<String, Object> data = new HashMap<>();
+		Map<String, Object> data = new HashMap<>(); //TODO: Pair<string, list>
 		try {
 			Group groupData = context.getGroupDAO().getGroupById(groupId);
 			data.put("group_name", groupData.getName());
 
 			List<PreviewUserDTO> members = new ArrayList<>();
-			//TODO: forEach → map
 			context.getGroupUserDAO().getAllUsersFromGroup(groupId).forEach(user -> {
 				members.add(new PreviewUserDTO(
 						user.getId(),

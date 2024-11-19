@@ -6,22 +6,21 @@ import pt.isec.pd.splitwise.sharedLib.network.request.Request;
 import pt.isec.pd.splitwise.sharedLib.network.response.ListResponse;
 import pt.isec.pd.splitwise.sharedLib.network.response.Response;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public record GetGroups(String email) implements Request {
+public record GetGroups(String userEmail) implements Request {
 	@Override
 	public Response execute(DataBaseManager context) {
-		logger.debug("GetGroups: {}", this);
+		logger.debug("Getting groups from user '{}'", userEmail);
 
-		List<PreviewGroupDTO> groupList;
+		List<PreviewGroupDTO> groupList = new ArrayList<>();
 		try {
-			groupList = context.getGroupUserDAO().getAllGroupsFromUser(email).stream().map(
-					group -> new PreviewGroupDTO(
-							group.getId(),
-							group.getName(),
-							group.getNumUsers()
-					)
-			).toList();
+			context.getGroupUserDAO().getAllGroupsFromUser(
+					context.getUserDAO().getUserByEmail(userEmail).getId()
+			).forEach(
+					group -> groupList.add(new PreviewGroupDTO(group.getId(), group.getName(), group.getNumUsers()))
+			);
 		} catch ( Exception e ) {
 			logger.error("GetGroups: {}", e.getMessage());
 			return new ListResponse<>("Failed to get groups");
@@ -32,6 +31,6 @@ public record GetGroups(String email) implements Request {
 
 	@Override
 	public String toString() {
-		return "GET_GROUPS " + email;
+		return "GET_GROUPS " + userEmail;
 	}
 }

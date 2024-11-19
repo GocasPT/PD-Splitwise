@@ -77,6 +77,6 @@ public class NavBarController extends BaseController {
 	}
 
 	private enum NavButton {
-		GROUPS, INVITES, USER
+		NON, GROUPS, INVITES, USER
 	}
 }

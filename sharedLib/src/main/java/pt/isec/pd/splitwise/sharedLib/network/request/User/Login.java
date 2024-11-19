@@ -8,12 +8,12 @@ import pt.isec.pd.splitwise.sharedLib.network.response.Response;
 public record Login(String email, String password) implements Request {
 	@Override
 	public Response execute(DataBaseManager context) {
-		logger.debug("Logging in: {}", email);
+		logger.debug("user '{}' login", email);
 
 		try {
 			User userData = context.getUserDAO().getUserByEmail(email);
 			if (userData == null || !userData.getPassword().equals(password))
-				return new Response(false, "Invalid email or password");
+				return new Response(false, "Invalid userEmail or password");
 		} catch ( Exception e ) {
 			logger.error("Login: {}", e.getMessage());
 			return new Response(false, "Error on login");

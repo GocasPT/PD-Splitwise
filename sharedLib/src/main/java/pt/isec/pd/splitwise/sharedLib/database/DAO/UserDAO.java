@@ -8,15 +8,32 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+//TODO: javaDoc
+/**
+ * The type User dao. //TODO: class layer to access database and return user objects
+ */
 public class UserDAO extends DAO {
+	/**
+	 * Instantiates a new User dao.
+	 *
+	 * @param dbManager the db manager
+	 */
 	public UserDAO(DataBaseManager dbManager) {
 		super(dbManager);
 	}
 
-	//TODO: make to use statement where but sync with dbManager
-
+	/**
+	 * Create user int.
+	 *
+	 * @param username    the username
+	 * @param email       the userEmail
+	 * @param phoneNumber the phone number
+	 * @param password    the password
+	 * @return the int
+	 * @throws SQLException the sql exception
+	 */
 	public int createUser(String username, String email, String phoneNumber, String password) throws SQLException {
-		logger.debug("Creating user:\n\tusername={}\n\temail={},\n\tphoneNumber={},\n\tpassword={}", username, email,
+		logger.debug("Creating user:\n\tusername={}\n\tuserEmail={},\n\tphoneNumber={},\n\tpassword={}", username, email,
 		             phoneNumber, password);
 
 		//language=SQLite
@@ -25,6 +42,12 @@ public class UserDAO extends DAO {
 		return dbManager.executeWrite(query, username, email, phoneNumber, password);
 	}
 
+	/**
+	 * Gets all users.
+	 *
+	 * @return the all users
+	 * @throws SQLException the sql exception
+	 */
 	public List<User> getAllUsers() throws SQLException {
 		logger.debug("Getting all users");
 
@@ -39,7 +62,7 @@ public class UserDAO extends DAO {
 					User.builder()
 							.id((int) row.get("id"))
 							.username((String) row.get("username"))
-							.email((String) row.get("email"))
+							.email((String) row.get("userEmail"))
 							.phoneNumber((String) row.get("phone_number"))
 							.password((String) row.get("password"))
 							.build()
@@ -48,8 +71,43 @@ public class UserDAO extends DAO {
 		return users;
 	}
 
+	/**
+	 * Gets user by id.
+	 *
+	 * @param userId the id
+	 * @return the user by id
+	 * @throws SQLException the sql exception
+	 */
+	public User getUserById(int userId) throws SQLException {
+		logger.debug("Getting user by id: {}", userId);
+
+		//language=SQLite
+		String query = "SELECT * FROM users WHERE id = ?";
+
+		List<Map<String, Object>> results = dbManager.executeRead(query, userId);
+
+		if (results.isEmpty())
+			return null;
+
+		Map<String, Object> row = results.getFirst();
+		return User.builder()
+				.id((int) row.get("id"))
+				.username((String) row.get("username"))
+				.email((String) row.get("userEmail"))
+				.phoneNumber((String) row.get("phone_number"))
+				.password((String) row.get("password"))
+				.build();
+	}
+
+	/**
+	 * Gets user by userEmail.
+	 *
+	 * @param email the userEmail
+	 * @return the user by userEmail
+	 * @throws SQLException the sql exception
+	 */
 	public User getUserByEmail(String email) throws SQLException {
-		logger.debug("Getting user by email: {}", email);
+		logger.debug("Getting user by userEmail: {}", email);
 
 		//language=SQLite
 		String query = "SELECT * FROM users WHERE email = ?";
@@ -63,20 +121,47 @@ public class UserDAO extends DAO {
 		return User.builder()
 				.id((int) row.get("id"))
 				.username((String) row.get("username"))
-				.email((String) row.get("email"))
+				.email((String) row.get("userEmail"))
 				.phoneNumber((String) row.get("phone_number"))
 				.password((String) row.get("password"))
 				.build();
 	}
 
 
-	public boolean editUser(int id, String username, String email, String phoneNumber, String password) throws SQLException {
-		logger.debug("Editing user id={}:\n\tusername={}\n\temail={},\n\tphoneNumber={},\n\tpassword={}", id, username,
+	/**
+	 * Edit user boolean.
+	 *
+	 * @param userId          the id
+	 * @param username    the username
+	 * @param email       the userEmail
+	 * @param phoneNumber the phone number
+	 * @param password    the password
+	 * @return the boolean
+	 * @throws SQLException the sql exception
+	 */
+	public boolean editUser(int userId, String username, String email, String phoneNumber, String password) throws SQLException {
+		logger.debug("Editing user id={}:\n\tusername={}\n\tuserEmail={},\n\tphoneNumber={},\n\tpassword={}", userId, username,
 		             email, phoneNumber, password);
 
 		//language=SQLite
 		String query = "UPDATE users SET username = ?, email = ?, phone_number = ?, password = ? WHERE id = ?";
 
-		return dbManager.executeWrite(query, username, email, phoneNumber, password, id) > 0;
+		return dbManager.executeWrite(query, username, email, phoneNumber, password, userId) > 0;
+	}
+
+	/**
+	 * Delete user boolean.
+	 *
+	 * @param userId the id
+	 * @return the boolean
+	 * @throws SQLException the sql exception
+	 */
+	public boolean deleteUser(int userId) throws SQLException {
+		logger.debug("Deleting user with id {}", userId);
+
+		//language=SQLite
+		String query = "DELETE FROM users WHERE id = ?";
+
+		return dbManager.executeWrite(query, userId) > 0;
 	}
 }

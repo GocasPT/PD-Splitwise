@@ -9,7 +9,7 @@ public record DetailUserDTO(int id, String username, String email, String phone_
 		return "DetailUserDTO{" +
 		       "id=" + id +
 		       ", username='" + username + '\'' +
-		       ", email='" + email + '\'' +
+		       ", userEmail='" + email + '\'' +
 		       ", phone_number='" + phone_number + '\'' +
 		       '}';
 	}

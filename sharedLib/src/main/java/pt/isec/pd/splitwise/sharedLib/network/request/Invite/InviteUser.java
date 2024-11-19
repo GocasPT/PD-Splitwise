@@ -5,14 +5,14 @@ import pt.isec.pd.splitwise.sharedLib.database.Entity.User;
 import pt.isec.pd.splitwise.sharedLib.network.request.Request;
 import pt.isec.pd.splitwise.sharedLib.network.response.Response;
 
-public record InviteUser(int groupID, String guestEmail, String inviteeEmail) implements Request {
+public record InviteUser(int groupID, String guestUserEmail, String inviteeUserEmail) implements Request {
 	@Override
 	public Response execute(DataBaseManager context) {
-		logger.debug("InviteUser: {}", this);
+		logger.debug("User '{}' invited '{}' to group '{}'", guestUserEmail, inviteeUserEmail, groupID);
 
 		try {
-			User userGuestData = context.getUserDAO().getUserByEmail(guestEmail);
-			User userInviteeData = context.getUserDAO().getUserByEmail(inviteeEmail);
+			User userGuestData = context.getUserDAO().getUserByEmail(guestUserEmail);
+			User userInviteeData = context.getUserDAO().getUserByEmail(inviteeUserEmail);
 			context.getInviteDAO().createInvite(groupID, userGuestData.getId(), userInviteeData.getId());
 		} catch ( Exception e ) {
 			logger.error("InviteUser: {}", e.getMessage());
@@ -24,6 +24,6 @@ public record InviteUser(int groupID, String guestEmail, String inviteeEmail) im
 
 	@Override
 	public String toString() {
-		return "INVITE_USER " + groupID + " " + guestEmail;
+		return "INVITE_USER " + groupID + " " + guestUserEmail + " " + inviteeUserEmail;
 	}
 }

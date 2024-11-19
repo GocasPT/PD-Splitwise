@@ -9,12 +9,29 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+//TODO: javaDoc
+/**
+ * The type Group user dao. //TODO: class layer to access database and return user or group objects
+ */
 public class GroupUserDAO extends DAO{
+	/**
+	 * Instantiates a new Group user dao.
+	 *
+	 * @param dbManager the db manager
+	 */
 	public GroupUserDAO(DataBaseManager dbManager) {
 		super(dbManager);
 	}
 
-	public int createRelations(int grouId, int userId) throws SQLException {
+	/**
+	 * Create relation int.
+	 *
+	 * @param grouId the grou id
+	 * @param userId the user id
+	 * @return the int
+	 * @throws SQLException the sql exception
+	 */
+	public int createRelation(int grouId, int userId) throws SQLException {
 		logger.debug("Creating group-user relation:\n\tgroupId={}\n\tuserId={}", grouId, userId);
 
 		//language=SQLite
@@ -26,8 +43,15 @@ public class GroupUserDAO extends DAO{
 		return id;
 	}
 
-	public List<Group> getAllGroupsFromUser(String email) throws SQLException {
-		logger.debug("Getting all groups from user {}", email);
+	/**
+	 * Gets all groupd from user.
+	 *
+	 * @param userId the id
+	 * @return the all groupd from user
+	 * @throws SQLException the sql exception
+	 */
+	public List<Group> getAllGroupsFromUser(int userId) throws SQLException {
+		logger.debug("Getting all groups from user {}", userId);
 
 		//language=SQLite
 		String query = """
@@ -38,10 +62,10 @@ public class GroupUserDAO extends DAO{
 		                        JOIN group_users ON groups.id = group_users.group_id
 		                        JOIN users ON group_users.user_id = users.id
 		                        JOIN group_users gu2 ON groups.id = gu2.group_id
-		               WHERE users.email = ?
+		               WHERE users.id = ?
 		               GROUP BY groups.id, groups.name""";
 
-		List<Map<String, Object>> results = dbManager.executeRead(query, email);
+		List<Map<String, Object>> results = dbManager.executeRead(query, userId);
 
 		List<Group> groups = new ArrayList<>();
 		for (Map<String, Object> row : results)
@@ -58,6 +82,13 @@ public class GroupUserDAO extends DAO{
 		return groups;
 	}
 
+	/**
+	 * Gets all users from group.
+	 *
+	 * @param groupId the group id
+	 * @return the all users from group
+	 * @throws SQLException the sql exception
+	 */
 	public List<User> getAllUsersFromGroup(int groupId) throws SQLException {
 		logger.debug("Getting all users from group {}", groupId);
 
@@ -78,7 +109,7 @@ public class GroupUserDAO extends DAO{
 					User.builder()
 							.id((int) row.get("id"))
 							.username((String) row.get("username"))
-							.email((String) row.get("email"))
+							.email((String) row.get("userEmail"))
 							.build()
 			);
 
@@ -87,19 +118,32 @@ public class GroupUserDAO extends DAO{
 		return users;
 	}
 
-	public void deleteRelations(int groupId) throws SQLException {
-		logger.debug("Deleting all relations from group {}", groupId);
-
-		//language=SQLite
-		String query = "DELETE FROM group_users WHERE group_id = ?";
-		dbManager.executeWrite(query, groupId);
-	}
-
-	public void deleteRelations(int groupId, int userId) throws SQLException {
+	/**
+	 * Delete relation.
+	 *
+	 * @param groupId the group id
+	 * @param userId  the user id
+	 * @throws SQLException the sql exception
+	 */
+	public void deleteAllRelactions(int groupId, int userId) throws SQLException {
 		logger.debug("Deleting relation between group {} and user {}", groupId, userId);
 
 		//language=SQLite
 		String query = "DELETE FROM group_users WHERE group_id = ? AND user_id = ?";
 		dbManager.executeWrite(query, groupId, userId);
+	}
+
+	/**
+	 * Delete relation.
+	 *
+	 * @param groupId the group id
+	 * @throws SQLException the sql exception
+	 */
+	public void deleteAllRelactions(int groupId) throws SQLException {
+		logger.debug("Deleting all relations from group {}", groupId);
+
+		//language=SQLite
+		String query = "DELETE FROM group_users WHERE group_id = ?";
+		dbManager.executeWrite(query, groupId);
 	}
 }

@@ -8,7 +8,11 @@ import pt.isec.pd.splitwise.sharedLib.network.response.Response;
 public record CreateGroup(String groupName, String userEmail) implements Request {
 	@Override
 	public Response execute(DataBaseManager context) {
-		logger.debug("CreateGroup: {}", this);
+		logger.debug("""
+		             Creating group:
+		             \tname: {}
+		             \tuser: {}""",
+		             groupName, userEmail);
 
 		try {
 			User userData = context.getUserDAO().getUserByEmail(userEmail);

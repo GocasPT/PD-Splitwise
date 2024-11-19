@@ -12,12 +12,12 @@ import java.util.List;
 public record GetTotalExpenses(int groupID) implements Request {
 	@Override
 	public Response execute(DataBaseManager context) {
-		logger.debug("Getting total expenses from group with ID: {}", groupID);
+		logger.debug("Getting total expenses from group {}", groupID);
 
 		double totalExpenses = 0;
 
 		try {
-			List<Expense> expenseList = context.getExpenseDAO().getExpensesFromGroup(groupID);
+			List<Expense> expenseList = context.getExpenseDAO().getAllExpensesFromGroup(groupID);
 			for (Expense expense : expenseList)
 				totalExpenses += expense.getAmount();
 		} catch ( SQLException e ) {

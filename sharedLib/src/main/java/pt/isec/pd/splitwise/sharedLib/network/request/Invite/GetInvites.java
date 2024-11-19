@@ -7,29 +7,34 @@ import pt.isec.pd.splitwise.sharedLib.network.response.ListResponse;
 import pt.isec.pd.splitwise.sharedLib.network.response.Response;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
-public record GetInvites(String email) implements Request {
+public record GetInvites(String userEmail) implements Request {
 	@Override
 	public Response execute(DataBaseManager context) {
-		logger.debug("GetInvites: {}", this);
+		logger.debug("Getting invites for user '{}'", userEmail);
 
-		List<PreviewInviteDTO> inviteList;
+		List<PreviewInviteDTO> inviteList = new ArrayList<>();
 		try {
-			inviteList = context.getInviteDAO().getAllInvitesFromUser(email).stream().map(
+			context.getInviteDAO().getAllInvitesFromUser(
+					context.getUserDAO().getUserByEmail(userEmail).getId()
+			).forEach(
 					invite -> {
 						try {
-							return new PreviewInviteDTO(
-									invite.getId(),
-									context.getGroupDAO().getGroupById(invite.getGroupId()).getName(),
-									invite.getInverterEmail(),
-									context.getUserDAO().getUserByEmail(invite.getInverterEmail()).getUsername()
+							inviteList.add(
+									new PreviewInviteDTO(
+											invite.getId(),
+											context.getGroupDAO().getGroupById(invite.getGroupId()).getName(),
+											invite.getInverterEmail(),
+											context.getUserDAO().getUserByEmail(invite.getInverterEmail()).getUsername()
+									)
 							);
 						} catch ( SQLException e ) {
 							throw new RuntimeException(e);
 						}
 					}
-			).toList();
+			);
 		} catch ( Exception e ) {
 			logger.error("GetInvites: {}", e.getMessage());
 			return new ListResponse<>("Failed to get invites");
@@ -40,6 +45,6 @@ public record GetInvites(String email) implements Request {
 
 	@Override
 	public String toString() {
-		return "GET_INVITATIONS " + email;
+		return "GET_INVITATIONS " + userEmail;
 	}
 }

@@ -10,7 +10,7 @@ public record InfoUserDTO(int id, String username, String email, String phone_nu
 		return "InfoUserDTO{" +
 		       "id=" + id +
 		       ", username='" + username + '\'' +
-		       ", email='" + email + '\'' +
+		       ", userEmail='" + email + '\'' +
 		       ", phone_number='" + phone_number + '\'' +
 		       ", password='" + password + '\'' +
 		       '}';

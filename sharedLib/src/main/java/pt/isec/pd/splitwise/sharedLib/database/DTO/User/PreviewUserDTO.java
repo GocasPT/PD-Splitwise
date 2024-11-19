@@ -9,7 +9,7 @@ public record PreviewUserDTO(int id, String username, String email) implements S
 		return "PreviewUserDTO{" +
 		       "id=" + id +
 		       ", username='" + username + '\'' +
-		       ", email='" + email + '\'' +
+		       ", userEmail='" + email + '\'' +
 		       '}';
 	}
 }

@@ -31,7 +31,7 @@ public class DataBaseManager {
 	@Getter
 	private final GroupUserDAO groupUserDAO;
 	@Getter
-	private final InviteDAO inviteDAO; //TODO: I need this or use groupDAO directly?
+	private final InviteDAO inviteDAO;
 	@Getter
 	private final ExpenseDAO expenseDAO;
 	@Getter
@@ -81,6 +81,7 @@ public class DataBaseManager {
 	}
 
 	//TODO: dynamic tables: class with all tables + columns (?)
+	//TODO: update this tables after modify data base
 	private void createTables(Connection conn) throws SQLException {
 		try ( Statement stmt = conn.createStatement() ) {
 			logger.debug("Creating version table");
@@ -496,6 +497,7 @@ public class DataBaseManager {
 		return results;
 	}*/
 
+	//TODO: use this OR from SQLite (if exists)
 	private enum SQLiteErrorCode {
 		SQLITE_BUSY(5);
 

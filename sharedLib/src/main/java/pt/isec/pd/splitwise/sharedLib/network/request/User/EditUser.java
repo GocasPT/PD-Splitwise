@@ -6,15 +6,22 @@ import pt.isec.pd.splitwise.sharedLib.network.response.Response;
 
 import java.sql.SQLException;
 
-public record EditUser(String username, String phone, String email, String password) implements Request {
+public record EditUser(String username, String email, String phone, String password) implements Request {
 	@Override
 	public Response execute(DataBaseManager context) {
-		logger.debug("Editing user: {}", username);
+		logger.debug("""
+		             Editing user '{}':
+		             \tusername: {}
+		             \tphone: {}""",
+		             email, username, phone);
 
 		try {
-			context.getUserDAO().createUser(username, phone, email, password);
+			context.getUserDAO().editUser(
+					context.getUserDAO().getUserByEmail(email).getId(),
+					username, phone, email, password
+			);
 		} catch ( SQLException e ) {
-			//TODO: check this (need to now if email is already in use)
+			//TODO: check this (need to now if userEmail is already in use)
 			if (e.getErrorCode() == 19 && e.getMessage().toLowerCase().contains("unique")) {
 				return new Response(false, "Email already in use");
 			}

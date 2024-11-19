@@ -7,7 +7,7 @@ import pt.isec.pd.splitwise.sharedLib.network.response.Response;
 public record DeletePayment(int paymentID) implements Request {
 	@Override
 	public Response execute(DataBaseManager context) {
-		logger.debug("DeletePayment: {}", this);
+		logger.debug("Deleting payment {}", paymentID);
 
 		try {
 			context.getPaymentDAO().deletePayment(paymentID);

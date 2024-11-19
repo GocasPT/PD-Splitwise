@@ -114,7 +114,7 @@ public class ClientHandler implements Runnable {
 	/*public void sendNotification(NotificaionResponse notification) {
 		try {
 			synchronized (out) {
-				System.out.println("[ClientThread] Sending notification to '" + email + "': " + notification);
+				System.out.println("[ClientThread] Sending notification to '" + userEmail + "': " + notification);
 				out.writeObject(notification);
 				out.flush();
 			}

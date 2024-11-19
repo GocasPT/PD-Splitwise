@@ -7,7 +7,7 @@ import pt.isec.pd.splitwise.sharedLib.network.response.Response;
 public record Logout(String email) implements Request {
 	@Override
 	public Response execute(DataBaseManager context) {
-		logger.debug("Logging out: {}", email);
+		logger.debug("User '{}' logout", email);
 
 		return new Response(true);
 	}

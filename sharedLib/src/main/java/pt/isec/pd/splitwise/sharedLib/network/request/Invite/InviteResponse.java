@@ -7,7 +7,7 @@ import pt.isec.pd.splitwise.sharedLib.network.response.Response;
 public record InviteResponse(int inviteId, boolean isAccepted) implements Request {
 	@Override
 	public Response execute(DataBaseManager context) {
-		logger.debug("InviteResponse: {}", this);
+		logger.debug("Invite {} have been {}", inviteId, isAccepted ? "accepted" : "declined");
 
 		try {
 			if (isAccepted)

@@ -1,6 +1,5 @@
 package pt.isec.pd.splitwise.sharedLib.network.request.Expense;
 
-
 import pt.isec.pd.splitwise.sharedLib.database.DataBaseManager;
 import pt.isec.pd.splitwise.sharedLib.network.request.Request;
 import pt.isec.pd.splitwise.sharedLib.network.response.Response;
@@ -8,7 +7,7 @@ import pt.isec.pd.splitwise.sharedLib.network.response.Response;
 public record DeleteExpense(int expenseID) implements Request {
 	@Override
 	public Response execute(DataBaseManager context) {
-		logger.debug("Deleting expense with ID: {}", expenseID);
+		logger.debug("Deleting expense {}", expenseID);
 
 		try {
 			context.getExpenseDAO().deleteExpense(expenseID);

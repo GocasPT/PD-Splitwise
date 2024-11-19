@@ -8,22 +8,47 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+//TODO: javaDoc
+/**
+ * The type Invite dao. //TODO: class layer to access database and return invite objects
+ */
 public class InviteDAO extends DAO {
+	/**
+	 * Instantiates a new Invite dao.
+	 *
+	 * @param dbManager the db manager
+	 */
 	public InviteDAO(DataBaseManager dbManager) {
 		super(dbManager);
 	}
 
-	//TODO: make to use statement where but sync with dbManager
+	/**
+	 * Create invite int.
+	 *
+	 * @param groupId        the group id
+	 * @param guestUserId   the guest user id
+	 * @param inviterUserId the inviter user id
+	 * @return the int
+	 * @throws SQLException the sql exception
+	 */
+	public int createInvite(int groupId, int guestUserId, int inviterUserId) throws SQLException {
+		logger.debug("Creating invite for group {} with guest {} by user {}", groupId, guestUserId, inviterUserId);
 
-	public int createInvite(int group_id, int guest_user_id, int inviter_user_id) throws SQLException {
-		logger.debug("Creating invite for group {} with guest {} by user {}", group_id, guest_user_id, inviter_user_id);
 		//language=SQLite
 		String query = "INSERT INTO invites (group_id, guest_user_id, inviter_user_id) VALUES (?, ?, ?)";
-		return dbManager.executeWrite(query, group_id, guest_user_id, inviter_user_id);
+
+		return dbManager.executeWrite(query, groupId, guestUserId, inviterUserId);
 	}
 
-	public List<Invite> getAllInvitesFromUser(String userEmail) throws SQLException {
-		logger.debug("Getting all invites for user {}", userEmail);
+	/**
+	 * Gets all invites from user.
+	 *
+	 * @param userId the id
+	 * @return the all invites from user
+	 * @throws SQLException the sql exception
+	 */
+	public List<Invite> getAllInvitesFromUser(int userId) throws SQLException {
+		logger.debug("Getting all invites for user {}", userId);
 
 		//TODO: guester_user_name + inviter_user_name
 		//language=SQLite
@@ -35,36 +60,71 @@ public class InviteDAO extends DAO {
 		                        JOIN groups ON groups.id = invites.group_id
 		                        JOIN users AS guest ON guest.id = invites.guest_user_id
 		               		JOIN users AS inviter ON inviter.id = invites.inviter_user_id
-		               WHERE guest.email = ?""";
+		               WHERE guest.id = ?""";
 
-		List<Map<String, Object>> result = dbManager.executeRead(query, userEmail);
+		List<Map<String, Object>> result = dbManager.executeRead(query, userId);
 		List<Invite> invites = new ArrayList<>();
 		for (Map<String, Object> row : result)
 			invites.add(
 					Invite.builder()
 							.id((int) row.get("id"))
 							.groupId((int) row.get("group_id"))
-							.inverterEmail((String) row.get("inviter_email"))
+							.inverterEmail((String) row.get("inviter_email")) //TODO: add Pair<String, String> with inviter name and userEmail
 							.build()
 			);
+
 		return invites;
 	}
 
-	//TODO: rollback system (ex: can delete invite but can't insert into group_users)
-	public boolean acceptInvite(int invite_id) throws SQLException {
-		logger.debug("Accepting invite with id {}", invite_id);
+	/**
+	 * Accept invite boolean.
+	 *
+	 * @param inviteId the invite id
+	 * @return the boolean
+	 * @throws SQLException the sql exception
+	 */
+//TODO: rollback system (ex: can delete invite but can't insert into group_users)
+	public boolean acceptInvite(int inviteId) throws SQLException {
+		logger.debug("Accepting invite with id {}", inviteId);
+
 		//language=SQLite
 		String queryDelete = "DELETE FROM invites WHERE id = ?";
 		//language=SQLite
 		String queryInsert = "INSERT INTO group_users (group_id, user_id) SELECT group_id, guest_user_id FROM invites WHERE id = ?";
-		dbManager.executeWrite(queryDelete, invite_id);
-		return dbManager.executeWrite(queryInsert, invite_id) > 0;
+
+		dbManager.executeWrite(queryDelete, inviteId);
+		return dbManager.executeWrite(queryInsert, inviteId) > 0;
 	}
 
-	public boolean declineInvite(int invite_id) throws SQLException {
-		logger.debug("Declining invite with id {}", invite_id);
+	/**
+	 * Decline invite boolean.
+	 *
+	 * @param inviteId the invite id
+	 * @return the boolean
+	 * @throws SQLException the sql exception
+	 */
+	public boolean declineInvite(int inviteId) throws SQLException {
+		logger.debug("Declining invite with id {}", inviteId);
+
 		//language=SQLite
 		String query = "DELETE FROM invites WHERE id = ?";
-		return dbManager.executeWrite(query, invite_id) > 0;
+
+		return dbManager.executeWrite(query, inviteId) > 0;
+	}
+
+	/**
+	 * Delete invite boolean.
+	 *
+	 * @param inviteId the invite id
+	 * @return the boolean
+	 * @throws SQLException the sql exception
+	 */
+	public boolean deleteInvite(int inviteId) throws SQLException {
+		logger.debug("Deleting invite with id {}", inviteId);
+
+		//language=SQLite
+		String query = "DELETE FROM invites WHERE id = ?";
+
+		return dbManager.executeWrite(query, inviteId) > 0;
 	}
 }

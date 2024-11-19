@@ -7,22 +7,7 @@ import pt.isec.pd.splitwise.sharedLib.network.response.Response;
 public record DeleteGroup(int groupId) implements Request {
 	@Override
 	public Response execute(DataBaseManager context) {
-		logger.debug("DeleteGroup: {}", this);
-		/*//language=SQLite
-		String query = """
-		               DELETE
-		               FROM
-		                	groups
-		               WHERE
-		                    id = ?
-		               """;
-
-		try {
-			context.setData(query, groupId);
-		} catch ( Exception e ) {
-			logger.error("DeleteGroup: {}", e.getMessage());
-			return new Response(false, "Failed to delete group");
-		}*/
+		logger.debug("Deleting group {}", groupId);
 
 		try {
 			context.getGroupDAO().deleteGroup(groupId);

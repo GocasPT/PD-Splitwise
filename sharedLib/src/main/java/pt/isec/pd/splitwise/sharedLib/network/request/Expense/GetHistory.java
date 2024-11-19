@@ -9,15 +9,14 @@ import pt.isec.pd.splitwise.sharedLib.network.response.Response;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public record GetHistory(int groupID) implements Request {
 	@Override
 	public Response execute(DataBaseManager context) {
-		logger.debug("Getting history of group with ID: {}", groupID);
-		List<DetailExpenseDTO> expensesHistory = new ArrayList<>();
+		logger.debug("Getting history of group {}", groupID);
 
+		List<DetailExpenseDTO> expensesHistory = new ArrayList<>();
 		try {
-			context.getExpenseDAO().getExpensesFromGroup(groupID).forEach(expense -> {
+			context.getExpenseDAO().getAllExpensesFromGroup(groupID).forEach(expense -> {
 				expensesHistory.add(
 						new DetailExpenseDTO(
 								expense.getAmount(),

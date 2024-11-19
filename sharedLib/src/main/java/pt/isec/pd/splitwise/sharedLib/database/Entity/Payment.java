@@ -10,7 +10,7 @@ import java.util.Objects;
 @Setter
 @Getter
 @SuperBuilder
-//TODO: name OR email → name (?)
+//TODO: name OR userEmail → name (?)
 public final class Payment extends Entity {
 	private String groupName;
 	private Double value;

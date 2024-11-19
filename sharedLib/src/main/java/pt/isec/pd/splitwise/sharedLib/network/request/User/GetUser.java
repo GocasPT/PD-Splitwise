@@ -1,6 +1,5 @@
 package pt.isec.pd.splitwise.sharedLib.network.request.User;
 
-
 import pt.isec.pd.splitwise.sharedLib.database.DTO.User.DetailUserDTO;
 import pt.isec.pd.splitwise.sharedLib.database.DataBaseManager;
 import pt.isec.pd.splitwise.sharedLib.database.Entity.User;
@@ -11,7 +10,7 @@ import pt.isec.pd.splitwise.sharedLib.network.response.ValueResponse;
 public record GetUser(String email) implements Request {
 	@Override
 	public Response execute(DataBaseManager context) {
-		logger.debug("Getting user: {}", email);
+		logger.debug("Getting user '{}' info", email);
 
 		DetailUserDTO user;
 		try {

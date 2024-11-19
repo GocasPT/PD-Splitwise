@@ -162,7 +162,7 @@ public class GroupController extends BaseController {
 		vbox.setPadding(new Insets(10));
 
 		TextField emailField = new TextField();
-		emailField.setPromptText("Enter email");
+		emailField.setPromptText("Enter userEmail");
 
 		Button btnInvite = new Button("Invite");
 		Button btnCancel = new Button("Cancel");
@@ -238,7 +238,7 @@ public class GroupController extends BaseController {
 						new Card.Builder()
 								.id("member-card")
 								.title(member.username())
-								.description(member.email())
+								.description(member.userEmail())
 								.addStyleClass("member-card")
 								.build()
 				);

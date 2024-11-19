@@ -15,8 +15,8 @@ public final class Expense extends Entity {
 	private double amount;
 	private String description;
 	private LocalDate date;
-	private String buyerEmail; //TODO: email → pair<username, email>
-	private String[] participantsEmail; //TODO: email → pair<username, email>
+	private String buyerEmail; //TODO: userEmail → pair<username, userEmail>
+	private String[] participantsEmail; //TODO: userEmail → pair<username, userEmail>
 
 	public Expense(int id, int groupId, double amount, String description, LocalDate date,
 	               String buyerEmail, String[] participantsEmail) {

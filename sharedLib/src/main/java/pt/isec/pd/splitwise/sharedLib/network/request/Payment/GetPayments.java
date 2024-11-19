@@ -1,6 +1,5 @@
 package pt.isec.pd.splitwise.sharedLib.network.request.Payment;
 
-
 import pt.isec.pd.splitwise.sharedLib.database.DTO.Payment.PreviewPaymentDTO;
 import pt.isec.pd.splitwise.sharedLib.database.DataBaseManager;
 import pt.isec.pd.splitwise.sharedLib.network.request.Request;
@@ -13,20 +12,21 @@ import java.util.List;
 public record GetPayments(int groupID) implements Request {
 	@Override
 	public Response execute(DataBaseManager context) {
-		logger.debug("GetPayments: {}", this);
+		logger.debug("Getting payments from group {}", groupID);
 
-		//Todo: check this later
 		List<PreviewPaymentDTO> payments = new ArrayList<>();
 		try {
-			payments = context.getPaymentDAO().getPaymentsFromGroup(groupID).stream().map(
-					payment -> new PreviewPaymentDTO(
-							payment.getId(),
-							payment.getValue(),
-							payment.getDate(),
-							payment.getBuyerName(),
-							payment.getReciverName()
+			context.getPaymentDAO().getAllPaymentsFromGroup(groupID).forEach(
+					payment -> payments.add(
+							new PreviewPaymentDTO(
+									payment.getId(),
+									payment.getValue(),
+									payment.getDate(),
+									payment.getBuyerName(),
+									payment.getReciverName()
+							)
 					)
-			).toList();
+			);
 		} catch ( Exception e ) {
 			logger.error("GetPayments: {}", e.getMessage());
 			return new ListResponse<>("Fault to get payments");
