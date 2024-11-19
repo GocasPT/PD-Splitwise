@@ -52,19 +52,14 @@ public class NavBarController extends BaseController {
 	}
 
 	private void updateButtonStyles() {
-		//TODO: remove style button
-		String defaultStyle = "-fx-background-color: #2196F3";
-		String activeStyle = "-fx-background-color: #4CAF50";
-
-		//TODO: add style button
-		btnGroups.setStyle(defaultStyle);
-		btnInvites.setStyle(defaultStyle);
-		btnUser.setStyle(defaultStyle);
+		btnGroups.getStyleClass().remove("active");
+		btnInvites.getStyleClass().remove("active");
+		btnUser.getStyleClass().remove("active");
 
 		switch (currentButton.get()) {
-			case GROUPS -> btnGroups.setStyle(activeStyle);
-			case INVITES -> btnInvites.setStyle(activeStyle);
-			case USER -> btnUser.setStyle(activeStyle);
+			case GROUPS -> btnGroups.getStyleClass().add("active");
+			case INVITES -> btnInvites.getStyleClass().add("active");
+			case USER -> btnUser.getStyleClass().add("active");
 		}
 	}
 
