@@ -16,6 +16,7 @@ public class ControllerFactory {
 			case "GroupController" -> new GroupController(viewManager, modelManager);
 			case "AddExpenseController" -> new AddExpenseController(viewManager, modelManager);
 			case "UserController" -> new UserController(viewManager, modelManager);
+			case "SettingsController" -> new SettingsController(viewManager, modelManager);
 			default -> throw new IllegalArgumentException("Unknown controller type: " + controllerType.getName());
 		};
 	}

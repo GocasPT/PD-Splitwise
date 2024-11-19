@@ -61,11 +61,11 @@ public class ModelManager {
 		return null;
 	}
 
-	public void setNavBarState(ENavBarState state) {
-		navBarStateProperty.set(state);
-	}
-
 	public ENavBarState getNavBarState() {
 		return navBarStateProperty.get();
+	}
+
+	public void setNavBarState(ENavBarState state) {
+		navBarStateProperty.set(state);
 	}
 }

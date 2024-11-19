@@ -31,7 +31,7 @@ public record GetHistory(int groupID) implements Request {
 			return new ListResponse<>("Failed to get expense history");
 		}
 
-		return new ListResponse<>(expensesHistory.toArray());
+		return new ListResponse<>(expensesHistory.toArray(DetailExpenseDTO[]::new));
 	}
 
 	@Override
