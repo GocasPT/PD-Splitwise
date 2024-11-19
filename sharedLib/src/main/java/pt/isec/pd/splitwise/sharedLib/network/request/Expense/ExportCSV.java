@@ -10,10 +10,9 @@ import pt.isec.pd.splitwise.sharedLib.network.response.ValueResponse;
 
 import java.io.File;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.util.List;
 
-public record Export(int groupID) implements Request {
+public record ExportCSV(int groupID) implements Request {
 	@Override
 	public Response execute(DataBaseManager context) {
 		logger.debug("Exporting expenses from group {}", groupID);
@@ -42,7 +41,7 @@ public record Export(int groupID) implements Request {
 			//TODO: send file to client (maybe divide in chunks)
 			return new ValueResponse<>(csvFile);
 		} catch ( Exception e ) {
-			logger.error("Export: {}", e.getMessage());
+			logger.error("ExportCSV: {}", e.getMessage());
 			return new ValueResponse<>("Fail to export history file");
 		}
 	}

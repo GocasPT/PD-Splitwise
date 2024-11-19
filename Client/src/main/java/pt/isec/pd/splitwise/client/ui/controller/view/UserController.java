@@ -21,8 +21,6 @@ public class UserController extends BaseController {
 	@FXML
 	private BorderPane homePane;
 	@FXML
-	private Text txtGroupName;
-	@FXML
 	private Button btnLogout;
 	@FXML
 	private Text txtEmail;
@@ -39,19 +37,14 @@ public class UserController extends BaseController {
 
 	@Override
 	protected void registerHandlers() {
-		//super.registerHandlers();
-		btnEdit.setOnAction(e -> {
-			try {
-				editUSerPopUp();
-			} catch ( Exception ex ) {
-				viewManager.showError("Failed to edit user: " + ex.getMessage());
-			}
-		});
+		btnEdit.setOnAction(e -> editPopup());
+		btnLogout.setOnAction(e -> logoutPopup());
 	}
 
 	@Override
 	protected void update() {
-		fetchUser();
+		GetUser request = new GetUser(modelManager.getEmailLoggedUser());
+		viewManager.sendRequestAsync(request, this::handleResponse);
 	}
 
 	@Override
@@ -61,15 +54,21 @@ public class UserController extends BaseController {
 			return;
 		}
 
-		ValueResponse<DetailUserDTO> valueResponse = (ValueResponse<DetailUserDTO>) response; //TODO: check this warning
-		DetailUserDTO user = valueResponse.getValue();
-		txtUsername.setText(user.username());
-		txtEmail.setText(user.email());
-		txtPhoneNumber.setText(user.phoneNumber());
+		if (response instanceof ValueResponse valueResponse) {
+			if (valueResponse.getValue() instanceof DetailUserDTO user) {
+				txtUsername.setText(user.username());
+				txtEmail.setText(user.email());
+				txtPhoneNumber.setText(user.phoneNumber());
+			} else {
+				viewManager.showError("Failed to get user data");
+			}
+		} else {
+			viewManager.showError("Failed to cast response to ValueResponse");
+		}
 	}
 
 	//TODO: improve this (builder pattern)
-	private void editUSerPopUp() {
+	private void editPopup() {
 		try {
 			EditUserDialog dialog = new EditUserDialog(homePane.getScene().getWindow());
 			dialog.showAndWait().ifPresent(
@@ -95,8 +94,6 @@ public class UserController extends BaseController {
 		}
 	}
 
-	private void fetchUser() {
-		GetUser request = new GetUser(modelManager.getEmailLoggedUser());
-		viewManager.sendRequestAsync(request, this::handleResponse);
+	private void logoutPopup() {
 	}
 }

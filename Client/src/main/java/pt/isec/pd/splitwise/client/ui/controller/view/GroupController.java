@@ -1,26 +1,22 @@
 package pt.isec.pd.splitwise.client.ui.controller.view;
 
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXML;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
 import pt.isec.pd.splitwise.client.model.ModelManager;
 import pt.isec.pd.splitwise.client.ui.component.Card;
 import pt.isec.pd.splitwise.client.ui.controller.BaseController;
 import pt.isec.pd.splitwise.client.ui.manager.ViewManager;
 import pt.isec.pd.splitwise.sharedLib.database.DTO.Expense.DetailExpenseDTO;
 import pt.isec.pd.splitwise.sharedLib.database.DTO.Group.PreviewGroupDTO;
+import pt.isec.pd.splitwise.sharedLib.network.request.Expense.ExportCSV;
 import pt.isec.pd.splitwise.sharedLib.network.request.Expense.GetHistory;
+import pt.isec.pd.splitwise.sharedLib.network.request.Expense.GetTotalExpenses;
 import pt.isec.pd.splitwise.sharedLib.network.request.Group.GetGroup;
-import pt.isec.pd.splitwise.sharedLib.network.request.Invite.InviteUser;
+import pt.isec.pd.splitwise.sharedLib.network.request.Payment.ViewBalance;
 import pt.isec.pd.splitwise.sharedLib.network.request.Request;
 import pt.isec.pd.splitwise.sharedLib.network.response.ListResponse;
 import pt.isec.pd.splitwise.sharedLib.network.response.Response;
@@ -31,6 +27,8 @@ import java.io.IOException;
 public class GroupController extends BaseController {
 	@FXML
 	public Button btnSettings;
+	@FXML
+	private Button btnExpenses;
 	@FXML
 	public Button btnAddExpense;
 	@FXML
@@ -44,10 +42,14 @@ public class GroupController extends BaseController {
 	@FXML
 	private Button btnExport;
 	@FXML
-	private VBox vbExpenses; //TODO: vbExpenses → vbItems (Expenses, Payments, Members)
+	private VBox vbInfo;
+
+	private enum EGroupView { EXPENSES, BALANCE, TOTAL_SPEND }
+	private final ObjectProperty<EGroupView> groupViewState;
 
 	public GroupController(ViewManager viewManager, ModelManager modelManager) {
 		super(viewManager, modelManager);
+		groupViewState = new SimpleObjectProperty<>(EGroupView.EXPENSES);
 	}
 
 	@Override
@@ -60,6 +62,8 @@ public class GroupController extends BaseController {
 			}
 		});
 
+		btnExpenses.setOnAction(e -> groupViewState.set(EGroupView.EXPENSES));
+
 		btnAddExpense.setOnAction(e -> {
 			try {
 				viewManager.showView("add_expense_view");
@@ -68,13 +72,28 @@ public class GroupController extends BaseController {
 			}
 		});
 
-		btnPay.setOnAction(e -> {}); //TODO: show view to pay
+		btnPay.setOnAction(e -> {
+			try {
+				viewManager.showView("payment_view");
+			} catch ( Exception ex ) {
+				viewManager.showError("Failed to show add expense: " + ex.getMessage());
+			}
+		});
 
-		btnBalance.setOnAction(e -> {}); //TODO: update vbox
+		btnBalance.setOnAction(e -> groupViewState.set(EGroupView.BALANCE));
+		btnTotalSpend.setOnAction(e -> groupViewState.set(EGroupView.TOTAL_SPEND));
+		btnExport.setOnAction(e -> exportPopup());
 
-		btnTotalSpend.setOnAction(e -> {}); //TODO: update vbox
+		groupViewState.addListener((observable, oldValue, newValue) -> {
+			if (oldValue == newValue) return;
 
-		btnExport.setOnAction(e -> {}); //TODO: popup to select folder destination
+			//TODO: style buttons
+			switch (newValue) {
+				case EXPENSES -> fetchExpenses();
+				case BALANCE -> fetchBalance();
+				case TOTAL_SPEND -> fetchTotalSpend();
+			}
+		});
 	}
 
 	@Override
@@ -123,11 +142,11 @@ public class GroupController extends BaseController {
 				if (listResponse.getList() instanceof DetailExpenseDTO[] expenses) {
 
 
-					vbExpenses.getChildren().clear();
+					vbInfo.getChildren().clear();
 					try {
 						for (DetailExpenseDTO expense : expenses)
 							//TODO: add month separator (new month → new separator)
-							vbExpenses.getChildren().add(
+							vbInfo.getChildren().add(
 									new Card.Builder()
 											.id("expense-card")
 											//.avatar() //TODO: category icon using ikonli icons
@@ -150,6 +169,42 @@ public class GroupController extends BaseController {
 			} else {
 				viewManager.showError("Failed to cast response to ListResponse");
 			}
+		}));
+	}
+
+	private void fetchBalance() {
+		Request request = new GetTotalExpenses(modelManager.getGroupInViewId());
+		viewManager.sendRequestAsync(request, (response -> {
+			if (!response.isSuccess()) {
+				viewManager.showError(response.getErrorDescription());
+				return;
+			}
+
+			//TODO: show balance
+		}));
+	}
+
+	private void fetchTotalSpend() {
+		Request request = new ViewBalance(modelManager.getGroupInViewId());
+		viewManager.sendRequestAsync(request, (response -> {
+			if (!response.isSuccess()) {
+				viewManager.showError(response.getErrorDescription());
+				return;
+			}
+
+			//TODO: show view balance with graph + details
+		}));
+	}
+
+	private void exportPopup() {
+		Request request = new ExportCSV(modelManager.getGroupInViewId());
+		viewManager.sendRequestAsync(request, (response -> {
+			if (!response.isSuccess()) {
+				viewManager.showError(response.getErrorDescription());
+				return;
+			}
+
+			//TODO: get CSV file
 		}));
 	}
 

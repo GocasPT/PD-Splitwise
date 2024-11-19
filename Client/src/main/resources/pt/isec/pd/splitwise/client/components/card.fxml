@@ -13,9 +13,6 @@
     </padding>
 
     <HBox fx:id="headerBox" alignment="CENTER_LEFT" spacing="12">
-        <ImageView fx:id="avatarView" fitHeight="40.0" fitWidth="40.0">
-            <Image url="@../img/image_missing.png"/>
-        </ImageView>
         <VBox spacing="4">
             <HBox alignment="CENTER_LEFT" spacing="8">
                 <Label fx:id="titleLabel" styleClass="card-title" text="[TITLE]"/>

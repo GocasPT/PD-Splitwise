@@ -26,8 +26,6 @@ public class Card extends VBox {
 	@FXML
 	private HBox headerBox;
 	@FXML
-	private ImageView avatarView;
-	@FXML
 	private Label titleLabel;
 	@FXML
 	private Label subtitleLabel;
@@ -44,8 +42,6 @@ public class Card extends VBox {
 
 	private Card() throws IOException {
 		loadFXML();
-		avatarView.setVisible(false);
-		avatarView.setManaged(false);
 		titleLabel.setVisible(false);
 		titleLabel.setManaged(false);
 		subtitleLabel.setVisible(false);
@@ -144,11 +140,6 @@ public class Card extends VBox {
 				card.setId(id);
 
 			card.getStyleClass().addAll(styleClasses);
-
-			if (avatar != null) {
-				card.avatarView.setImage(avatar);
-				showNode(card.avatarView);
-			}
 
 			if (title != null) {
 				card.titleLabel.setText(title);
