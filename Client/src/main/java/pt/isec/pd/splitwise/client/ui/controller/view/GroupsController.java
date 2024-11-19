@@ -93,7 +93,7 @@ public class GroupsController extends BaseController {
 						new Card.Builder()
 								.id("group-card")
 								.title(group.name())
-								.subtitle(group.members_number() + " members")
+								.subtitle(group.membersNumber() + " members")
 								.onMouseClicked(e -> {
 									modelManager.setGroupInViewId(group.id());
 									viewManager.showView("group_view");

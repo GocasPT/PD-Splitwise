@@ -22,8 +22,8 @@ public record GetPayments(int groupID) implements Request {
 									payment.getId(),
 									payment.getValue(),
 									payment.getDate(),
-									payment.getBuyerName(),
-									payment.getReciverName()
+									payment.getBuyerEmail(),
+									payment.getReceiverEmail()
 							)
 					)
 			);

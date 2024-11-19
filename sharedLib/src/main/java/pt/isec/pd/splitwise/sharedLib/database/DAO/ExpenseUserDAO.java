@@ -154,7 +154,7 @@ public class ExpenseUserDAO extends DAO {
 							.id((int) row.get("id"))
 							.username((String) row.get("username"))
 							.email((String) row.get("userEmail"))
-							.phoneNumber((String) row.get("phone_number"))
+							.phoneNumber((String) row.get("phoneNumber"))
 							.build()
 			);
 

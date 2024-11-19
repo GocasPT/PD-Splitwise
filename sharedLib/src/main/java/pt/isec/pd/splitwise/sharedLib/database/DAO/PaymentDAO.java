@@ -48,8 +48,8 @@ public class PaymentDAO extends DAO {
 				.value((double) result.get("amount"))
 				.date(LocalDate.ofInstant(Instant.ofEpochSecond((long) result.get("date")),
 				                          TimeZone.getDefault().toZoneId()))
-				.buyerName((String) result.get("from_user_id")) //TODO: id → userEmail
-				.reciverName((String) result.get("for_user_id")) //TODO: id → userEmail
+				.buyerEmail((String) result.get("from_user_id")) //TODO: id → userEmail
+				.receiverEmail((String) result.get("for_user_id")) //TODO: id → userEmail
 				.build();
 	}
 
@@ -79,8 +79,8 @@ public class PaymentDAO extends DAO {
 							.value((double) row.get("amount"))
 							.date(LocalDate.ofInstant(Instant.ofEpochSecond((long) row.get("date")),
 							                          TimeZone.getDefault().toZoneId()))
-							.buyerName((String) row.get("from_user_id")) //TODO: id → userEmail
-							.reciverName((String) row.get("for_user_id")) //TODO: id → userEmail
+							.buyerEmail((String) row.get("from_user_id")) //TODO: id → userEmail
+							.receiverEmail((String) row.get("for_user_id")) //TODO: id → userEmail
 							.build()
 			);
 		return payments;

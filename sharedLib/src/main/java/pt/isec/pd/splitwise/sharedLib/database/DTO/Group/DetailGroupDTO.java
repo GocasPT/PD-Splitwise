@@ -7,12 +7,11 @@ import java.util.List;
 
 public record DetailGroupDTO(int id, String name, List<PreviewExpenseDTO> expenses
 ) implements Serializable {
-	//TODO: refactor this
 	@Override
 	public String toString() {
 		return "DetailGroupDTO{" +
-		       "name='" + name + '\'' +
-		       ", expenses=" + expenses +
+		       "name=: " + name + '\'' +
+		       ", expenses: " + expenses +
 		       '}';
 	}
 }

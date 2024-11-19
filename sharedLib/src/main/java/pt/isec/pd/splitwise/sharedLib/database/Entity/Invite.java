@@ -31,10 +31,10 @@ public final class Invite extends Entity {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 
-		sb.append("Invite [id: ").append(id);
+		sb.append("Invite {id: ").append(id);
 		sb.append(", group: ").append(groupId);
 		if (inverterEmail != null) sb.append(", user: ").append(inverterEmail);
-		sb.append("]");
+		sb.append("}");
 
 		return sb.toString();
 	}

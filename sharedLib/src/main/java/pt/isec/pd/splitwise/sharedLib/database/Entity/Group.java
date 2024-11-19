@@ -40,7 +40,7 @@ public final class Group extends Entity {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 
-		sb.append("Group [id: ").append(id);
+		sb.append("Group {id: ").append(id);
 		sb.append(", name: ").append(name);
 
 		if (members == null) sb.append(", numUsers: ").append(numUsers);
@@ -49,7 +49,7 @@ public final class Group extends Entity {
 			sb.append(",\n\texpenses: ").append(expenses);
 			sb.append(",\n\tpayments: ").append(payments).append("\n");
 		}
-		sb.append("]");
+		sb.append("}");
 
 		return sb.toString();
 	}

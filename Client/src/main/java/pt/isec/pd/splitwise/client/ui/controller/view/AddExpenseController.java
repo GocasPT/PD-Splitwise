@@ -23,6 +23,7 @@ import pt.isec.pd.splitwise.sharedLib.network.request.Group.GetUsersOnGroup;
 import pt.isec.pd.splitwise.sharedLib.network.response.Response;
 import pt.isec.pd.splitwise.sharedLib.network.response.ValueResponse;
 
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.Map;
@@ -208,12 +209,9 @@ public class AddExpenseController extends BaseController {
 		String amountStr = tfAmount.getText();
 		double amount = Double.parseDouble(amountStr);
 		String description = tfDescription.getText();
-		long date = datePicker.getValue().atStartOfDay(
-				ZoneId.systemDefault()).toEpochSecond(); //TODO: check this later (date format)
-		//int payerId = cbPayerUser.getValue().id();
-		String payerId = cbPayerUser.getValue().email();
-		//int[] associatedUsersId = ccbAssociatedUsers.getCheckModel().getCheckedItems().stream().mapToInt(PreviewUserDTO::id).toArray();
-		String[] associatedUsersId = ccbAssociatedUsers.getCheckModel().getCheckedItems().stream().map(
+		LocalDate date = datePicker.getValue();
+		String payerEmail = cbPayerUser.getValue().email();
+		String[] associatedUsersEmail = ccbAssociatedUsers.getCheckModel().getCheckedItems().stream().map(
 				PreviewUserDTO::email).toArray(String[]::new);
 
 		InsertExpense request = new InsertExpense(
@@ -221,8 +219,8 @@ public class AddExpenseController extends BaseController {
 				amount,
 				description,
 				date,
-				payerId,
-				associatedUsersId
+				payerEmail,
+				associatedUsersEmail
 		);
 
 		viewManager.sendRequestAsync(request, this::handleResponse);

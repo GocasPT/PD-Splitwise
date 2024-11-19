@@ -65,7 +65,7 @@ public class UserController extends BaseController {
 		DetailUserDTO user = valueResponse.getValue();
 		txtUsername.setText(user.username());
 		txtEmail.setText(user.email());
-		txtPhoneNumber.setText(user.phone_number());
+		txtPhoneNumber.setText(user.phoneNumber());
 	}
 
 	//TODO: improve this (builder pattern)

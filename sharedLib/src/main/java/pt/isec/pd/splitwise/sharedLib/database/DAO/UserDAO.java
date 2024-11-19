@@ -63,7 +63,7 @@ public class UserDAO extends DAO {
 							.id((int) row.get("id"))
 							.username((String) row.get("username"))
 							.email((String) row.get("userEmail"))
-							.phoneNumber((String) row.get("phone_number"))
+							.phoneNumber((String) row.get("phoneNumber"))
 							.password((String) row.get("password"))
 							.build()
 			);
@@ -94,7 +94,7 @@ public class UserDAO extends DAO {
 				.id((int) row.get("id"))
 				.username((String) row.get("username"))
 				.email((String) row.get("userEmail"))
-				.phoneNumber((String) row.get("phone_number"))
+				.phoneNumber((String) row.get("phoneNumber"))
 				.password((String) row.get("password"))
 				.build();
 	}
@@ -122,7 +122,7 @@ public class UserDAO extends DAO {
 				.id((int) row.get("id"))
 				.username((String) row.get("username"))
 				.email((String) row.get("userEmail"))
-				.phoneNumber((String) row.get("phone_number"))
+				.phoneNumber((String) row.get("phoneNumber"))
 				.password((String) row.get("password"))
 				.build();
 	}

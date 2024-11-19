@@ -35,10 +35,10 @@ public final class User extends Entity {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 
-		sb.append("User [username: ").append(username);
+		sb.append("User {username: ").append(username);
 		if (email != null) sb.append(", guestUserEmail: ").append(email);
 		if (phoneNumber != null) sb.append(", phone: ").append(phoneNumber);
-		sb.append("]");
+		sb.append("}");
 
 		return sb.toString();
 	}
