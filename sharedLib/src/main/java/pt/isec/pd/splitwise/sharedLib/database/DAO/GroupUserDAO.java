@@ -96,7 +96,8 @@ public class GroupUserDAO extends DAO{
 		String query = """
 		               SELECT users.id   AS id,
 		                      users.username AS username,
-		                      users.email AS email
+		                      users.email AS email,
+		               		  users.phone_number AS phone_number
 		               FROM users
 		                        JOIN group_users ON users.id = group_users.user_id
 		               WHERE group_users.group_id = ?""";
@@ -109,7 +110,8 @@ public class GroupUserDAO extends DAO{
 					User.builder()
 							.id((int) row.get("id"))
 							.username((String) row.get("username"))
-							.email((String) row.get("userEmail"))
+							.email((String) row.get("email"))
+							.phoneNumber((String) row.get("phone_number"))
 							.build()
 			);
 

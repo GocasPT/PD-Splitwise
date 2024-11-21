@@ -1,5 +1,10 @@
 package pt.isec.pd.splitwise.client.ui.controller.view;
 
+import javafx.beans.property.ListProperty;
+import javafx.beans.property.ReadOnlyListWrapper;
+import javafx.beans.property.SimpleListProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -14,17 +19,23 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import pt.isec.pd.splitwise.client.model.ModelManager;
 import pt.isec.pd.splitwise.client.ui.component.Card;
+import pt.isec.pd.splitwise.client.ui.component.UsersSearchField;
 import pt.isec.pd.splitwise.client.ui.controller.BaseController;
 import pt.isec.pd.splitwise.client.ui.manager.ViewManager;
 import pt.isec.pd.splitwise.sharedLib.database.DTO.User.DetailUserDTO;
 import pt.isec.pd.splitwise.sharedLib.database.DTO.User.PreviewUserDTO;
+import pt.isec.pd.splitwise.sharedLib.database.Entity.User;
 import pt.isec.pd.splitwise.sharedLib.network.request.Group.GetMembersGroup;
 import pt.isec.pd.splitwise.sharedLib.network.request.Invite.InviteUser;
 import pt.isec.pd.splitwise.sharedLib.network.request.Request;
+import pt.isec.pd.splitwise.sharedLib.network.request.User.GetUsers;
 import pt.isec.pd.splitwise.sharedLib.network.response.ListResponse;
 import pt.isec.pd.splitwise.sharedLib.network.response.Response;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class SettingsController extends BaseController {
 	@FXML
@@ -107,8 +118,29 @@ public class SettingsController extends BaseController {
 		VBox vbox = new VBox(10);
 		vbox.setPadding(new Insets(10));
 
-		TextField emailField = new TextField();
-		emailField.setPromptText("Enter userEmail");
+		ListProperty<User> members = new SimpleListProperty<>();
+		members.addListener((observable, oldValue, newValue) -> {
+			System.out.println("UPDATE: " + newValue);
+		});
+
+		Request requestMembers = new GetUsers();
+		viewManager.sendRequestAsync(requestMembers, (response -> {
+			if (!response.isSuccess()) {
+				viewManager.showError("Failed to fetch members: " + response.getErrorDescription());
+				return;
+			}
+
+			if (response instanceof ListResponse listResponse) {
+				if (listResponse.getList() instanceof PreviewUserDTO[] users) {
+					for (PreviewUserDTO user : users) {
+						System.out.println("User: " + user);
+						members.add(User.builder().email(user.email()).build());
+					}
+				}
+			}
+		}));
+
+		UsersSearchField emailField = new UsersSearchField(members);
 
 		Button btnInvite = new Button("Invite");
 		Button btnCancel = new Button("Cancel");
