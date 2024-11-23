@@ -26,8 +26,8 @@ public record GetInvites(String userEmail) implements Request {
 									new PreviewInviteDTO(
 											invite.getId(),
 											context.getGroupDAO().getGroupById(invite.getGroupId()).getName(),
-											invite.getInverterEmail(),
-											context.getUserDAO().getUserByEmail(invite.getInverterEmail()).getUsername()
+											invite.getGuestUserEmail(),
+											context.getUserDAO().getUserByEmail(invite.getGuestUserEmail()).getUsername()
 									)
 							);
 						} catch ( SQLException e ) {

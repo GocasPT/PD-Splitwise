@@ -13,6 +13,7 @@ module pt.isec.pd.client {
 	requires org.controlsfx.controls;
 	requires org.kordamp.ikonli.materialdesign;
 	requires java.desktop;
+	requires org.apache.commons.lang3;
 
 	opens pt.isec.pd.splitwise.client to javafx.fxml;
 	opens pt.isec.pd.splitwise.client.model to javafx.fxml;

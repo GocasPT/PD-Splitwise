@@ -69,7 +69,7 @@ public class InviteDAO extends DAO {
 					Invite.builder()
 							.id((int) row.get("id"))
 							.groupId((int) row.get("group_id"))
-							.inverterEmail((String) row.get("inviter_email")) //TODO: add Pair<String, String> with inviter name and userEmail
+							.guestUserEmail((String) row.get("inviter_email")) //TODO: email → pair<username, userEmail>
 							.build()
 			);
 

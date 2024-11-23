@@ -30,11 +30,11 @@ public class PaymentDAO extends DAO {
 		//language=SQLite
 		String query = """
 		               SELECT payments.id      AS id,
-		                      groups.name      AS group_name,
+		                      groups.id      AS group_id,
 		                      payments.amount  AS amount,
 		                      payments.date    AS date,
-		                      payer.username   AS payer,
-		                      reciver.username AS reciver
+		                      payer.email   AS from_user_email,
+		                      reciver.email AS to_user_email
 		               FROM payments
 		                        JOIN groups ON payments.group_id = groups.id
 		                        JOIN users payer ON payments.from_user_id = payer.id
@@ -44,12 +44,14 @@ public class PaymentDAO extends DAO {
 		Map<String, Object> result = dbManager.executeRead(query, paymentId).getFirst();
 		return Payment.builder()
 				.id((int) result.get("id"))
-				.groupName((String) result.get("group_name"))
-				.value((double) result.get("amount"))
-				.date(LocalDate.ofInstant(Instant.ofEpochSecond((long) result.get("date")),
-				                          TimeZone.getDefault().toZoneId()))
-				.buyerEmail((String) result.get("from_user_id")) //TODO: id → userEmail
-				.receiverEmail((String) result.get("for_user_id")) //TODO: id → userEmail
+				.groupId((int) result.get("group_id"))
+				.amount((double) result.get("amount"))
+				.date(LocalDate.ofInstant(
+						Instant.ofEpochSecond((long) result.get("date")),
+						TimeZone.getDefault().toZoneId()
+				))
+				.fromUser((String) result.get("from_user_email"))
+				.toUser((String) result.get("to_user_email"))
 				.build();
 	}
 
@@ -58,11 +60,11 @@ public class PaymentDAO extends DAO {
 		//language=SQLite
 		String query = """
 		               SELECT payments.id      AS id,
-		                      groups.name      AS group_name,
+		                      groups.id      AS group_id,
 		                      payments.amount  AS amount,
 		                      payments.date    AS date,
-		                      payer.username   AS payer,
-		                      reciver.username AS reciver
+		                      payer.email   AS from_user_email,
+		                      reciver.email AS to_user_email
 		               FROM payments
 		                        JOIN groups ON payments.group_id = groups.id
 		                        JOIN users payer ON payments.from_user_id = payer.id
@@ -75,12 +77,14 @@ public class PaymentDAO extends DAO {
 			payments.add(
 					Payment.builder()
 							.id((int) row.get("id"))
-							.groupName((String) row.get("group_name"))
-							.value((double) row.get("amount"))
-							.date(LocalDate.ofInstant(Instant.ofEpochSecond((long) row.get("date")),
-							                          TimeZone.getDefault().toZoneId()))
-							.buyerEmail((String) row.get("from_user_id")) //TODO: id → userEmail
-							.receiverEmail((String) row.get("for_user_id")) //TODO: id → userEmail
+							.groupId((int) row.get("group_id"))
+							.amount((double) row.get("amount"))
+							.date(LocalDate.ofInstant(
+									Instant.ofEpochSecond((long) row.get("date")),
+									TimeZone.getDefault().toZoneId()
+							))
+							.fromUser((String) row.get("from_user_email"))
+							.toUser((String) row.get("to_user_email"))
 							.build()
 			);
 		return payments;

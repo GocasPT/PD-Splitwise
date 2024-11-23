@@ -1,14 +1,20 @@
 package pt.isec.pd.splitwise.sharedLib.database.DTO.Group;
 
-import java.io.Serializable;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-public record PreviewGroupDTO(int id, String name, int membersNumber) implements Serializable {
-	@Override
-	public String toString() {
-		return "PreviewGroupDTO{" +
-		       "id: " + id +
-		       ", name: '" + name + '\'' +
-		       ", membersNumber: " + membersNumber +
-		       '}';
-	}
+import java.io.Serial;
+import java.io.Serializable;
+import java.util.Objects;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public final class PreviewGroupDTO implements Serializable {
+	private int id;
+	private String name;
+	private int membersNumber;
 }

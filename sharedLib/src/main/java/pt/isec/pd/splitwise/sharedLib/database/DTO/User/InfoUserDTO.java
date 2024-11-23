@@ -1,17 +1,22 @@
 package pt.isec.pd.splitwise.sharedLib.database.DTO.User;
 
-import java.io.Serializable;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-public record InfoUserDTO(int id, String username, String email, String phoneNumber,
-                          String password) implements Serializable {
-	@Override
-	public String toString() {
-		return "InfoUserDTO{" +
-		       "id: " + id +
-		       ", username: '" + username + '\'' +
-		       ", userEmail: '" + email + '\'' +
-		       ", phoneNumber: '" + phoneNumber + '\'' +
-		       ", password: '" + password + '\'' +
-		       '}';
-	}
+import java.io.Serial;
+import java.io.Serializable;
+import java.util.Objects;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public final class InfoUserDTO implements Serializable {
+	private int id;
+	private String username;
+	private String email;
+	private String phoneNumber;
+	private String password;
 }

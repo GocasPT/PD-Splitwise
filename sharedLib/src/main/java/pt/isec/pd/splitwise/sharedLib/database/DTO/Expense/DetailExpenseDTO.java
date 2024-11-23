@@ -1,16 +1,21 @@
 package pt.isec.pd.splitwise.sharedLib.database.DTO.Expense;
 
+import lombok.*;
+
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.List;
 
-public record DetailExpenseDTO(double amount, String description, LocalDate date, String user) implements Serializable {
-	@Override
-	public String toString() {
-		return "DetailExpenseDTO{" +
-		       "amount: " + amount +
-		       ", description: '" + description + '\'' +
-		       ", date: " + date +
-		       ", user: '" + user + '\'' +
-		       '}';
-	}
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public final class DetailExpenseDTO implements Serializable {
+	private int id;
+	private double amount;
+	private String title;
+	private LocalDate date;
+	private String registeredBy;
+	private String payerUser;
+	private List<String> associatedUsersList;
 }

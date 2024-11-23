@@ -2,6 +2,7 @@ package pt.isec.pd.splitwise.sharedLib.database.DAO;
 
 import pt.isec.pd.splitwise.sharedLib.database.DataBaseManager;
 import pt.isec.pd.splitwise.sharedLib.database.Entity.Expense;
+import pt.isec.pd.splitwise.sharedLib.database.Entity.User;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -11,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 //TODO: javaDoc
+
 /**
  * The type Expense dao. //TODO: class layer to access database and return expense objects
  */
@@ -37,17 +39,14 @@ public class ExpenseDAO extends DAO {
 	 * @throws SQLException the sql exception
 	 */
 	public int createExpense(int groupId, double amount, String description, LocalDate date, int userPayerId, int[] usersInvolvedId) throws SQLException {
-		//TODO: created expense = insert expense + insert debts with users
 		logger.debug("Creating expense for group {} with amount {} by user {}", groupId, amount, userPayerId);
 
 		//language=SQLite
 		String queryInsert = "INSERT INTO expenses (group_id, amount, description, date, paid_by_user_id) VALUES (?, ?, ?, ?, ?) RETURNING id";
 
-		int id = dbManager.executeWrite(queryInsert, groupId, amount, description, date, userPayerId);
-		for (int userId : usersInvolvedId) {
-			//dbManager.executeWrite(queryInvolveUsers, id, userId, 100 / (usersInvolvedId.length + 1));
-			dbManager.getExpenseUserDAO().createRelation(id, userId, (float) 100 / (usersInvolvedId.length + 1)); //TODO: check if math returns float/double
-		}
+		int id = dbManager.executeWriteWithId(queryInsert, groupId, amount, description, date, userPayerId);
+		for (int userId : usersInvolvedId)
+			dbManager.getExpenseUserDAO().createRelation(id, userId);
 
 		return id;
 	}
@@ -68,7 +67,7 @@ public class ExpenseDAO extends DAO {
 		                   expenses.id AS expense_id,
 		                   expenses.amount AS expense_amount,
 		                   expenses.date AS expense_date,
-		                   payer.username AS payer_username
+		                   payer.email AS payer_email
 		               FROM expenses
 		                   JOIN users AS payer ON expenses.paid_by_user_id = payer.id
 		               WHERE expenses.id = ?
@@ -78,8 +77,11 @@ public class ExpenseDAO extends DAO {
 		return Expense.builder()
 				.id((int) result.get("expense_id"))
 				.amount((double) result.get("expense_amount"))
-				.date(LocalDate.parse((String) result.get("expense_date"), DateTimeFormatter.ISO_DATE))
-				.buyerEmail((String) result.get("payer_username"))
+				.date(LocalDate.parse(
+						(String) result.get("expense_date"),
+						DateTimeFormatter.ISO_DATE
+				))
+				.payerUser((String) result.get("payer_email"))
 				.build();
 	}
 
@@ -99,7 +101,7 @@ public class ExpenseDAO extends DAO {
 		                   expenses.id AS expense_id,
 		                   expenses.amount AS expense_amount,
 		                   expenses.date AS expense_date,
-		                   payer.username AS payer_username
+		                   payer.email AS payer_email
 		               FROM expenses
 		                   JOIN groups ON expenses.group_id = groups.id
 		                   JOIN users AS payer ON expenses.paid_by_user_id = payer.id
@@ -115,8 +117,17 @@ public class ExpenseDAO extends DAO {
 					Expense.builder()
 							.id((int) row.get("expense_id"))
 							.amount((double) row.get("expense_amount"))
-							.date(LocalDate.parse((String) row.get("expense_date"), DateTimeFormatter.ISO_DATE))
-							.buyerEmail((String) row.get("payer_username")) //TODO: Pair<string, string> (userEmail, username)
+							.date(LocalDate.parse(
+									(String) row.get("expense_date"),
+									DateTimeFormatter.ISO_DATE
+							))
+							.payerUser((String) row.get("payer_email"))
+							.associetedUsersList(
+									dbManager.getExpenseUserDAO()
+											.getAllUsersFromExpense((int) row.get("expense_id")).stream()
+											.map(User::getEmail)
+											.toList()
+							)
 							.build()
 			);
 		}
@@ -138,7 +149,8 @@ public class ExpenseDAO extends DAO {
 //TODO: rollback system (?)
 	public void updateExpense(int expenseId, double amount, String description, LocalDate date, int userPayerId, int[] usersInvolvedId) throws SQLException {
 		//TODO: updated expense = update expense + update debts with users (update percentage, remove user, add user)
-		logger.debug("Updating expense with id {}\n\tamount: {}\n\tdescription: {}\n\tdate: {}\n\tpaid by: {}", expenseId,
+		logger.debug("Updating expense with id {}\n\tamount: {}\n\tdescription: {}\n\tdate: {}\n\tpaid by: {}",
+		             expenseId,
 		             amount, description, date, userPayerId);
 
 		//language=SQLite
@@ -148,8 +160,7 @@ public class ExpenseDAO extends DAO {
 		//dbManager.executeWrite(queryDeleteInvolved, id);
 		//TODO: update expense = update expense + update debts with users (update percentage, remove user, add user)
 		for (int userId : usersInvolvedId) {
-			//dbManager.executeWrite(queryInvolveUsers, id, user, 100 / (usersInvolvedId.length + 1));
-			dbManager.getExpenseUserDAO().updateRelation(expenseId, userId, (float) 100 / (usersInvolvedId.length + 1)); //TODO: check if math returns float/double
+			//TODO: query to get all relations, remove old ones, add new ones(if need)
 		}
 	}
 

@@ -20,10 +20,10 @@ public record GetPayments(int groupID) implements Request {
 					payment -> payments.add(
 							new PreviewPaymentDTO(
 									payment.getId(),
-									payment.getValue(),
+									payment.getAmount(),
 									payment.getDate(),
-									payment.getBuyerEmail(),
-									payment.getReceiverEmail()
+									payment.getFromUser(),
+									payment.getToUser()
 							)
 					)
 			);

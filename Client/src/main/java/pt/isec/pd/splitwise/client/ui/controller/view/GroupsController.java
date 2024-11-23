@@ -93,10 +93,10 @@ public class GroupsController extends BaseController {
 				vbGroups.getChildren().add(
 						new Card.Builder()
 								.id("group-card")
-								.title(group.name())
-								.subtitle(group.membersNumber() + " members")
+								.title(group.getName())
+								.subtitle(group.getMembersNumber() + " members")
 								.onMouseClicked(e -> {
-									modelManager.setGroupInViewId(group.id());
+									modelManager.setGroupInViewId(group.getId());
 									viewManager.showView("group_view");
 									modelManager.getNavBarStateProperty().setValue(ENavBarState.NULL);
 								})

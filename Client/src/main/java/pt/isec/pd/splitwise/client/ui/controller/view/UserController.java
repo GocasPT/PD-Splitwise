@@ -56,9 +56,9 @@ public class UserController extends BaseController {
 
 		if (response instanceof ValueResponse valueResponse) {
 			if (valueResponse.getValue() instanceof DetailUserDTO user) {
-				txtUsername.setText(user.username());
-				txtEmail.setText(user.email());
-				txtPhoneNumber.setText(user.phoneNumber());
+				txtUsername.setText(user.getUsername());
+				txtEmail.setText(user.getEmail());
+				txtPhoneNumber.setText(user.getPhoneNumber());
 			} else {
 				viewManager.showError("Failed to get user data");
 			}
@@ -74,10 +74,10 @@ public class UserController extends BaseController {
 			dialog.showAndWait().ifPresent(
 					infoUserDTO -> {
 						Request request = new EditUser(
-								infoUserDTO.username(),
-								infoUserDTO.email(),
-								infoUserDTO.email(),
-								infoUserDTO.password()
+								infoUserDTO.getUsername(),
+								infoUserDTO.getEmail(),
+								infoUserDTO.getEmail(),
+								infoUserDTO.getPassword()
 						);
 
 						viewManager.sendRequestAsync(request, (response) -> {

@@ -1,8 +1,7 @@
 module Splitwsie.sharedLib.main {
-	requires java.xml;
-	requires org.slf4j;
-	requires java.sql;
 	requires static lombok;
+	requires org.xerial.sqlitejdbc;
+	requires org.slf4j;
 
 	exports pt.isec.pd.splitwise.sharedLib.database;
 	exports pt.isec.pd.splitwise.sharedLib.database.DAO;
@@ -20,4 +19,5 @@ module Splitwsie.sharedLib.main {
 	exports pt.isec.pd.splitwise.sharedLib.network.request.User;
 	exports pt.isec.pd.splitwise.sharedLib.network.response;
 	exports pt.isec.pd.splitwise.sharedLib.terminal;
+	exports pt.isec.pd.splitwise.sharedLib.database.DTO.Balance;
 }

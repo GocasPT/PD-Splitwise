@@ -125,7 +125,7 @@ public class AddExpenseController extends BaseController {
 					setText(null);
 				else
 					//setText(item.username() + " <" + item.userEmail() + ">");
-					setText(item.username());
+					setText(item.getEmail());
 			}
 		});
 		cbPayerUser.setCellFactory(param -> new ListCell<>() {
@@ -137,7 +137,7 @@ public class AddExpenseController extends BaseController {
 					setText(null);
 				else
 					//setText(item.username() + " <" + item.userEmail() + ">");
-					setText(item.username());
+					setText(item.getEmail());
 
 			}
 		});
@@ -150,7 +150,7 @@ public class AddExpenseController extends BaseController {
 			@Override
 			public String toString(PreviewUserDTO object) {
 				//return object.username() + " <" + object.userEmail() + ">";
-				return object.username();
+				return object.getEmail();
 			}
 
 			@Override
@@ -210,9 +210,9 @@ public class AddExpenseController extends BaseController {
 		double amount = Double.parseDouble(amountStr);
 		String description = tfDescription.getText();
 		LocalDate date = datePicker.getValue();
-		String payerEmail = cbPayerUser.getValue().email();
+		String payerEmail = cbPayerUser.getValue().getEmail();
 		String[] associatedUsersEmail = ccbAssociatedUsers.getCheckModel().getCheckedItems().stream().map(
-				PreviewUserDTO::email).toArray(String[]::new);
+				PreviewUserDTO::getEmail).toArray(String[]::new);
 
 		InsertExpense request = new InsertExpense(
 				modelManager.getGroupInViewId(),

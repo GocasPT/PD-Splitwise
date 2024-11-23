@@ -152,7 +152,6 @@ public class DataBaseManager {
 			                   """
 			);
 
-			//TODO: add column for user that inserted/created the expense (user can be or not the payer)
 			logger.debug("Creating expenses table");
 			//language=SQLite
 			stmt.executeUpdate("""
@@ -160,12 +159,14 @@ public class DataBaseManager {
 			                   (
 			                   	id 				INTEGER PRIMARY KEY AUTOINCREMENT,
 			                   	group_id 		INTEGER NOT NULL,
-			                   	paid_by_user_id INTEGER NOT NULL,
 			                   	amount 			REAL NOT NULL,
 			                   	description 	TEXT NOT NULL,
 			                   	date 			TEXT NOT NULL,
+			                   	paid_by_user_id INTEGER NOT NULL,
+			                   	inserted_by_user_id INTEGER NOT NULL,
 			                   	FOREIGN KEY (group_id) REFERENCES groups (id),
-			                   	FOREIGN KEY (paid_by_user_id) REFERENCES users (id)
+			                   	FOREIGN KEY (paid_by_user_id) REFERENCES users (id),
+			                   	FOREIGN KEY (inserted_by_user_id) REFERENCES users (id)
 			                   )
 			                   """
 			);
@@ -176,14 +177,16 @@ public class DataBaseManager {
 			                   CREATE TABLE IF NOT EXISTS payments
 			                   (
 			                       id           INTEGER PRIMARY KEY AUTOINCREMENT,
-			                       from_user_id INTEGER NOT NULL,
-			                       for_user_id  INTEGER NOT NULL,
+			                       group_id     INTEGER NOT NULL,
 			                       amount       REAL    NOT NULL,
 			                       date         TEXT    NOT NULL,
-			                       group_id     INTEGER NOT NULL,
+			                       inserted_by_user_id INTEGER NOT NULL,
+			                       from_user_id INTEGER NOT NULL,
+			                       for_user_id  INTEGER NOT NULL,
+			                       FOREIGN KEY (group_id) REFERENCES groups (id),
+			                       FOREIGN KEY (inserted_by_user_id) REFERENCES users (id),
 			                       FOREIGN KEY (from_user_id) REFERENCES users (id),
-			                       FOREIGN KEY (for_user_id) REFERENCES users (id),
-			                       FOREIGN KEY (group_id) REFERENCES groups (id)
+			                       FOREIGN KEY (for_user_id) REFERENCES users (id)
 			                   )
 			                   """
 			);
@@ -196,7 +199,6 @@ public class DataBaseManager {
 			                    id 			INTEGER PRIMARY KEY AUTOINCREMENT,
 			                   	expense_id 	INTEGER NOT NULL,
 			                   	user_id 	INTEGER NOT NULL,
-			                   	percentage 	REAL NOT NULL,
 			                   	FOREIGN KEY (expense_id) REFERENCES expenses (id),
 			                   	FOREIGN KEY (user_id) REFERENCES users (id)
 			                   )
@@ -378,6 +380,7 @@ public class DataBaseManager {
 						throw new SQLException("Operation interrupted during retry", ie);
 					}
 				} else {
+					logger.error("Error executing query: {}", e.getMessage());
 					throw e;
 				}
 			}

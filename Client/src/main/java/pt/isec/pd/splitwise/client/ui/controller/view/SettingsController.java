@@ -95,9 +95,9 @@ public class SettingsController extends BaseController {
 						vbMembers.getChildren().add(
 								new Card.Builder()
 										.id("member-card")
-										.title(member.username())
-										.subtitle(member.email())
-										.description(member.phoneNumber())
+										.title(member.getUsername())
+										.subtitle(member.getEmail())
+										.description(member.getPhoneNumber())
 										.addStyleClass("member-card")
 										.build()
 						);
@@ -119,9 +119,6 @@ public class SettingsController extends BaseController {
 		vbox.setPadding(new Insets(10));
 
 		ListProperty<User> members = new SimpleListProperty<>();
-		members.addListener((observable, oldValue, newValue) -> {
-			System.out.println("UPDATE: " + newValue);
-		});
 
 		Request requestMembers = new GetUsers();
 		viewManager.sendRequestAsync(requestMembers, (response -> {
@@ -133,8 +130,7 @@ public class SettingsController extends BaseController {
 			if (response instanceof ListResponse listResponse) {
 				if (listResponse.getList() instanceof PreviewUserDTO[] users) {
 					for (PreviewUserDTO user : users) {
-						System.out.println("User: " + user);
-						members.add(User.builder().email(user.email()).build());
+						members.add(User.builder().email(user.getEmail()).build());
 					}
 				}
 			}

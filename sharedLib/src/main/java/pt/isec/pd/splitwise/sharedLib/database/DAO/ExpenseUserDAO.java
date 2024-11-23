@@ -29,19 +29,18 @@ public class ExpenseUserDAO extends DAO {
 	 *
 	 * @param expenseId  the expense id
 	 * @param userId     the user id
-	 * @param percentage the percentage
 	 * @return the int
 	 * @throws SQLException the sql exception
 	 */
-	public int createRelation(int expenseId, int userId, float percentage) throws SQLException {
-		logger.debug("Creating relation between expense {} and user {} with percentage {}", expenseId, userId, percentage);
+	public int createRelation(int expenseId, int userId) throws SQLException {
+		logger.debug("Creating relation between expense {} and user {}", expenseId, userId);
 
 		//language=SQLite
-		String query = "INSERT INTO expense_users (expense_id, user_id, percentage) VALUES (?, ?, ?) RETURNING id";
+		String query = "INSERT INTO expense_users (expense_id, user_id) VALUES (?, ?) RETURNING id";
 
-		int id = dbManager.executeWriteWithId(query, expenseId, userId, percentage);
+		int id = dbManager.executeWriteWithId(query, expenseId, userId);
 
-		logger.debug("Created relation with id: {}", id);
+		logger.debug("Created relation with id {}", id);
 
 		return id;
 	}
@@ -74,7 +73,7 @@ public class ExpenseUserDAO extends DAO {
 					Expense.builder()
 							.id((int) row.get("id"))
 							.amount((float) row.get("amount"))
-							.description((String) row.get("description"))
+							.title((String) row.get("description"))
 							.date(LocalDate.ofEpochDay((long) row.get("date"))) //TODO: check this later (long → LocalDate)
 							.build()
 			);
@@ -115,7 +114,7 @@ public class ExpenseUserDAO extends DAO {
 					Expense.builder()
 							.id((int) row.get("id"))
 							.amount((float) row.get("amount"))
-							.description((String) row.get("description"))
+							.title((String) row.get("description"))
 							.date(LocalDate.ofEpochDay((long) row.get("date"))) //TODO: check this later (long → LocalDate)
 							.build()
 			);
@@ -153,7 +152,7 @@ public class ExpenseUserDAO extends DAO {
 					User.builder()
 							.id((int) row.get("id"))
 							.username((String) row.get("username"))
-							.email((String) row.get("userEmail"))
+							.email((String) row.get("email"))
 							.phoneNumber((String) row.get("phoneNumber"))
 							.build()
 			);
@@ -168,18 +167,17 @@ public class ExpenseUserDAO extends DAO {
 	 *
 	 * @param expenseId  the expense id
 	 * @param userId     the user id
-	 * @param percentage the percentage
 	 * @return the boolean
 	 * @throws SQLException the sql exception
 	 */
-	public boolean updateRelation(int expenseId, int userId, float percentage) throws SQLException {
-		logger.debug("Updating relation between expense {} and user {} with percentage {}", expenseId, userId, percentage);
+	/*public boolean updateRelation(int expenseId, int userId) throws SQLException {
+		logger.debug("Updating relation between expense {} and user {}", expenseId, userId);
 
 		//language=SQLite
-		String query = "UPDATE expense_users SET percentage = ? WHERE expense_id = ? AND user_id = ?";
+		String query = "UPDATE expense_users WHERE expense_id = ? AND user_id = ?";
 
-		return dbManager.executeWrite(query, percentage, expenseId, userId) > 0;
-	}
+		return dbManager.executeWrite(query, expenseId, userId) > 0;
+	}*/
 
 	/**
 	 * Delete relation int.

@@ -1,15 +1,23 @@
 package pt.isec.pd.splitwise.sharedLib.database.DTO.Payment;
 
-import java.io.Serializable;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-public record DetailPaymentDTO(int id, double amount, long timestamp, String user) implements Serializable {
-	@Override
-	public String toString() {
-		return "DetailPaymentDTO{" +
-		       "id=" + id +
-		       ", amount=" + amount +
-		       ", timestamp=" + timestamp +
-		       ", user='" + user + '\'' +
-		       '}';
-	}
+import java.io.Serial;
+import java.io.Serializable;
+import java.time.LocalDate;
+import java.util.Objects;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public final class DetailPaymentDTO implements Serializable { //TODO: i need this class?
+	private int id;
+	private double amount;
+	private LocalDate date;
+	private String fromUser;
+	private String toUser;
 }

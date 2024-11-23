@@ -84,9 +84,9 @@ public class ViewManager {
 		};
 
 		requestTask.setOnSucceeded(e -> {
-			loadingIndicator.setVisible(false);
 			Response response = requestTask.getValue();
-			handleResponse.onResponseReceived(response);
+			handleResponse.func(response);
+			loadingIndicator.setVisible(false);
 		});
 
 		requestTask.setOnFailed(e -> {
@@ -100,6 +100,6 @@ public class ViewManager {
 	}
 
 	public interface HandlerResponseInterface {
-		void onResponseReceived(Response response);
+		void func(Response response);
 	}
 }

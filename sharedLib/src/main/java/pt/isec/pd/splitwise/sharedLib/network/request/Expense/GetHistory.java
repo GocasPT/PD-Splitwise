@@ -19,10 +19,13 @@ public record GetHistory(int groupID) implements Request {
 			context.getExpenseDAO().getAllExpensesFromGroup(groupID).forEach(expense -> {
 				expensesHistory.add(
 						new DetailExpenseDTO(
+								expense.getId(),
 								expense.getAmount(),
-								expense.getDescription(),
+								expense.getTitle(),
 								expense.getDate(),
-								expense.getBuyerEmail()
+								expense.getRegisterByUser(),
+								expense.getPayerUser(),
+								expense.getAssocietedUsersList()
 						)
 				);
 			});

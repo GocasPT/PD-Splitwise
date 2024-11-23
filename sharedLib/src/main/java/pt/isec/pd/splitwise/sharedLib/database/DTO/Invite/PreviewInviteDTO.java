@@ -1,16 +1,19 @@
 package pt.isec.pd.splitwise.sharedLib.database.DTO.Invite;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.io.Serializable;
 
-public record PreviewInviteDTO(int id, String groupName, String inviterEmail,
-                               String inviterUsername) implements Serializable {
-	@Override
-	public String toString() {
-		return "PreviewInviteDTO{" +
-		       "id: " + id +
-		       ", groupName: '" + groupName + '\'' +
-		       ", inviterEmail: '" + inviterEmail + '\'' +
-		       ", inviterUserName: '" + inviterUsername + '\'' +
-		       '}';
-	}
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public final class PreviewInviteDTO implements Serializable {
+	private int id;
+	private String groupName;
+	private String guestEmail;
+	private String hostEmail; //TODO: host OR inviter?
 }

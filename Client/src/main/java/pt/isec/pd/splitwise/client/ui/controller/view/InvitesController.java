@@ -59,8 +59,8 @@ public class InvitesController extends BaseController {
 				vbInvites.getChildren().add(
 						new Card.Builder()
 								.id("invite-card")
-								.title(invite.groupName())
-								.subtitle(invite.inviterUsername() + " <" + invite.inviterEmail() + ">")
+								.title(invite.getGroupName())
+								.subtitle(invite.getHostEmail()) //TODO: email -> email + username
 								.addButton(btnAccept)
 								.addButton(btnDeny)
 								.addStyleClass("invite-card")

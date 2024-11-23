@@ -1,17 +1,22 @@
 package pt.isec.pd.splitwise.sharedLib.database.DTO.Group;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import pt.isec.pd.splitwise.sharedLib.database.DTO.Expense.PreviewExpenseDTO;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
 
-public record DetailGroupDTO(int id, String name, List<PreviewExpenseDTO> expenses
-) implements Serializable {
-	@Override
-	public String toString() {
-		return "DetailGroupDTO{" +
-		       "name=: " + name + '\'' +
-		       ", expenses: " + expenses +
-		       '}';
-	}
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public final class DetailGroupDTO implements Serializable { //TODO: check this later
+	private int id;
+	private String name;
+	private List<PreviewExpenseDTO> expenses;
 }
