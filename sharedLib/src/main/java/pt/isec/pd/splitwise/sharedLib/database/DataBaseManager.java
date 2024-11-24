@@ -3,12 +3,14 @@ package pt.isec.pd.splitwise.sharedLib.database;
 import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.sqlite.SQLiteErrorCode;
 import pt.isec.pd.splitwise.sharedLib.database.DAO.*;
 import pt.isec.pd.splitwise.sharedLib.database.Observer.DatabaseChangeObserver;
 import pt.isec.pd.splitwise.sharedLib.database.Observer.NotificationObserver;
 import pt.isec.pd.splitwise.sharedLib.network.response.NotificaionResponse;
 
 import java.io.File;
+import java.nio.file.Paths;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,34 +19,19 @@ import java.util.Map;
 
 public class DataBaseManager {
 	private static final Logger logger = LoggerFactory.getLogger(DataBaseManager.class);
-	private static final int MAX_RETRIES = 3;
-	private static final int RETRY_DELAY_MS = 100;
 	private final String dbPath;
 	private final Connection conn;
-	@Getter
-	private final DatabaseSyncManager syncManager;
 	private final NotificationObserver notificationObserver;
-	@Getter
-	private final UserDAO userDAO;
-	@Getter
-	private final GroupDAO groupDAO;
-	@Getter
-	private final GroupUserDAO groupUserDAO;
-	@Getter
-	private final InviteDAO inviteDAO;
-	@Getter
-	private final ExpenseDAO expenseDAO;
-	@Getter
-	private final ExpenseUserDAO expenseUserDAO;
-	@Getter
-	private final PaymentDAO paymentDAO;
+	@Getter private final DatabaseSyncManager syncManager;
+	@Getter private final UserDAO userDAO;
+	@Getter private final GroupDAO groupDAO;
+	@Getter private final GroupUserDAO groupUserDAO;
+	@Getter private final InviteDAO inviteDAO;
+	@Getter private final ExpenseDAO expenseDAO;
+	@Getter private final ExpenseUserDAO expenseUserDAO;
+	@Getter private final PaymentDAO paymentDAO;
 	private DatabaseChangeObserver databaseChangeObserver;
 
-	//TODO: object to sync (database manager - server)
-	// when server receive a new backup server, wait until "download" is complete
-	// when insert invite (and other events), notify server to send notification to user
-
-	//TODO: verbose + loading steps
 	public DataBaseManager(String dbPath, NotificationObserver notificationObserver) {
 		logger.debug("Database path: {}", dbPath);
 		this.dbPath = dbPath;
@@ -54,11 +41,6 @@ public class DataBaseManager {
 		try {
 			//Note: getConnection() will create the database if it doesn't exist
 			conn = DriverManager.getConnection("jdbc:sqlite:" + this.dbPath);
-			/*try ( Statement stmt = conn.createStatement() ) {
-				stmt.execute("PRAGMA journal_mode=WAL;");
-				// Set busy timeout
-				stmt.execute("PRAGMA busy_timeout=5000;");
-			}*/
 
 			logger.debug("Connected to the database");
 
@@ -80,11 +62,9 @@ public class DataBaseManager {
 		this.notificationObserver = notificationObserver;
 	}
 
-	//TODO: dynamic tables: class with all tables + columns (?)
-	//TODO: update this tables after modify data base
+	//TODO: change tables properties (have been change throw the time)
 	private void createTables(Connection conn) throws SQLException {
 		try ( Statement stmt = conn.createStatement() ) {
-			logger.debug("Creating version table");
 			//language=SQLite
 			stmt.executeUpdate("""			      
 			                   CREATE TABLE IF NOT EXISTS version
@@ -97,7 +77,6 @@ public class DataBaseManager {
 			                   """
 			);
 
-			logger.debug("Creating users table");
 			//language=SQLite
 			stmt.executeUpdate("""
 			                   CREATE TABLE IF NOT EXISTS users
@@ -111,7 +90,6 @@ public class DataBaseManager {
 			                   """
 			);
 
-			logger.debug("Creating version table");
 			//language=SQLite
 			stmt.executeUpdate("""
 			                   CREATE TABLE IF NOT EXISTS groups
@@ -122,7 +100,6 @@ public class DataBaseManager {
 			                   """
 			);
 
-			logger.debug("Creating group_users table");
 			//language=SQLite
 			stmt.executeUpdate("""
 			                   CREATE TABLE IF NOT EXISTS group_users
@@ -136,7 +113,6 @@ public class DataBaseManager {
 			                   """
 			);
 
-			logger.debug("Creating invites table");
 			//language=SQLite
 			stmt.executeUpdate("""
 			                   CREATE TABLE IF NOT EXISTS invites
@@ -152,7 +128,6 @@ public class DataBaseManager {
 			                   """
 			);
 
-			logger.debug("Creating expenses table");
 			//language=SQLite
 			stmt.executeUpdate("""
 			                   CREATE TABLE IF NOT EXISTS expenses
@@ -171,7 +146,6 @@ public class DataBaseManager {
 			                   """
 			);
 
-			logger.debug("Creating payments table");
 			//language=SQLite
 			stmt.executeUpdate("""
 			                   CREATE TABLE IF NOT EXISTS payments
@@ -191,7 +165,6 @@ public class DataBaseManager {
 			                   """
 			);
 
-			logger.debug("Creating debts table");
 			//language=SQLite
 			stmt.executeUpdate("""
 			                   CREATE TABLE IF NOT EXISTS expense_users
@@ -219,48 +192,52 @@ public class DataBaseManager {
 	}
 
 	public File getDBFile() {
-		return new File(dbPath);
+		return new File(Paths.get(dbPath).toAbsolutePath().toString());
 	}
 
-	public Connection getConnection() throws SQLException, InterruptedException {
-		//TODO: sync block
-		syncManager.executeOperation(null);
-		return conn;
-	}
-
-	public void updateVersion() throws SQLException {
-		int newVersion = getVersion() + 1;
-		logger.debug("Incrementing version from {} to {}", getVersion(), newVersion);
+	public int getVersion() {
+		logger.debug("Getting version");
+		int version = -1;
 		//language=SQLite
-		PreparedStatement pstmt = conn.prepareStatement("UPDATE version SET value = ?");
-		pstmt.setInt(1, newVersion);
-		pstmt.executeUpdate();
+		String query = "SELECT * FROM version;";
+
+		try {
+			List<Map<String, Object>> rs = executeRead(query);
+			version = (int) rs.getFirst().get("value");
+		} catch ( SQLException e ) {
+			logger.error("Getting version: {}", e.getMessage());
+		}
+
+		logger.debug("Current version: {}", version);
+
+		return version;
+	}
+
+	public List<Map<String, Object>> executeRead(String query, Object... params) throws SQLException {
+		List<Map<String, Object>> results = new ArrayList<>();
+		try ( PreparedStatement pstmt = conn.prepareStatement(query) ) {
+			for (int i = 0; i < params.length; i++) {
+				pstmt.setObject(i + 1, params[i]);
+			}
+
+			try ( ResultSet rs = pstmt.executeQuery() ) {
+				ResultSetMetaData metaData = rs.getMetaData();
+				int columnCount = metaData.getColumnCount();
+
+				while (rs.next()) {
+					Map<String, Object> row = new HashMap<>();
+					for (int i = 1; i <= columnCount; i++) {
+						row.put(metaData.getColumnName(i), rs.getObject(i));
+					}
+					results.add(row);
+				}
+			}
+		}
+		return results;
 	}
 
 	public int executeWriteWithId(String query, Object... params) throws SQLException {
-		int retryCount = 0;
-		SQLException lastException;
-
-		do {
-			try {
-				return executeWriteTransactionWithId(query, params);
-			} catch ( SQLException e ) {
-				lastException = e;
-				if (isSQLiteBusy(e)) {
-					logger.warn("Database busy, attempt {} of {}", retryCount + 1, MAX_RETRIES);
-					try {
-						Thread.sleep((long) RETRY_DELAY_MS * (retryCount + 1));
-					} catch ( InterruptedException ie ) {
-						Thread.currentThread().interrupt();
-						throw new SQLException("Operation interrupted during retry", ie);
-					}
-				} else {
-					throw e; // Rethrow if it's not a SQLITE_BUSY error
-				}
-			}
-		} while (++retryCount < MAX_RETRIES);
-
-		throw new SQLException("Failed after " + MAX_RETRIES + " attempts", lastException);
+		return executeWriteTransactionWithId(query, params);
 	}
 
 	private int executeWriteTransactionWithId(String query, Object... params) throws SQLException {
@@ -303,10 +280,6 @@ public class DataBaseManager {
 		}
 	}
 
-	private boolean isSQLiteBusy(SQLException e) {
-		return e.getErrorCode() == SQLiteErrorCode.SQLITE_BUSY.code;
-	}
-
 	private void incrementVersion(Connection conn) throws SQLException {
 		int newVersion = getVersion() + 1;
 		logger.debug("Incrementing version from {} to {}", getVersion(), newVersion);
@@ -322,115 +295,9 @@ public class DataBaseManager {
 		}
 	}
 
-	public int getVersion() {
-		logger.debug("Getting version");
-		int version = -1;
-		//language=SQLite
-		String query = "SELECT * FROM version;";
-
-		try {
-			List<Map<String, Object>> rs = executeRead(query);
-			version = (int) rs.getFirst().get("value");
-		} catch ( SQLException e ) {
-			logger.error("Getting version: {}", e.getMessage());
-		}
-
-		return version;
-	}
-
-	//TODO: maybe use <T> to return the type of the query (?)
-	public List<Map<String, Object>> executeRead(String query, Object... params) throws SQLException {
-		List<Map<String, Object>> results = new ArrayList<>();
-		try ( PreparedStatement pstmt = conn.prepareStatement(query) ) {
-			for (int i = 0; i < params.length; i++) {
-				pstmt.setObject(i + 1, params[i]);
-			}
-
-			try ( ResultSet rs = pstmt.executeQuery() ) {
-				ResultSetMetaData metaData = rs.getMetaData();
-				int columnCount = metaData.getColumnCount();
-
-				while (rs.next()) {
-					Map<String, Object> row = new HashMap<>();
-					for (int i = 1; i <= columnCount; i++) {
-						row.put(metaData.getColumnName(i), rs.getObject(i));
-					}
-					results.add(row);
-				}
-			}
-		}
-		return results;
-	}
-
 	public int executeWrite(String query, Object... params) throws SQLException {
-		int retryCount = 0;
-		SQLException lastException;
-
-		do {
-			try {
-				return executeWriteTransaction(query, params);
-			} catch ( SQLException e ) {
-				lastException = e;
-				if (isSQLiteBusy(e)) {
-					logger.warn("Database busy, attempt {} of {}", retryCount + 1, MAX_RETRIES);
-					try {
-						Thread.sleep((long) RETRY_DELAY_MS * (retryCount + 1));
-					} catch ( InterruptedException ie ) {
-						Thread.currentThread().interrupt();
-						throw new SQLException("Operation interrupted during retry", ie);
-					}
-				} else {
-					logger.error("Error executing query: {}", e.getMessage());
-					throw e;
-				}
-			}
-		} while (++retryCount < MAX_RETRIES);
-
-		throw new SQLException("Failed after " + MAX_RETRIES + " attempts", lastException);
+		return executeWriteTransaction(query, params);
 	}
-
-	//TODO: sync
-	//TODO: maybe remove this... but keep the sync part
-	/*public int setData(String query, Object... params) throws SQLException {
-		try {
-			//TODO: maybe change this later...
-			AtomicInteger id = new AtomicInteger();
-			syncManager.executeOperation(() -> {
-				id.set(updateDatabase(query, params));
-				databaseChange(query, params);
-			});
-			return id.get();
-		} catch ( InterruptedException e ) {
-			Thread.currentThread().interrupt();
-			throw new SQLException("Operation interrupted", e);
-		}
-	}
-
-	public int updateDatabase(String query, Object... params) throws SQLException {
-		try (
-				PreparedStatement pstmt = conn.prepareStatement(query)
-		) {
-			for (int i = 0; i < params.length; i++) {
-				pstmt.setObject(i + 1, params[i]);
-			}
-			int id = 0;
-			try ( ResultSet rs = pstmt.executeQuery(); ) {
-				if (rs.next()) {
-					id = (int) rs.getLong(1);
-				}
-			} catch ( SQLException e ) {
-				throw new SQLException("Error executing query: " + e.getMessage(), e);
-			}
-			incrementVersion(conn);
-			return id;
-		}
-	}*/
-
-	/*private void databaseChange(String query, Object... params) {
-		if (databaseChangeObserver == null) return; //TODO: throw exception (?)
-
-		databaseChangeObserver.onDBChange(query, params);
-	}*/
 
 	private int executeWriteTransaction(String query, Object... params) throws SQLException {
 		try {
@@ -473,41 +340,5 @@ public class DataBaseManager {
 
 		NotificaionResponse notification = new NotificaionResponse(email, text);
 		notificationObserver.onNotification(notification);
-	}
-
-	//TODO: throw exception on error
-	//TODO: maybe remove this... but keep the sync part
-	//Note: Returning ResultSet when Statement is on try-with-resources will close the Statement, so close the ResultSet and cannot access the data on database
-	/*public List<Map<String, Object>> getData(String query, Object... params) throws SQLException {
-		List<Map<String, Object>> results = new ArrayList<>();
-		try ( PreparedStatement pstmt = conn.prepareStatement(query) ) {
-			for (int i = 0; i < params.length; i++) {
-				pstmt.setObject(i + 1, params[i]);
-			}
-			try ( ResultSet rs = pstmt.executeQuery() ) {
-				ResultSetMetaData rsMeta = rs.getMetaData();
-				int columnCount = rsMeta.getColumnCount();
-
-				while (rs.next()) {
-					Map<String, Object> row = new HashMap<>();
-					for (int i = 1; i <= columnCount; i++) {
-						row.put(rsMeta.getColumnName(i), rs.getObject(i));
-					}
-					results.add(row);
-				}
-			}
-		}
-		return results;
-	}*/
-
-	//TODO: use this OR from SQLite (if exists)
-	private enum SQLiteErrorCode {
-		SQLITE_BUSY(5);
-
-		final int code;
-
-		SQLiteErrorCode(int code) {
-			this.code = code;
-		}
 	}
 }

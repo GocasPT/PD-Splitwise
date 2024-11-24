@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 //TODO: javaDoc
+
 /**
  * The type Group dao. //TODO: class layer to access database and return group objects
  */
@@ -93,8 +94,8 @@ public class GroupDAO extends DAO {
 	/**
 	 * Edit group boolean.
 	 *
-	 * @param groupId   the id
-	 * @param name the name
+	 * @param groupId the id
+	 * @param name    the name
 	 * @return the boolean
 	 * @throws SQLException the sql exception
 	 */

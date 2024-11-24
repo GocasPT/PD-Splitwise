@@ -10,10 +10,11 @@ import java.util.List;
 import java.util.Map;
 
 //TODO: javaDoc
+
 /**
  * The type Group user dao. //TODO: class layer to access database and return user or group objects
  */
-public class GroupUserDAO extends DAO{
+public class GroupUserDAO extends DAO {
 	/**
 	 * Instantiates a new Group user dao.
 	 *

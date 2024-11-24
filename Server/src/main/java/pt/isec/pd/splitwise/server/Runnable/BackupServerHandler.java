@@ -23,8 +23,8 @@ public class BackupServerHandler implements Runnable {
 		this.backupServerSocket = backupServerSocket;
 		this.dbManager = dbManager;
 		this.host = backupServerSocket.getInetAddress().getHostAddress() + ":" +
-				backupServerSocket.getPort() + " - " +
-				backupServerSocket.getInetAddress().getHostName();
+		            backupServerSocket.getPort() + " - " +
+		            backupServerSocket.getInetAddress().getHostName();
 	}
 
 	@Override

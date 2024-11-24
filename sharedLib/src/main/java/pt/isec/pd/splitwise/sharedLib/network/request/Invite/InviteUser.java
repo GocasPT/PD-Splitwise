@@ -14,6 +14,7 @@ public record InviteUser(int groupID, String guestUserEmail, String inviteeUserE
 			User userGuestData = context.getUserDAO().getUserByEmail(guestUserEmail);
 			User userInviteeData = context.getUserDAO().getUserByEmail(inviteeUserEmail);
 			context.getInviteDAO().createInvite(groupID, userGuestData.getId(), userInviteeData.getId());
+			context.triggerNotification(guestUserEmail, "You have been invited to group " + groupID);
 		} catch ( Exception e ) {
 			logger.error("InviteUser: {}", e.getMessage());
 			return new Response(false, "Failed to invite user to group");

@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 //TODO: javaDoc
+
 /**
  * The type User dao. //TODO: class layer to access database and return user objects
  */
@@ -33,7 +34,8 @@ public class UserDAO extends DAO {
 	 * @throws SQLException the sql exception
 	 */
 	public int createUser(String username, String email, String phoneNumber, String password) throws SQLException {
-		logger.debug("Creating user:\n\tusername={}\n\tuserEmail={},\n\tphoneNumber={},\n\tpassword={}", username, email,
+		logger.debug("Creating user:\n\tusername={}\n\tuserEmail={},\n\tphoneNumber={},\n\tpassword={}", username,
+		             email,
 		             phoneNumber, password);
 
 		//language=SQLite
@@ -131,7 +133,7 @@ public class UserDAO extends DAO {
 	/**
 	 * Edit user boolean.
 	 *
-	 * @param userId          the id
+	 * @param userId      the id
 	 * @param username    the username
 	 * @param email       the userEmail
 	 * @param phoneNumber the phone number
@@ -140,7 +142,8 @@ public class UserDAO extends DAO {
 	 * @throws SQLException the sql exception
 	 */
 	public boolean editUser(int userId, String username, String email, String phoneNumber, String password) throws SQLException {
-		logger.debug("Editing user id={}:\n\tusername={}\n\tuserEmail={},\n\tphoneNumber={},\n\tpassword={}", userId, username,
+		logger.debug("Editing user id={}:\n\tusername={}\n\tuserEmail={},\n\tphoneNumber={},\n\tpassword={}", userId,
+		             username,
 		             email, phoneNumber, password);
 
 		//language=SQLite

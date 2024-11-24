@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 //TODO: javaDoc
+
 /**
  * The type Expense user dao. //TODO: class layer to access database and return user objects
  */
@@ -27,8 +28,8 @@ public class ExpenseUserDAO extends DAO {
 	/**
 	 * Create relation int.
 	 *
-	 * @param expenseId  the expense id
-	 * @param userId     the user id
+	 * @param expenseId the expense id
+	 * @param userId    the user id
 	 * @return the int
 	 * @throws SQLException the sql exception
 	 */
@@ -74,7 +75,8 @@ public class ExpenseUserDAO extends DAO {
 							.id((int) row.get("id"))
 							.amount((float) row.get("amount"))
 							.title((String) row.get("description"))
-							.date(LocalDate.ofEpochDay((long) row.get("date"))) //TODO: check this later (long → LocalDate)
+							.date(LocalDate.ofEpochDay(
+									(long) row.get("date"))) //TODO: check this later (long → LocalDate)
 							.build()
 			);
 
@@ -93,6 +95,8 @@ public class ExpenseUserDAO extends DAO {
 	 */
 	public List<Expense> getAllExpensesFromUserOnGroup(int userId, int groupId) throws SQLException {
 		logger.debug("Getting all expenses from user {} on group {}", userId, groupId);
+
+		//TODO: select expenses from user as payer and as associate
 
 		//language=SQLite
 		String query = """
@@ -115,7 +119,8 @@ public class ExpenseUserDAO extends DAO {
 							.id((int) row.get("id"))
 							.amount((float) row.get("amount"))
 							.title((String) row.get("description"))
-							.date(LocalDate.ofEpochDay((long) row.get("date"))) //TODO: check this later (long → LocalDate)
+							.date(LocalDate.ofEpochDay(
+									(long) row.get("date"))) //TODO: check this later (long → LocalDate)
 							.build()
 			);
 

@@ -17,7 +17,7 @@ public record ExportCSV(int groupID) implements Request {
 	public Response execute(DataBaseManager context) {
 		logger.debug("Exporting expenses from group {}", groupID);
 
-		File csvFile = new File("expenses.txt");
+		File csvFile = new File("expenses.csv");
 		try (
 				FileWriter writer = new FileWriter(csvFile);
 		) {
@@ -38,7 +38,6 @@ public record ExportCSV(int groupID) implements Request {
 			writer.write("Despesas");
 			//TODO: write expenses with details on file
 
-			//TODO: send file to client (maybe divide in chunks)
 			return new ValueResponse<>(csvFile);
 		} catch ( Exception e ) {
 			logger.error("ExportCSV: {}", e.getMessage());

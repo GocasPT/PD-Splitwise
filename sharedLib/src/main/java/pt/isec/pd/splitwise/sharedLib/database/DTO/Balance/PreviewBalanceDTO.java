@@ -4,17 +4,17 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.util.AbstractMap;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 @Data
 @AllArgsConstructor
 public final class PreviewBalanceDTO implements Serializable {
 	private double totalBalance;
-	private List<AbstractMap.SimpleEntry<String, Double>> usersBalance; //TODO: check this later
+	private Map<String, Double> usersBalance; //TODO: check this later
 
 	public PreviewBalanceDTO() {
 		this.totalBalance = 0;
-		this.usersBalance = null;
+		this.usersBalance = new HashMap<>();
 	}
 }

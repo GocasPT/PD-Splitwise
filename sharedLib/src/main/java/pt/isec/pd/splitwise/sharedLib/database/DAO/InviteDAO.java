@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 //TODO: javaDoc
+
 /**
  * The type Invite dao. //TODO: class layer to access database and return invite objects
  */
@@ -25,7 +26,7 @@ public class InviteDAO extends DAO {
 	/**
 	 * Create invite int.
 	 *
-	 * @param groupId        the group id
+	 * @param groupId       the group id
 	 * @param guestUserId   the guest user id
 	 * @param inviterUserId the inviter user id
 	 * @return the int

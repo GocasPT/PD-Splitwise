@@ -1,9 +1,7 @@
 package pt.isec.pd.splitwise.sharedLib.database.DTO.Balance;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.util.HashMap;

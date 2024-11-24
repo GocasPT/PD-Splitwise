@@ -73,7 +73,7 @@ public record ViewBalance(int groupID) implements Request {
 				buyerBalance.setTotalExpended(buyerBalance.getTotalExpended() + amount);
 
 				double share = amount / (associateUsersEmail.size());
-				for (String associatedUserEmail : associateUsersEmail) { //TODO: self check
+				for (String associatedUserEmail : associateUsersEmail) {
 					if (associatedUserEmail.equals(buyerEmail))
 						continue;
 
@@ -81,13 +81,13 @@ public record ViewBalance(int groupID) implements Request {
 
 					logger.debug("User balance: {}", userBalance);
 
-					// Update associated user debts → add //TODO: complete comment
+					// Update associated user debts → add the user part
 					userBalance.setTotalDebt(userBalance.getTotalDebt() + share);
 					userBalance.getDebtList().merge(buyerEmail, share, Double::sum);
 
 					logger.debug("User balance updated: {}", userBalance);
 
-					// Update buyer receive → add //TODO: complete comment
+					// Update buyer receive → add the user part
 					buyerBalance.setTotalReceive(buyerBalance.getTotalReceive() + share);
 					buyerBalance.getReceiveList().merge(associatedUserEmail, share, Double::sum);
 				}
@@ -111,11 +111,11 @@ public record ViewBalance(int groupID) implements Request {
 				DetailBalanceDTO fromUserBalance = groupBalance.get(fromUser);
 				DetailBalanceDTO toUserBalance = groupBalance.get(toUser);
 
-				// Update from user debts → remove //TODO: complete comment
+				// Update from user debts → remove the user part
 				fromUserBalance.setTotalDebt(fromUserBalance.getTotalDebt() - amount);
 				fromUserBalance.getDebtList().merge(toUser, -amount, Double::sum);
 
-				// Update to user receive → remove //TODO: complete comment
+				// Update to user receive → remove the user part
 				toUserBalance.setTotalReceive(toUserBalance.getTotalReceive() - amount);
 				toUserBalance.getReceiveList().merge(fromUser, -amount, Double::sum);
 			}
@@ -124,7 +124,7 @@ public record ViewBalance(int groupID) implements Request {
 					.map(entry -> String.format("\t%s = %s", entry.getKey(), entry.getValue()))
 					.collect(Collectors.joining("\n")));
 
-			// Remove debts/receives with 0 value //TODO: complete comment
+			// Remove debts/receives with 0 value → if expense "have been paid", doesn't show in balance
 			for (DetailBalanceDTO balance : groupBalance.values()) {
 				balance.getDebtList().values().removeIf(amount -> amount == 0);
 				balance.getReceiveList().values().removeIf(amount -> amount == 0);

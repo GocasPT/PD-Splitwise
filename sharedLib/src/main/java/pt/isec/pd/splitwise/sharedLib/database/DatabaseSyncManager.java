@@ -10,8 +10,8 @@ import java.util.Set;
 public class DatabaseSyncManager {
 	private static final Logger logger = LoggerFactory.getLogger(DatabaseSyncManager.class);
 	private final Object syncLock = new Object();
-	private int activeBackupTransfers = 0;
 	private final Set<Thread> waitingThreads = new HashSet<>();
+	private int activeBackupTransfers = 0;
 
 	public void startBackupTransfer() {
 		logger.debug("Starting backup transfer");
@@ -56,7 +56,6 @@ public class DatabaseSyncManager {
 		}
 	}
 
-	@FunctionalInterface //TODO: check this tag later
 	public interface DatabaseOperation<T> {
 		T execute() throws SQLException;
 	}

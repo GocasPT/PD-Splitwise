@@ -2,13 +2,13 @@ package pt.isec.pd.splitwise.client.ui.controller.view;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.chart.PieChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.DirectoryChooser;
 import org.apache.commons.lang3.StringUtils;
@@ -32,7 +32,6 @@ import pt.isec.pd.splitwise.sharedLib.network.response.ValueResponse;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -139,25 +138,24 @@ public class GroupController extends BaseController {
 		DirectoryChooser directoryChooser = new DirectoryChooser();
 		directoryChooser.setInitialDirectory(new File(System.getProperty("user.home")));
 
-		Request request = new ExportCSV(modelManager.getGroupInViewId());
-		viewManager.sendRequestAsync(request, (response -> {
-			if (!response.isSuccess()) {
-				viewManager.showError(response.getErrorDescription());
-				return;
-			}
+		File outputFolder = directoryChooser.showDialog(vbInfo.getScene().getWindow());
+		if (outputFolder != null) {
+			Request request = new ExportCSV(modelManager.getGroupInViewId());
+			viewManager.sendRequestAsync(request, (response -> {
+				if (!response.isSuccess()) {
+					viewManager.showError(response.getErrorDescription());
+					return;
+				}
 
-			//TODO: get CSV file
-			//TODO: download by chunks + progress bar
-			if (response instanceof ValueResponse valueResponse) {
-				if (valueResponse.getValue() instanceof File file) {
-					File outputFolder = directoryChooser.showDialog(vbInfo.getScene().getWindow());
-					if (outputFolder != null) {
+				//TODO: get CSV file
+				if (response instanceof ValueResponse valueResponse) {
+					if (valueResponse.getValue() instanceof File file) {
 						File outputFile = new File(outputFolder, file.getName());
 						//TODO: write file in folder
 					}
 				}
-			}
-		}));
+			}));
+		}
 	}
 
 	private void fetchExpenses() {
@@ -169,16 +167,16 @@ public class GroupController extends BaseController {
 				return;
 			}
 
+			vbInfo.getChildren().clear();
+
 			if (response instanceof ListResponse listResponse) {
 				if (listResponse.isEmpty()) {
-					System.out.println("No expenses found");
-					return; //TODO: show message "No expenses found"
+					vbInfo.getChildren().add(new Label("No expenses on this group"));
+					return;
 				}
 
 				if (listResponse.getList() instanceof DetailExpenseDTO[] expenses) {
 
-
-					vbInfo.getChildren().clear();
 					try {
 						for (DetailExpenseDTO expense : expenses)
 							//TODO: add month separator (new month → new separator)
@@ -190,8 +188,12 @@ public class GroupController extends BaseController {
 											.subtitle(expense.getAmount() + "€")
 											.description(expense.getDate().toString() + " - " + expense.getPayerUser())
 											.onMouseClicked(e -> {
-												//TODO: show expense details
-												//expense.id()
+												try {
+													modelManager.setExpenseInViewId(expense.getId());
+													viewManager.showView("expense_view");
+												} catch ( Exception ex ) {
+													viewManager.showError("Failed to show expense: " + ex.getMessage());
+												}
 											})
 											.addStyleClass("expense-card")
 											.build()
@@ -219,21 +221,34 @@ public class GroupController extends BaseController {
 			//TODO: show balance
 			vbInfo.getChildren().clear();
 
-			ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();
+			PieChart pieChart = new PieChart();
+			pieChart.setLabelsVisible(false);
+			Label caption = new Label("");
+
 			if (response instanceof ValueResponse valueResponse)
 				if (valueResponse.getValue() instanceof PreviewBalanceDTO balance) {
-					for (AbstractMap.SimpleEntry<String, Double> entry : balance.getUsersBalance()) {
-						PieChart.Data data = new PieChart.Data(entry.getKey(), entry.getValue());
-						pieChartData.add(data); //TODO: improve this (onHover → percentage?)
-					}
+					for (Map.Entry<String, Double> entry : balance.getUsersBalance().entrySet())
+						pieChart.getData().add(new PieChart.Data(entry.getKey(),
+						                                         entry.getValue())); //TODO: improve this (onHover → percentage?)
+
+					for (PieChart.Data data : pieChart.getData())
+						data.getNode().addEventHandler(MouseEvent.MOUSE_PRESSED, e -> {
+							caption.setTextFill(Color.DARKORANGE);
+							caption.setStyle("-fx-font: 24 arial;");
+							caption.setTranslateX(e.getSceneX());
+							caption.setTranslateY(e.getSceneY());
+							caption.setText(data.getPieValue() + "%");
+						});
 
 					//TODO: add style to this label
 					Label lblTotalExpenses = new Label("Total expenses: " + balance.getTotalBalance() + "€");
+					lblTotalExpenses.setStyle("-fx-font: 24 arial;"); //TODO: add class?
 
 					//TODO: why chart is small?
 					vbInfo.getChildren().addAll(
 							lblTotalExpenses,
-							new PieChart(pieChartData)
+							pieChart,
+							caption
 					);
 				} else
 					viewManager.showError("Failed to get balance value");
@@ -250,8 +265,6 @@ public class GroupController extends BaseController {
 				return;
 			}
 
-			//TODO: show view balance with graph + details
-			//TODO: ValueResponse → ListResponse → Map<String, Object>
 			if (response instanceof ValueResponse valueResponse) {
 				Map<String, DetailBalanceDTO> balance = (Map<String, DetailBalanceDTO>) valueResponse.getValue();
 
@@ -262,8 +275,6 @@ public class GroupController extends BaseController {
 					List<Map<String, Double>> debts = new ArrayList<>();
 					List<Map<String, Double>> receive = new ArrayList<>();
 
-					//TODO: created 2 card: total debts and total receive
-					//TODO list card of users with value (as negative → debt OR as positive → receive)
 					userBalance.getDebtList().forEach((k, v) -> debts.add(Map.of(k, v)));
 					userBalance.getReceiveList().forEach((k, v) -> receive.add(Map.of(k, v)));
 
@@ -279,7 +290,7 @@ public class GroupController extends BaseController {
 												new Label("Total debts: " + userBalance.getTotalDebt() + "€"),
 												new Label(
 														(debts.isEmpty() ? "No debts :)"
-																: StringUtils //TODO: add bullets points
+																: StringUtils //TODO: add bullets points (see if can be improved)
 																.join(
 																		debts.stream()
 																				.map(Map::entrySet)
@@ -301,7 +312,7 @@ public class GroupController extends BaseController {
 												new Label("Total receive: " + userBalance.getTotalReceive() + "€"),
 												new Label(
 														(receive.isEmpty() ? "No receives :("
-																: StringUtils //TODO: add bullets points
+																: StringUtils //TODO: add bullets points (see if can be improved)
 																.join(
 																		receive.stream()
 																				.map(Map::entrySet)
@@ -316,36 +327,6 @@ public class GroupController extends BaseController {
 												)
 										)
 								)
-								/*.description( //TODO: improve this (better format)
-								              "Debts\nTotal debts: " + userBalance.getTotalDebt() + "€\n" +
-								              (debts.isEmpty() ? "No debts :)"
-										              : StringUtils //TODO: add bullets points
-										              .join(
-												              debts.stream()
-														              .map(Map::entrySet)
-														              .map(set -> set.stream()
-																              .map(e -> e.getKey() + ": " + e.getValue() + "€")
-																              .findFirst()
-																              .orElse("")
-														              )
-														              .toList(),
-												              "\n"
-										              )) + "\n\n" +
-								              "Receive\nTotal receive: " + userBalance.getTotalReceive() + "€\n" +
-								              (receive.isEmpty() ? "No receives :("
-										              : StringUtils //TODO: add bullets points
-										              .join(
-												              receive.stream()
-														              .map(Map::entrySet)
-														              .map(set -> set.stream()
-																              .map(e -> e.getKey() + ": " + e.getValue() + "€")
-																              .findFirst()
-																              .orElse("")
-														              )
-														              .toList(),
-												              "\n"
-										              ))
-								)*/
 								.build();
 
 						vbInfo.getChildren().add(userCard);
@@ -353,30 +334,6 @@ public class GroupController extends BaseController {
 						viewManager.showError("Fail to create user card: " + e.getMessage());
 					}
 				}
-
-				/*
-				//TODO: created 2 card: total debts and total receive
-				//TODO list card of users with value (as negative → debt OR as positive → receive)
-				vbInfo.getChildren().clear();
-
-				vbInfo.getChildren().addAll(
-						new Label("Total expense: " + balance.get("totalExpense") + "€"),
-						new Label("Amount expense: " + balance.get("amountToReceive") + "€"),
-						new Label("--------------------------------------")
-				);
-
-				for (Map.Entry<String, Double> member : ((Map<String, Double>) balance.get("debtPerUser")).entrySet()) {
-					vbInfo.getChildren().add(new Label(member.getKey() + ": " + member.getValue() + "€"));
-				}
-
-				vbInfo.getChildren().add(
-						new Label("--------------------------------------")
-				);
-
-				for (Map.Entry<String, Double> member : ((Map<String, Double>) balance.get(
-						"amountToReceivePerUser")).entrySet()) {
-					vbInfo.getChildren().add(new Label(member.getKey() + ": " + member.getValue() + "€"));
-				}*/
 			}
 		}));
 	}

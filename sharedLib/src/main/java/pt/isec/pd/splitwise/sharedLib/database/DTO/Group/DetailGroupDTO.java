@@ -6,10 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import pt.isec.pd.splitwise.sharedLib.database.DTO.Expense.PreviewExpenseDTO;
 
-import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
-import java.util.Objects;
 
 @Data
 @AllArgsConstructor

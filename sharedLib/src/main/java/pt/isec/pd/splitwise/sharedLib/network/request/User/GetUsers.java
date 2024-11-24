@@ -1,6 +1,5 @@
 package pt.isec.pd.splitwise.sharedLib.network.request.User;
 
-import pt.isec.pd.splitwise.sharedLib.database.DTO.User.DetailUserDTO;
 import pt.isec.pd.splitwise.sharedLib.database.DTO.User.PreviewUserDTO;
 import pt.isec.pd.splitwise.sharedLib.database.DataBaseManager;
 import pt.isec.pd.splitwise.sharedLib.network.request.Request;

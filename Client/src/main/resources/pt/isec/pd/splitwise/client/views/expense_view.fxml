@@ -1,15 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.dlsc.gemsfx.CalendarPicker?>
-<?import com.dlsc.gemsfx.ExpandingTextArea?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
-<?import org.controlsfx.control.CheckComboBox?>
 <BorderPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
             prefHeight="600.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/20.0.1"
-            fx:controller="pt.isec.pd.splitwise.client.ui.controller.view.AddExpenseController">
+            fx:controller="pt.isec.pd.splitwise.client.ui.controller.view.ExpenseController">
     <top>
         <VBox alignment="TOP_CENTER" spacing="8.0" BorderPane.alignment="CENTER">
             <padding>
@@ -35,7 +32,7 @@
                         <Font size="14.0"/>
                     </font>
                 </Label>
-                <TextField fx:id="tfAmount" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS"/>
+                <Text fx:id="tfAmount" HBox.hgrow="ALWAYS"/>
             </HBox>
             <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="254.0" spacing="8.0">
                 <Label minHeight="-Infinity" minWidth="-Infinity" text="Description:" HBox.hgrow="ALWAYS">
@@ -43,7 +40,7 @@
                         <Font size="14.0"/>
                     </font>
                 </Label>
-                <ExpandingTextArea fx:id="tfDescription" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS"/>
+                <Text fx:id="tfDescription" HBox.hgrow="ALWAYS"/>
             </HBox>
             <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="208.0" spacing="8.0">
                 <Label minHeight="-Infinity" minWidth="-Infinity" text="Date:">
@@ -51,7 +48,7 @@
                         <Font size="14.0"/>
                     </font>
                 </Label>
-                <CalendarPicker fx:id="datePicker" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS"/>
+                <Text fx:id="tfDate" HBox.hgrow="ALWAYS"/>
             </HBox>
             <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="350.0" spacing="8.0">
                 <Label minHeight="-Infinity" minWidth="-Infinity" text="Payer:">
@@ -59,7 +56,7 @@
                         <Font size="14.0"/>
                     </font>
                 </Label>
-                <ComboBox fx:id="cbPayerUser" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS"/>
+                <Text fx:id="tfPayerUser" HBox.hgrow="ALWAYS"/>
             </HBox>
             <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="369.0" spacing="8.0">
                 <Label minHeight="-Infinity" minWidth="-Infinity" text="User associated:">
@@ -67,7 +64,7 @@
                         <Font size="14.0"/>
                     </font>
                 </Label>
-                <CheckComboBox fx:id="ccbAssociatedUsers" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS"/>
+                <Text fx:id="tfAssociatedUsers" HBox.hgrow="ALWAYS"/>
             </HBox>
             <BorderPane.margin>
                 <Insets left="64.0" right="64.0"/>
@@ -84,7 +81,7 @@
             </padding>
             <Separator prefWidth="200.0"/>
             <HBox fx:id="hbBtn" alignment="BOTTOM_CENTER" spacing="12.0">
-                <Button fx:id="btnAdd" mnemonicParsing="false" text="Add">
+                <Button fx:id="btnEdit" mnemonicParsing="false" text="Add">
                     <font>
                         <Font size="14.0"/>
                     </font>
@@ -98,3 +95,4 @@
         </VBox>
     </bottom>
 </BorderPane>
+

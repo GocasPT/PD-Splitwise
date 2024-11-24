@@ -44,33 +44,6 @@ public class GroupsController extends BaseController {
 		fetchGroups();
 	}
 
-	private void createGroupPopUp() {
-		try {
-			CreateGroupDialog dialog = new CreateGroupDialog(vbGroups.getScene().getWindow());
-			dialog.showAndWait().ifPresent(groupName -> {
-				//TODO: loading where?
-
-				Request request = new CreateGroup(groupName, modelManager.getEmailLoggedUser());
-				viewManager.sendRequestAsync(request, (response) -> {
-					if (!response.isSuccess()) {
-						viewManager.showError(response.getErrorDescription());
-						return; //TODO: handle error
-					}
-
-					fetchGroups();
-				});
-			});
-		} catch ( IOException e ) {
-			e.printStackTrace();
-			viewManager.showError("Failed to create group dialog: " + e);
-		}
-	}
-
-	private void fetchGroups() {
-		GetGroups request = new GetGroups(modelManager.getEmailLoggedUser());
-		viewManager.sendRequestAsync(request, this::handleResponse);
-	}
-
 	@Override
 	protected void handleResponse(Response response) {
 		if (!response.isSuccess()) {
@@ -106,5 +79,32 @@ public class GroupsController extends BaseController {
 		} catch ( IOException e ) {
 			viewManager.showError("Failed to show groups: " + e.getMessage());
 		}
+	}
+
+	private void createGroupPopUp() {
+		try {
+			CreateGroupDialog dialog = new CreateGroupDialog(vbGroups.getScene().getWindow());
+			dialog.showAndWait().ifPresent(groupName -> {
+				//TODO: loading where?
+
+				Request request = new CreateGroup(groupName, modelManager.getEmailLoggedUser());
+				viewManager.sendRequestAsync(request, (response) -> {
+					if (!response.isSuccess()) {
+						viewManager.showError(response.getErrorDescription());
+						return; //TODO: handle error
+					}
+
+					fetchGroups();
+				});
+			});
+		} catch ( IOException e ) {
+			e.printStackTrace();
+			viewManager.showError("Failed to create group dialog: " + e);
+		}
+	}
+
+	private void fetchGroups() {
+		GetGroups request = new GetGroups(modelManager.getEmailLoggedUser());
+		viewManager.sendRequestAsync(request, this::handleResponse);
 	}
 }

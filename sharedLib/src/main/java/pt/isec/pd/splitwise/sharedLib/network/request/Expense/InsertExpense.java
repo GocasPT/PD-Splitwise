@@ -8,7 +8,6 @@ import pt.isec.pd.splitwise.sharedLib.network.response.Response;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 public record InsertExpense(int groupID, double amount, String description, LocalDate date, String buyerEmail,

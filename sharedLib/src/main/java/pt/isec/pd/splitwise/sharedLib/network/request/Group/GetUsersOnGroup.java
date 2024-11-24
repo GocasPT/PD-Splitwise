@@ -17,6 +17,7 @@ public record GetUsersOnGroup(int groupId) implements Request {
 	public Response execute(DataBaseManager context) {
 		logger.debug("Getting users on group {}", groupId);
 
+		//TODO: improve this part
 		Map<String, Object> data = new HashMap<>(); //TODO: Pair<string, list>
 		try {
 			Group groupData = context.getGroupDAO().getGroupById(groupId);

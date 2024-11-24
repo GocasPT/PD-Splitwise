@@ -2,7 +2,6 @@ package pt.isec.pd.splitwise.sharedLib.network.request.Group;
 
 import pt.isec.pd.splitwise.sharedLib.database.DataBaseManager;
 import pt.isec.pd.splitwise.sharedLib.database.Entity.Expense;
-import pt.isec.pd.splitwise.sharedLib.database.Entity.Group;
 import pt.isec.pd.splitwise.sharedLib.database.Entity.User;
 import pt.isec.pd.splitwise.sharedLib.network.request.Request;
 import pt.isec.pd.splitwise.sharedLib.network.response.Response;
@@ -16,12 +15,14 @@ public record ExitGroup(String userEmail, int groupId) implements Request {
 
 		try {
 			//TODO:
-			// - use new layer (GrouUserDAO) to remove user from group
-			// - check if use have any debts in is name
+			// - get all expenses that user is associated with
+			//  - payed
+			//  - associated list
+			// - check if list is empty (true → can exit group)
 
 			User user = context.getUserDAO().getUserByEmail(userEmail);
 
-			List<Expense> expenseList = context.getExpenseUserDAO().getAllExpensesFromUser(user.getId());
+			List<Expense> expenseList = context.getExpenseUserDAO().getAllExpensesFromUserOnGroup(user.getId(), groupId);
 			if (!expenseList.isEmpty())
 				return new Response(false, "User has debts");
 

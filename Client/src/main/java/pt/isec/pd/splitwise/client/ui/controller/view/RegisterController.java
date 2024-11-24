@@ -53,6 +53,19 @@ public class RegisterController extends BaseController {
 	protected void update() {
 	}
 
+	@Override
+	protected void handleResponse(Response response) {
+		if (response.isSuccess())
+			viewManager.showView("login_view");
+		else {
+			viewManager.showError(response.getErrorDescription());
+			//TODO: check this later
+			modelManager.close();
+			new Alert(Alert.AlertType.ERROR, response.getErrorDescription()).showAndWait();
+			Platform.exit();
+		}
+	}
+
 	private void handleRegister() {
 		String username = tfUsername.getText();
 		String phoneNumber = tfPhoneNumber.getText();
@@ -67,18 +80,5 @@ public class RegisterController extends BaseController {
 
 		Register registerRequest = new Register(username, email, phoneNumber, password);
 		viewManager.sendRequestAsync(registerRequest, this::handleResponse);
-	}
-
-	@Override
-	protected void handleResponse(Response response) {
-		if (response.isSuccess())
-			viewManager.showView("login_view");
-		else {
-			viewManager.showError(response.getErrorDescription());
-			//TODO: check this later
-			modelManager.close();
-			new Alert(Alert.AlertType.ERROR, response.getErrorDescription()).showAndWait();
-			Platform.exit();
-		}
 	}
 }

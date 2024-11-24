@@ -5,8 +5,8 @@ public class utils {
 		int percentage = (int) ((current * 100.0) / total);
 		int progressChars = (int) ((60.0 * current) / total);
 		return "\r[" +
-				"=".repeat(progressChars) +
-				" ".repeat(60 - progressChars) +
-				String.format("] %d%% (%d/%d bytes)", percentage, current, total);
+		       "=".repeat(progressChars) +
+		       " ".repeat(60 - progressChars) +
+		       String.format("] %d%% (%d/%d bytes)", percentage, current, total);
 	}
 }

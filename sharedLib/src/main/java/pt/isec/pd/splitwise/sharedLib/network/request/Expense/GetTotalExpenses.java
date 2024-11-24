@@ -8,8 +8,6 @@ import pt.isec.pd.splitwise.sharedLib.network.response.Response;
 import pt.isec.pd.splitwise.sharedLib.network.response.ValueResponse;
 
 import java.sql.SQLException;
-import java.util.AbstractMap;
-import java.util.ArrayList;
 import java.util.List;
 
 public record GetTotalExpenses(int groupID) implements Request {
@@ -17,12 +15,14 @@ public record GetTotalExpenses(int groupID) implements Request {
 	public Response execute(DataBaseManager context) {
 		logger.debug("Getting total expenses from group {}", groupID);
 
-		PreviewBalanceDTO previewBalance = new PreviewBalanceDTO(0.0, new ArrayList<>());
+		PreviewBalanceDTO previewBalance = new PreviewBalanceDTO();
 		try {
+			context.getGroupUserDAO().getAllUsersFromGroup(groupID)
+					.forEach(user -> previewBalance.getUsersBalance().put(user.getEmail(), 0.0));
 			List<Expense> expenseList = context.getExpenseDAO().getAllExpensesFromGroup(groupID);
 			for (Expense expense : expenseList) {
-				previewBalance.getUsersBalance().add(new AbstractMap.SimpleEntry<>(expense.getPayerUser(),
-				                                                                   expense.getAmount())); //TODO: try to simplify this
+				previewBalance.getUsersBalance().replace(expense.getPayerUser(), previewBalance.getUsersBalance().get(
+						expense.getPayerUser()) + expense.getAmount());
 				previewBalance.setTotalBalance(previewBalance.getTotalBalance() + expense.getAmount());
 				logger.debug("Added expense from user {} with amount {}", expense.getPayerUser(), expense.getAmount());
 			}

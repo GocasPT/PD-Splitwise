@@ -7,7 +7,6 @@ import pt.isec.pd.splitwise.sharedLib.network.response.Response;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Arrays;
-import java.util.Date;
 
 public record EditExpense(int expenseID, double amount, String description, LocalDate date, String buyerEmail,
                           String[] associatedUsersEmail) implements Request {
@@ -21,7 +20,7 @@ public record EditExpense(int expenseID, double amount, String description, Loca
 		             \tbuyerEmail: {}
 		             \tassociatedUsersEmail: {}""",
 		             expenseID, amount, description, date, buyerEmail, Arrays.toString(associatedUsersEmail)
-		             );
+		);
 
 		try {
 			int buyerId = context.getUserDAO().getUserByEmail(buyerEmail).getId();

@@ -2,7 +2,6 @@ package pt.isec.pd.splitwise.client.ui.component;
 
 import com.dlsc.gemsfx.SearchField;
 import javafx.beans.property.ListProperty;
-import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -10,7 +9,6 @@ import javafx.util.StringConverter;
 import pt.isec.pd.splitwise.sharedLib.database.Entity.User;
 
 import java.util.Comparator;
-import java.util.List;
 import java.util.stream.Collectors;
 
 public class UsersSearchField extends SearchField<User> {

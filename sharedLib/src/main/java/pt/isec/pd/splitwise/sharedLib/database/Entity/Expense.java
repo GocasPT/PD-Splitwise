@@ -15,7 +15,7 @@ public final class Expense extends Entity {
 	private double amount;
 	private String title;
 	private LocalDate date;
-	private String registerByUser; //TODO: email → pair<username, userEmail>
-	private String payerUser; //TODO: email → pair<username, userEmail>
-	private List<String> associetedUsersList; //TODO: email → pair<username, userEmail>
+	private String registerByUser;
+	private String payerUser;
+	private List<String> associetedUsersList;
 }

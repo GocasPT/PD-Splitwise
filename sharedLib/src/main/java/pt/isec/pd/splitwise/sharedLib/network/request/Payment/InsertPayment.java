@@ -4,7 +4,8 @@ import pt.isec.pd.splitwise.sharedLib.database.DataBaseManager;
 import pt.isec.pd.splitwise.sharedLib.network.request.Request;
 import pt.isec.pd.splitwise.sharedLib.network.response.Response;
 
-public record InsertPayment(int groupID, double amount, String userPayerEmail, String userReceiverEmail) implements Request {
+public record InsertPayment(int groupID, double amount, String userPayerEmail,
+                            String userReceiverEmail) implements Request {
 	@Override
 	public Response execute(DataBaseManager context) {
 		logger.debug("""

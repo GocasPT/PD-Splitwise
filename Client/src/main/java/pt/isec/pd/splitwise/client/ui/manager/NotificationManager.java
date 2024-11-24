@@ -6,15 +6,16 @@ import org.controlsfx.control.Notifications;
 import pt.isec.pd.splitwise.sharedLib.network.response.NotificaionResponse;
 
 //TODO: improve this class
-public class NotificationManager {public static void showNotification(NotificaionResponse notificaionResponse) {
-	Stage.getWindows().stream()
-			.filter(Window::isShowing)
-			.findFirst().ifPresent(activeWindow -> Notifications.create()
-					.title("Notification")
-					.text(notificaionResponse.getNotifyDescription())
-					.hideAfter(javafx.util.Duration.seconds(5))
-					.owner(activeWindow)
-					.show());
+public class NotificationManager {
+	public static void showNotification(NotificaionResponse notificaionResponse) {
+		Stage.getWindows().stream()
+				.filter(Window::isShowing)
+				.findFirst().ifPresent(activeWindow -> Notifications.create()
+						.title("Notification")
+						.text(notificaionResponse.getNotifyDescription())
+						.hideAfter(javafx.util.Duration.seconds(5))
+						.owner(activeWindow)
+						.show());
 
-}
+	}
 }

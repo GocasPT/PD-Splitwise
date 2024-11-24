@@ -21,19 +21,6 @@ public class Server {
 	private final HeartbeatManager heartbeatManager;
 	private volatile boolean isRunning;
 
-	public static void main(String[] args) {
-		if (args.length != 2) {
-			logger.error("Usage: java Server <listening_port> <db_path>"); //TODO: check this later
-			return;
-		}
-
-		try {
-			new Server(Integer.parseInt(args[0]), args[1]);
-		} catch ( NumberFormatException e ) {
-			logger.error("Invalid port number: {}", args[0]);
-		}
-	}
-
 	public Server(int listeningPort, String dbPath) {
 		try {
 			isRunning = true;
@@ -86,6 +73,19 @@ public class Server {
 			serverSocket.close();
 		} catch ( Exception e ) {
 			logger.error(e.getMessage());
+		}
+	}
+
+	public static void main(String[] args) {
+		if (args.length != 2) {
+			logger.error("Usage: java Server <listening_port> <db_path>"); //TODO: check this later
+			return;
+		}
+
+		try {
+			new Server(Integer.parseInt(args[0]), args[1]);
+		} catch ( NumberFormatException e ) {
+			logger.error("Invalid port number: {}", args[0]);
 		}
 	}
 }
