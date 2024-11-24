@@ -20,14 +20,19 @@ import java.io.IOException;
 public class UserController extends BaseController {
 	@FXML
 	private BorderPane homePane;
+
 	@FXML
 	private Button btnLogout;
+
 	@FXML
 	private Text txtEmail;
+
 	@FXML
 	private Text txtPhoneNumber;
+
 	@FXML
 	private Text txtUsername;
+
 	@FXML
 	private Button btnEdit;
 

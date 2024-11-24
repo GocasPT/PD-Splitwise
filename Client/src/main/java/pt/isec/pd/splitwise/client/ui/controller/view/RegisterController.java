@@ -4,7 +4,6 @@ import com.dlsc.phonenumberfx.PhoneNumberField;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.layout.AnchorPane;
 import pt.isec.pd.splitwise.client.model.ModelManager;
 import pt.isec.pd.splitwise.client.ui.controller.BaseController;
 import pt.isec.pd.splitwise.client.ui.manager.ViewManager;
@@ -12,20 +11,12 @@ import pt.isec.pd.splitwise.sharedLib.network.request.User.Register;
 import pt.isec.pd.splitwise.sharedLib.network.response.Response;
 
 public class RegisterController extends BaseController {
-	@FXML
-	private AnchorPane registerPane;
-	@FXML
-	private TextField tfUsername;
-	@FXML
-	private PhoneNumberField tfPhoneNumber;
-	@FXML
-	private TextField tfEmail;
-	@FXML
-	private PasswordField tfPassword;
-	@FXML
-	private Button btnRegiste;
-	@FXML
-	private Hyperlink hpSignIn;
+	@FXML private TextField tfUsername;
+	@FXML private PhoneNumberField tfPhoneNumber;
+	@FXML private TextField tfEmail;
+	@FXML private PasswordField tfPassword;
+	@FXML private Button btnRegiste;
+	@FXML private Hyperlink hpSignIn;
 
 	public RegisterController(ViewManager viewManager, ModelManager modelManager) {
 		super(viewManager, modelManager);
@@ -59,8 +50,6 @@ public class RegisterController extends BaseController {
 			viewManager.showView("login_view");
 		else {
 			viewManager.showError(response.getErrorDescription());
-			//TODO: check this later
-			modelManager.close();
 			new Alert(Alert.AlertType.ERROR, response.getErrorDescription()).showAndWait();
 			Platform.exit();
 		}
@@ -72,13 +61,12 @@ public class RegisterController extends BaseController {
 		String email = tfEmail.getText();
 		String password = tfPassword.getText();
 
-		//TODO: add validator (maven dependency)
+		//TODO: ValidatorFX
 		if (username.isEmpty() || phoneNumber.isEmpty() || email.isEmpty() || password.isEmpty()) {
 			viewManager.showError("All fields are required");
 			return;
 		}
 
-		Register registerRequest = new Register(username, email, phoneNumber, password);
-		viewManager.sendRequestAsync(registerRequest, this::handleResponse);
+		viewManager.sendRequestAsync(new Register(username, email, phoneNumber, password), this::handleResponse);
 	}
 }

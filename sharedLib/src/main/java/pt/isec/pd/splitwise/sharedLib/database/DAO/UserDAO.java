@@ -28,7 +28,7 @@ public class UserDAO extends DAO {
 	 *
 	 * @param username    the username
 	 * @param email       the userEmail
-	 * @param phoneNumber the phone number
+	 * @param phoneNumber the phoneNumber number
 	 * @param password    the password
 	 * @return the int
 	 * @throws SQLException the sql exception
@@ -136,7 +136,7 @@ public class UserDAO extends DAO {
 	 * @param userId      the id
 	 * @param username    the username
 	 * @param email       the userEmail
-	 * @param phoneNumber the phone number
+	 * @param phoneNumber the phoneNumber number
 	 * @param password    the password
 	 * @return the boolean
 	 * @throws SQLException the sql exception

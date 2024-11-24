@@ -30,3 +30,20 @@
 .card-description {
     -fx-font-size: 14;
 }
+
+#invite-card {
+    -fx-background-color: #f5f5f5;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 10, 0, 0, 4);
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-border-color: rgba(0, 0, 0, 0.1);
+    -fx-border-width: 1;
+}
+
+#accepted {
+    -fx-background-color: green;
+}
+
+#deny {
+    -fx-background-color: red;
+}

@@ -21,6 +21,7 @@ import java.io.IOException;
 public class GroupsController extends BaseController {
 	@FXML
 	private Button btnCreateGroup;
+
 	@FXML
 	private VBox vbGroups;
 

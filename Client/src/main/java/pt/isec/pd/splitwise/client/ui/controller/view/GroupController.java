@@ -38,22 +38,31 @@ import java.util.Map;
 
 public class GroupController extends BaseController {
 	private final ObjectProperty<EGroupView> groupViewState;
+
 	@FXML
 	public Button btnSettings;
+
 	@FXML
 	public Button btnAddExpense;
+
 	@FXML
 	private Button btnExpenses;
+
 	@FXML
 	private Text txtGroupName;
+
 	@FXML
 	private Button btnPay;
+
 	@FXML
 	private Button btnBalance; //TODO: show balance (graph, details, etc)
+
 	@FXML
 	private Button btnTotalSpend; //TODO: show total spend (total, debs, debs fro each user, etc)
+
 	@FXML
 	private Button btnExport;
+
 	@FXML
 	private VBox vbInfo;
 

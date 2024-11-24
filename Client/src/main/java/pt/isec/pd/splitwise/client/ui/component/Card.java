@@ -24,18 +24,25 @@ import java.util.List;
 public class Card extends VBox {
 	@FXML
 	private HBox headerBox;
+
 	@FXML
 	private Label titleLabel;
+
 	@FXML
 	private Label subtitleLabel;
+
 	@FXML
 	private Label headerDescriptionLabel;
+
 	@FXML
 	private StackPane mediaBox;
+
 	@FXML
 	private VBox contentBox;
+
 	@FXML
 	private Label descriptionLabel;
+
 	@FXML
 	private HBox footerBox;
 

@@ -16,6 +16,7 @@ import java.io.IOException;
 public class CreateGroupDialog extends Dialog<String> {
 	@FXML
 	private TextField tfGroupName;
+
 	@FXML
 	private ButtonType btnFinish;
 

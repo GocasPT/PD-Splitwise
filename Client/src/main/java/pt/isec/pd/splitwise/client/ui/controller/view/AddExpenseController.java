@@ -30,20 +30,28 @@ import java.util.Map;
 public class AddExpenseController extends BaseController {
 	@FXML
 	public Text txtGroupName;
+
 	@FXML
 	public TextField tfAmount;
+
 	@FXML
 	public ExpandingTextArea tfDescription;
+
 	@FXML
 	public CalendarPicker datePicker;
+
 	@FXML
 	public ComboBox<PreviewUserDTO> cbPayerUser;
+
 	@FXML
 	public CheckComboBox<PreviewUserDTO> ccbAssociatedUsers;
+
 	@FXML
 	public HBox hbBtn;
+
 	@FXML
 	public Button btnAdd;
+
 	@FXML
 	public Button btnCancel;
 

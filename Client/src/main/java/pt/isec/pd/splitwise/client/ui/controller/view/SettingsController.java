@@ -32,14 +32,19 @@ import java.io.IOException;
 public class SettingsController extends BaseController {
 	@FXML
 	public Button btnClose;
+
 	@FXML
 	private Button btnInvite;
+
 	@FXML
 	private Button btnEdit;
+
 	@FXML
 	private Button btnDelete;
+
 	@FXML
 	private Button btnExit;
+
 	@FXML
 	private VBox vbMembers;
 

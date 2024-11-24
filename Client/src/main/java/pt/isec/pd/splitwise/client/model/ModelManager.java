@@ -12,14 +12,18 @@ import java.net.InetAddress;
 
 public class ModelManager {
 	private final SocketManager socketManager;
+
 	@Getter
 	private final ObjectProperty<ENavBarState> navBarStateProperty;
+
 	@Setter
 	@Getter
 	private String emailLoggedUser;
+
 	@Setter
 	@Getter
 	private int groupInViewId;
+
 	@Setter
 	@Getter
 	private int expenseInViewId;

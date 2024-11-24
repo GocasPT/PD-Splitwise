@@ -11,10 +11,13 @@ import pt.isec.pd.splitwise.sharedLib.network.response.Response;
 
 public class NavBarController extends BaseController {
 	private static ObjectProperty<ENavBarState> currentButton;
+
 	@FXML
 	private Button btnGroups;
+
 	@FXML
 	private Button btnInvites;
+
 	@FXML
 	private Button btnUser;
 

@@ -3,7 +3,6 @@ package pt.isec.pd.splitwise.sharedLib.database;
 import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.sqlite.SQLiteErrorCode;
 import pt.isec.pd.splitwise.sharedLib.database.DAO.*;
 import pt.isec.pd.splitwise.sharedLib.database.Observer.DatabaseChangeObserver;
 import pt.isec.pd.splitwise.sharedLib.database.Observer.NotificationObserver;
@@ -22,13 +21,21 @@ public class DataBaseManager {
 	private final String dbPath;
 	private final Connection conn;
 	private final NotificationObserver notificationObserver;
+
 	@Getter private final DatabaseSyncManager syncManager;
+
 	@Getter private final UserDAO userDAO;
+
 	@Getter private final GroupDAO groupDAO;
+
 	@Getter private final GroupUserDAO groupUserDAO;
+
 	@Getter private final InviteDAO inviteDAO;
+
 	@Getter private final ExpenseDAO expenseDAO;
+
 	@Getter private final ExpenseUserDAO expenseUserDAO;
+
 	@Getter private final PaymentDAO paymentDAO;
 	private DatabaseChangeObserver databaseChangeObserver;
 
@@ -195,47 +202,6 @@ public class DataBaseManager {
 		return new File(Paths.get(dbPath).toAbsolutePath().toString());
 	}
 
-	public int getVersion() {
-		logger.debug("Getting version");
-		int version = -1;
-		//language=SQLite
-		String query = "SELECT * FROM version;";
-
-		try {
-			List<Map<String, Object>> rs = executeRead(query);
-			version = (int) rs.getFirst().get("value");
-		} catch ( SQLException e ) {
-			logger.error("Getting version: {}", e.getMessage());
-		}
-
-		logger.debug("Current version: {}", version);
-
-		return version;
-	}
-
-	public List<Map<String, Object>> executeRead(String query, Object... params) throws SQLException {
-		List<Map<String, Object>> results = new ArrayList<>();
-		try ( PreparedStatement pstmt = conn.prepareStatement(query) ) {
-			for (int i = 0; i < params.length; i++) {
-				pstmt.setObject(i + 1, params[i]);
-			}
-
-			try ( ResultSet rs = pstmt.executeQuery() ) {
-				ResultSetMetaData metaData = rs.getMetaData();
-				int columnCount = metaData.getColumnCount();
-
-				while (rs.next()) {
-					Map<String, Object> row = new HashMap<>();
-					for (int i = 1; i <= columnCount; i++) {
-						row.put(metaData.getColumnName(i), rs.getObject(i));
-					}
-					results.add(row);
-				}
-			}
-		}
-		return results;
-	}
-
 	public int executeWriteWithId(String query, Object... params) throws SQLException {
 		return executeWriteTransactionWithId(query, params);
 	}
@@ -293,6 +259,47 @@ public class DataBaseManager {
 		if (databaseChangeObserver != null) {
 			databaseChangeObserver.onDBChange(query, params);
 		}
+	}
+
+	public int getVersion() {
+		logger.debug("Getting version");
+		int version = -1;
+		//language=SQLite
+		String query = "SELECT * FROM version;";
+
+		try {
+			List<Map<String, Object>> rs = executeRead(query);
+			version = (int) rs.getFirst().get("value");
+		} catch ( SQLException e ) {
+			logger.error("Getting version: {}", e.getMessage());
+		}
+
+		logger.debug("Current version: {}", version);
+
+		return version;
+	}
+
+	public List<Map<String, Object>> executeRead(String query, Object... params) throws SQLException {
+		List<Map<String, Object>> results = new ArrayList<>();
+		try ( PreparedStatement pstmt = conn.prepareStatement(query) ) {
+			for (int i = 0; i < params.length; i++) {
+				pstmt.setObject(i + 1, params[i]);
+			}
+
+			try ( ResultSet rs = pstmt.executeQuery() ) {
+				ResultSetMetaData metaData = rs.getMetaData();
+				int columnCount = metaData.getColumnCount();
+
+				while (rs.next()) {
+					Map<String, Object> row = new HashMap<>();
+					for (int i = 1; i <= columnCount; i++) {
+						row.put(metaData.getColumnName(i), rs.getObject(i));
+					}
+					results.add(row);
+				}
+			}
+		}
+		return results;
 	}
 
 	public int executeWrite(String query, Object... params) throws SQLException {

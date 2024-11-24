@@ -22,7 +22,8 @@ public record ExitGroup(String userEmail, int groupId) implements Request {
 
 			User user = context.getUserDAO().getUserByEmail(userEmail);
 
-			List<Expense> expenseList = context.getExpenseUserDAO().getAllExpensesFromUserOnGroup(user.getId(), groupId);
+			List<Expense> expenseList = context.getExpenseUserDAO().getAllExpensesFromUserOnGroup(user.getId(),
+			                                                                                      groupId);
 			if (!expenseList.isEmpty())
 				return new Response(false, "User has debts");
 

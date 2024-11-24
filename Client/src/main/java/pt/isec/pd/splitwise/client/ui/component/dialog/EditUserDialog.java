@@ -17,12 +17,16 @@ import java.io.IOException;
 public class EditUserDialog extends Dialog<InfoUserDTO> {
 	@FXML
 	private TextField tfName;
+
 	@FXML
 	private TextField tfEmail;
+
 	@FXML
 	private TextField tfPhoneNumber;
+
 	@FXML
 	private TextField tfPassword;
+
 	@FXML
 	private ButtonType btnFinish;
 

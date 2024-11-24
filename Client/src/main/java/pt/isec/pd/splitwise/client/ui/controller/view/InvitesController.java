@@ -10,6 +10,7 @@ import pt.isec.pd.splitwise.client.ui.controller.BaseController;
 import pt.isec.pd.splitwise.client.ui.manager.ViewManager;
 import pt.isec.pd.splitwise.sharedLib.database.DTO.Invite.PreviewInviteDTO;
 import pt.isec.pd.splitwise.sharedLib.network.request.Invite.GetInvites;
+import pt.isec.pd.splitwise.sharedLib.network.request.Invite.InviteResponse;
 import pt.isec.pd.splitwise.sharedLib.network.response.ListResponse;
 import pt.isec.pd.splitwise.sharedLib.network.response.Response;
 
@@ -18,6 +19,7 @@ import java.io.IOException;
 public class InvitesController extends BaseController {
 	@FXML
 	private BorderPane homePane;
+
 	@FXML
 	private VBox vbInvites;
 
@@ -48,24 +50,44 @@ public class InvitesController extends BaseController {
 		try {
 			for (PreviewInviteDTO invite : invites) {
 				Button btnAccept = new Button("Accept");
-				btnAccept.setOnAction(e -> {
-					//TODO: handle accept invite + "disable" card
-				});
 				Button btnDeny = new Button("Deny");
-				btnDeny.setOnAction(e -> {
-					//TODO: handle deny invite + "disable" card
+
+				Card inviteCard = new Card.Builder()
+						.id("invite-card")
+						.title(invite.getGroupName())
+						.subtitle(invite.getHostEmail()) //TODO: email -> email + username
+						.addButton(btnAccept)
+						.addButton(btnDeny)
+						.addStyleClass("invite-card")
+						.build();
+
+				btnAccept.setOnAction(e -> {
+					viewManager.sendRequestAsync(
+							new InviteResponse(invite.getId(), true),
+							(resp) -> {
+								if (!resp.isSuccess()) {
+									viewManager.showError(resp.getErrorDescription());
+									return;
+								}
+								update();
+							}
+					);
 				});
 
-				vbInvites.getChildren().add(
-						new Card.Builder()
-								.id("invite-card")
-								.title(invite.getGroupName())
-								.subtitle(invite.getHostEmail()) //TODO: email -> email + username
-								.addButton(btnAccept)
-								.addButton(btnDeny)
-								.addStyleClass("invite-card")
-								.build()
-				);
+				btnDeny.setOnAction(e -> {
+					viewManager.sendRequestAsync(
+							new InviteResponse(invite.getId(), false),
+							(resp) -> {
+								if (!resp.isSuccess()) {
+									viewManager.showError(resp.getErrorDescription());
+									return;
+								}
+								update();
+							}
+					);
+				});
+
+				vbInvites.getChildren().add(inviteCard);
 			}
 		} catch ( IOException e ) {
 			viewManager.showError("Failed to build invites: " + e.getMessage());

@@ -78,6 +78,38 @@ public class InviteDAO extends DAO {
 	}
 
 	/**
+	 * Gets invite by id.
+	 *
+	 * @param inviteId the invite id
+	 * @return the invite by id
+	 * @throws SQLException the sql exception
+	 */
+	public Invite getInviteById(int inviteId) throws SQLException {
+		logger.debug("Getting invite with id {}", inviteId);
+
+		//language=SQLite
+		String query = """
+		               SELECT invites.id     AS id,
+		                      groups.id      AS group_id,
+		                      guest.email   AS guest_email,
+		                      inviter.email    AS inviter_email
+		               FROM invites
+		                        JOIN groups ON groups.id = invites.group_id
+		                        JOIN users AS guest ON guest.id = invites.guest_user_id
+		               		JOIN users AS inviter ON inviter.id = invites.inviter_user_id
+		               WHERE invites.id = ?""";
+
+		Map<String, Object> result = dbManager.executeRead(query, inviteId).getFirst();
+		return Invite.builder()
+				.id((int) result.get("id"))
+				.groupId((int) result.get("group_id"))
+				.guestUserEmail((String) result.get("guest_email")) //TODO: email → pair<username, userEmail>
+				.hostUserEmail((String) result.get("inviter_email")) //TODO: email → pair<username, userEmail>
+				.build();
+
+	}
+
+	/**
 	 * Accept invite boolean.
 	 *
 	 * @param inviteId the invite id
@@ -89,12 +121,13 @@ public class InviteDAO extends DAO {
 		logger.debug("Accepting invite with id {}", inviteId);
 
 		//language=SQLite
-		String queryDelete = "DELETE FROM invites WHERE id = ?";
-		//language=SQLite
 		String queryInsert = "INSERT INTO group_users (group_id, user_id) SELECT group_id, guest_user_id FROM invites WHERE id = ?";
+		//language=SQLite
+		String queryDelete = "DELETE FROM invites WHERE id = ?";
 
+		boolean result = dbManager.executeWrite(queryInsert, inviteId) > 0;
 		dbManager.executeWrite(queryDelete, inviteId);
-		return dbManager.executeWrite(queryInsert, inviteId) > 0;
+		return result;
 	}
 
 	/**

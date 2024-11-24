@@ -7,7 +7,8 @@
 <?import javafx.scene.text.Font?>
 <VBox xmlns:fx="http://javafx.com/fxml/1" alignment="CENTER" maxHeight="1.7976931348623157E308"
       maxWidth="1.7976931348623157E308" stylesheets="@../styles/navBar.css" BorderPane.alignment="CENTER"
-      xmlns="http://javafx.com/javafx/20.0.1" fx:controller="pt.isec.pd.splitwise.client.ui.controller.NavBarController">
+      xmlns="http://javafx.com/javafx/20.0.1"
+      fx:controller="pt.isec.pd.splitwise.client.ui.controller.NavBarController">
     <BorderPane.margin>
         <Insets/>
     </BorderPane.margin>

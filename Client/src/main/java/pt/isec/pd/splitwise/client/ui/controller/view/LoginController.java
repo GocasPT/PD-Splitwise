@@ -16,10 +16,13 @@ import pt.isec.pd.splitwise.sharedLib.network.response.Response;
 public class LoginController extends BaseController {
 	@FXML
 	private TextField tfEmail;
+
 	@FXML
 	private TextField tfPassword;
+
 	@FXML
 	private Button btnLogin;
+
 	@FXML
 	private Hyperlink hpSignUp;
 
