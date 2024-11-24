@@ -72,8 +72,6 @@ public class GroupsController extends BaseController {
 		try {
 			CreateGroupDialog dialog = new CreateGroupDialog(vbGroups.getScene().getWindow());
 			dialog.showAndWait().ifPresent(groupName -> {
-				//TODO: loading where?
-
 				viewManager.sendRequestAsync(new CreateGroup(groupName, modelManager.getEmailLoggedUser()),
 				                             (response) -> {
 					                             if (!response.isSuccess()) {

@@ -42,8 +42,8 @@ public class GroupController extends BaseController {
 	@FXML private Button btnExpenses;
 	@FXML private Text txtGroupName;
 	@FXML private Button btnPay;
-	@FXML private Button btnBalance; //TODO: show balance (graph, details, etc)
-	@FXML private Button btnTotalSpend; //TODO: show total spend (total, debs, debs fro each user, etc)
+	@FXML private Button btnBalance;
+	@FXML private Button btnTotalSpend;
 	@FXML private Button btnExport;
 	@FXML private VBox vbInfo;
 
@@ -164,9 +164,8 @@ public class GroupController extends BaseController {
 					try {
 						for (DetailExpenseDTO expense : expenses)
 							//TODO: add month separator (new month → new separator)
-							vbInfo.getChildren().add(new Card.Builder().id("expense-card")
-									                         //.avatar() //TODO: category icon using ikonli icons
-									                         .title(expense.getTitle()).subtitle(
+							vbInfo.getChildren().add(
+									new Card.Builder().id("expense-card").title(expense.getTitle()).subtitle(
 											expense.getAmount() + "€").description(
 											expense.getDate().toString() + " - " + expense.getPayerUser()).onMouseClicked(
 											e -> {
@@ -196,7 +195,6 @@ public class GroupController extends BaseController {
 				return;
 			}
 
-			//TODO: show balance
 			vbInfo.getChildren().clear();
 
 			PieChart pieChart = new PieChart();
@@ -222,7 +220,6 @@ public class GroupController extends BaseController {
 					Label lblTotalExpenses = new Label("Total expenses: " + balance.getTotalBalance() + "€");
 					lblTotalExpenses.setStyle("-fx-font: 24 arial;"); //TODO: add class?
 
-					//TODO: why chart is small?
 					vbInfo.getChildren().addAll(lblTotalExpenses, pieChart, caption);
 				} else viewManager.showError("Failed to get balance value");
 			else viewManager.showError("Failed to cast response to ValueResponse");

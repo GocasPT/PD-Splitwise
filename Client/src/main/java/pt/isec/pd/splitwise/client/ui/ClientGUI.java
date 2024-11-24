@@ -12,12 +12,10 @@ public class ClientGUI extends Application {
 	//private ViewManager viewManager;
 	private ModelManager modelManager;
 
-	@Override
-	public void init() {
+	@Override public void init() {
 		String[] args = getParameters().getRaw().toArray(String[]::new);
 
 		if (args.length != 2) {
-			//TODO: show this message on java error box if possible
 			System.out.println("Usage: java ClientApp <server> <port>");
 			Platform.exit();
 			return;
@@ -30,7 +28,6 @@ public class ClientGUI extends Application {
 			modelManager = new ModelManager();
 			modelManager.connect(serverAdder, port);
 			//TODO: Improve catch blocks
-			// show error message on MainGUI/Popup
 		/*} catch ( UnknownHostException e ) {
 			System.out.println("UnknownHostException on 'init': " + e.getMessage());
 			Platform.exit();
@@ -41,12 +38,11 @@ public class ClientGUI extends Application {
 			System.out.println("RuntimeException on 'init': " + e.getMessage());
 			Platform.exit();*/
 		} catch ( Exception e ) {
-			throw new RuntimeException("Failed to initialize application", e); //TODO: can I show in a popup?
+			throw new RuntimeException("Failed to initialize application", e);
 		}
 	}
 
-	@Override
-	public void start(Stage primaryStage) {
+	@Override public void start(Stage primaryStage) {
 		ViewManager viewManager = new ViewManager(primaryStage, modelManager);
 		primaryStage.setOnCloseRequest(e -> modelManager.close());
 		primaryStage.setTitle("PD_Splitwise");

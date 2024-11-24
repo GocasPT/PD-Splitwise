@@ -10,7 +10,8 @@ public class NotificationManager {
 	public static void showNotification(NotificaionResponse notificaionResponse) {
 		Stage.getWindows().stream()
 				.filter(Window::isShowing)
-				.findFirst().ifPresent(activeWindow -> Notifications.create()
+				.findFirst()
+				.ifPresent(activeWindow -> Notifications.create()
 						.title("Notification")
 						.text(notificaionResponse.getNotifyDescription())
 						.hideAfter(javafx.util.Duration.seconds(5))

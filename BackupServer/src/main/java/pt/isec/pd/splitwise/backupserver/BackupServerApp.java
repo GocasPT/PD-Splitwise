@@ -178,14 +178,12 @@ public class BackupServerApp {
 		return false;
 	}
 
-	//TODO: SQL return problem
 	private void processHeartbeat(Heartbeat heartbeat) throws SQLException {
 		if (heartbeat.version() != dbManager.getVersion())
 			if (heartbeat.query() != null)
 				try {
 					dbManager.executeWriteWithId(heartbeat.query(), heartbeat.params());
 				} catch ( SQLException e ) {
-					//TODO: if error is "QUERY DOES NOT RETURN ID" then executeWrite
 					if (e.getErrorCode() == 0)
 						dbManager.executeWrite(heartbeat.query(), heartbeat.params());
 					else

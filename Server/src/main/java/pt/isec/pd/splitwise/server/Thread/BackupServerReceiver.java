@@ -29,7 +29,6 @@ public class BackupServerReceiver extends Thread {
 		try {
 			logger.info("Backup server receiver started");
 
-			//TODO: need to add something where? (flag to stop loop?)
 			while (isRunning) {
 				Socket backupServerSocket = serverSocket.accept();
 				new Thread(

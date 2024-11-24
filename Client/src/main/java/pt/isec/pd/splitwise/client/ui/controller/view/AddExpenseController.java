@@ -168,7 +168,6 @@ public class AddExpenseController extends BaseController {
 	}
 
 	private void addExpense() {
-		//TODO: get information from each input
 		String amountStr = tfAmount.getText();
 		double amount = Double.parseDouble(amountStr);
 		String description = tfDescription.getText();

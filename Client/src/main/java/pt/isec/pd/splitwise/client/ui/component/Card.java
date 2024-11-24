@@ -7,10 +7,8 @@ import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import lombok.Getter;
 import pt.isec.pd.splitwise.client.ClientApp;
@@ -20,31 +18,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-//TODO: @Builder
 public class Card extends VBox {
-	@FXML
-	private HBox headerBox;
-
-	@FXML
-	private Label titleLabel;
-
-	@FXML
-	private Label subtitleLabel;
-
-	@FXML
-	private Label headerDescriptionLabel;
-
-	@FXML
-	private StackPane mediaBox;
-
-	@FXML
-	private VBox contentBox;
-
-	@FXML
-	private Label descriptionLabel;
-
-	@FXML
-	private HBox footerBox;
+	@FXML private HBox headerBox;
+	@FXML private Label titleLabel;
+	@FXML private Label subtitleLabel;
+	@FXML private Label headerDescriptionLabel;
+	@FXML private VBox contentBox;
+	@FXML private Label descriptionLabel;
+	@FXML private HBox footerBox;
 
 	private Card() throws IOException {
 		loadFXML();
@@ -54,8 +35,6 @@ public class Card extends VBox {
 		subtitleLabel.setManaged(false);
 		headerDescriptionLabel.setVisible(false);
 		headerDescriptionLabel.setManaged(false);
-		mediaBox.setVisible(false);
-		mediaBox.setManaged(false);
 		descriptionLabel.setVisible(false);
 		descriptionLabel.setManaged(false);
 		footerBox.setVisible(false);
@@ -63,9 +42,7 @@ public class Card extends VBox {
 	}
 
 	private void loadFXML() throws IOException {
-		FXMLLoader loader = new FXMLLoader(
-				ClientApp.class.getResource("components/card.fxml")
-		);
+		FXMLLoader loader = new FXMLLoader(ClientApp.class.getResource("components/card.fxml"));
 		loader.setRoot(this);
 		loader.setController(this);
 		loader.load();
@@ -80,8 +57,6 @@ public class Card extends VBox {
 		private String subtitle;
 		private String headerDescription;
 		private String description;
-		private Image avatar;
-		private Node mediaContent;
 		private EventHandler<? super MouseEvent> onMouseClicked;
 
 		public Builder id(String id) {
@@ -109,16 +84,6 @@ public class Card extends VBox {
 			return this;
 		}
 
-		public Builder avatar(Image avatar) {
-			this.avatar = avatar;
-			return this;
-		}
-
-		public Builder mediaContent(Node content) {
-			this.mediaContent = content;
-			return this;
-		}
-
 		public Builder addContent(Node content) {
 			this.contentNodes.add(content);
 			return this;
@@ -142,8 +107,7 @@ public class Card extends VBox {
 		public Card build() throws IOException {
 			Card card = new Card();
 
-			if (id != null)
-				card.setId(id);
+			if (id != null) card.setId(id);
 
 			card.getStyleClass().addAll(styleClasses);
 
@@ -162,18 +126,12 @@ public class Card extends VBox {
 				showNode(card.headerDescriptionLabel);
 			}
 
-			if (mediaContent != null) {
-				card.mediaBox.getChildren().add(mediaContent);
-				showNode(card.mediaBox);
-			}
-
 			if (description != null) {
 				card.descriptionLabel.setText(description);
 				showNode(card.descriptionLabel);
 			}
 
-			if (!contentNodes.isEmpty())
-				card.contentBox.getChildren().addAll(contentNodes);
+			if (!contentNodes.isEmpty()) card.contentBox.getChildren().addAll(contentNodes);
 
 			if (!footerButtons.isEmpty()) {
 				card.footerBox.getChildren().addAll(footerButtons);

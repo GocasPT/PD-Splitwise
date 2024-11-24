@@ -65,8 +65,6 @@ public class LoginController extends BaseController {
 			modelManager.getNavBarStateProperty().setValue(ENavBarState.GROUPS);
 		} else {
 			viewManager.showError(response.getErrorDescription());
-			//TODO: check this later
-			modelManager.close();
 			new Alert(Alert.AlertType.ERROR, response.getErrorDescription()).showAndWait();
 			Platform.exit();
 		}

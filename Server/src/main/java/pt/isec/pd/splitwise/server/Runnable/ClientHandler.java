@@ -1,6 +1,7 @@
 package pt.isec.pd.splitwise.server.Runnable;
 
 
+import lombok.ToString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pt.isec.pd.splitwise.server.Manager.SessionManager;
@@ -43,50 +44,55 @@ public class ClientHandler implements Runnable {
 		try {
 			Request request;
 
-			try {
-				// Block for Login or Register request
-				// Need to be logged in to access other requests
-				while (email == null) {
-					request = (Request) in.readObject();
-					logger.info("Request: {}", request);
-					if (request instanceof Login) {
-						Response response = request.execute(context);
-						if (!response.isSuccess()) {
+			// Loop connection (ex.: Connect → Login → Logout)
+			while (true) {
+				try {
+					// Block for Login or Register request
+					// Need to be logged in to access other requests
+					while (email == null) {
+						request = (Request) in.readObject();
+						logger.info("Request: {}", request);
+						if (request instanceof Login) {
+							Response response = request.execute(context);
+							if (!response.isSuccess()) {
+								out.writeObject(response);
+								return;
+							} else {
+								email = ((Login) request).email();
+								out.writeObject(response);
+								sessionManager.addSession(email, this);
+							}
+						} else if (request instanceof Register) {
+							Response response = request.execute(context);
+							out.writeObject(response);
+						} else {
+							logger.info("Client not logged in");
+							Response response = new Response(false, "Not logged in");
 							out.writeObject(response);
 							return;
-						} else {
-							email = ((Login) request).email();
-							out.writeObject(response);
-							sessionManager.addSession(email, this);
 						}
-					} else if (request instanceof Register) {
-						Response response = request.execute(context);
-						out.writeObject(response);
-					} else {
-						logger.info("Client not logged in");
-						Response response = new Response(false, "Not logged in");
-						out.writeObject(response);
-						return;
 					}
+
+					clientSocket.setSoTimeout(0); // "Disable" timeout
+
+					// Main loop
+					while (!clientSocket.isClosed()) {
+						request = (Request) in.readObject();
+						logger.info("({}) request: {}", email, request);
+						Response response = request.execute(context);
+						logger.info("({}) response: {}", email, response);
+						out.writeObject(response);
+
+						if (request instanceof Logout)
+							break;
+					}
+
+					sessionManager.removeSession(email, this);
+					email = null;
+				} catch ( ClassNotFoundException e ) {
+					logger.error("ClassNotFoundException: {}", e.getMessage());
 				}
-
-				clientSocket.setSoTimeout(0); // "Disable" timeout
-
-				// Main loop
-				while (!clientSocket.isClosed()) {
-					request = (Request) in.readObject();
-					logger.info("({}) request: {}", email, request);
-					Response response = request.execute(context);
-					logger.info("({}) response: {}", email, response);
-					out.writeObject(response);
-
-					if (request instanceof Logout)
-						break;
-				}
-			} catch ( ClassNotFoundException e ) {
-				logger.error("ClassNotFoundException: {}", e.getMessage());
 			}
-
 		} catch ( SocketException e ) {
 			logger.error("SocketException: {}", e.getMessage());
 		} catch ( IOException e ) {
@@ -94,7 +100,7 @@ public class ClientHandler implements Runnable {
 		} finally {
 			logger.info("Client disconnected");
 			if (email != null)
-				sessionManager.removeSession(email);
+				sessionManager.removeSession(email, this);
 			try {
 				clientSocket.close();
 			} catch ( IOException e ) {
@@ -103,24 +109,14 @@ public class ClientHandler implements Runnable {
 		}
 	}
 
-	//TODO: what this method have as argument?
 	public void sendMessage(NotificaionResponse notification) throws IOException {
-		//TODO: implement this method
-		logger.debug("Sending notification to user");
+		logger.debug("Sending notification to user: {}", notification);
 		out.writeObject(notification);
 		out.flush();
 	}
 
-	/*public void sendNotification(NotificaionResponse notification) {
-		try {
-			synchronized (out) {
-				System.out.println("[ClientThread] Sending notification to '" + userEmail + "': " + notification);
-				out.writeObject(notification);
-				out.flush();
-			}
-		} catch ( IOException e ) {
-			System.out.println("[ClientThread] Ocorreu um erro ao enviar a notificação:\n\t" + e);
-		}
-	}*/
+	@Override public String toString() {
+		return "ClientHandler@" + hashCode();
+	}
 }
 

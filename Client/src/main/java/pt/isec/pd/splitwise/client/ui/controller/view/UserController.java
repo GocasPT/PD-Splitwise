@@ -11,6 +11,7 @@ import pt.isec.pd.splitwise.client.ui.manager.ViewManager;
 import pt.isec.pd.splitwise.sharedLib.database.DTO.User.DetailUserDTO;
 import pt.isec.pd.splitwise.sharedLib.network.request.User.EditUser;
 import pt.isec.pd.splitwise.sharedLib.network.request.User.GetUser;
+import pt.isec.pd.splitwise.sharedLib.network.request.User.Logout;
 import pt.isec.pd.splitwise.sharedLib.network.response.Response;
 import pt.isec.pd.splitwise.sharedLib.network.response.ValueResponse;
 
@@ -56,7 +57,6 @@ public class UserController extends BaseController {
 		}
 	}
 
-	//TODO: improve this (builder pattern)
 	private void editPopup() {
 		try {
 			EditUserDialog dialog = new EditUserDialog(homePane.getScene().getWindow());
@@ -78,5 +78,14 @@ public class UserController extends BaseController {
 	}
 
 	private void logoutPopup() {
+		viewManager.sendRequestAsync(new Logout(modelManager.getEmailLoggedUser()), (response -> {
+			if (!response.isSuccess()) {
+				viewManager.showError(response.getErrorDescription());
+				return;
+			}
+
+			modelManager.setEmailLoggedUser(null);
+			viewManager.showView("login_view");
+		}));
 	}
 }

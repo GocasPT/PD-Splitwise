@@ -21,7 +21,6 @@ public class ViewManager {
 	private final Stage primaryStage;
 	private final ModelManager modelManager;
 	private final ProgressIndicator loadingIndicator;
-	//TODO: memory leak? (load view/controller every time → no way to dispose them)
 
 	public ViewManager(Stage primaryStage, ModelManager modelManager) {
 		this.primaryStage = primaryStage;
@@ -39,8 +38,7 @@ public class ViewManager {
 			if (scene == null) {
 				scene = new Scene(new StackPane(view, loadingIndicator));
 				primaryStage.setScene(scene);
-			} else
-				scene.setRoot(new StackPane(view, loadingIndicator));
+			} else scene.setRoot(new StackPane(view, loadingIndicator));
 			primaryStage.show();
 		} catch ( Exception e ) {
 			loadingIndicator.setVisible(false);
@@ -48,20 +46,11 @@ public class ViewManager {
 		}
 	}
 
-	private Parent loadView(String viewName) {
-		try {
-			String fxmlPath = "views/" + viewName + ".fxml";
-			FXMLLoader loader = new FXMLLoader(
-					ClientApp.class.getResource(fxmlPath)
-			);
-			loader.setControllerFactory(this::createController);
-			return loader.load();
-		} catch ( IOException e ) {
-			e.printStackTrace();
-			showError("Failed to load view '" + viewName + "': " + e);
-			return new Parent() {
-			}; //TODO: return null (?)
-		}
+	private Parent loadView(String viewName) throws IOException {
+		String fxmlPath = "views/" + viewName + ".fxml";
+		FXMLLoader loader = new FXMLLoader(ClientApp.class.getResource(fxmlPath));
+		loader.setControllerFactory(this::createController);
+		return loader.load();
 	}
 
 	public void showError(String message) {
@@ -77,8 +66,7 @@ public class ViewManager {
 		loadingIndicator.setVisible(true);
 
 		Task<Response> requestTask = new Task<>() {
-			@Override
-			protected Response call() {
+			@Override protected Response call() {
 				return modelManager.sendRequest(request);
 			}
 		};

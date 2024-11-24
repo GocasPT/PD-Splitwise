@@ -13,18 +13,13 @@ import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketException;
-import java.util.List;
 
 public class SocketManager {
 	private final Object lock = new Object();
-
 	private Socket socket;
 	private ObjectInputStream input;
 	private ObjectOutputStream output;
-	private List<ClientObserver> observers;
-
 	private Response feedbackResponse;
-	//TODO: check if need this variable
 	private Thread listenerThread;
 
 	public void connect(InetAddress serverAdder, int port) throws IOException { //TODO: add other exceptions
@@ -32,30 +27,25 @@ public class SocketManager {
 		output = new ObjectOutputStream(socket.getOutputStream());
 		input = new ObjectInputStream(socket.getInputStream());
 
-		//TODO: check if need this variable
 		listenerThread = new Thread(this::listenForMessages);
 		listenerThread.start();
 	}
 
 	//TODO: improve catch blocks
-	// throw exception
-	// maybe this gonna be deleted
+	// - catch blocks (show error message on MainGUI/Popup)
+	// - throw exception
 	private void listenForMessages() {
 		try {
 			while (socket != null && !socket.isClosed()) {
 				Object readObject = input.readObject();
-				if (readObject instanceof Response response)
-					synchronized (lock) {
-						if (!(response instanceof NotificaionResponse notificationResponse)) {
-							feedbackResponse = response;
-							lock.notify();
-						} else {
-							System.out.println("Notification received: " + notificationResponse); //TODO: DEBUG SOUT
-							Platform.runLater(() -> NotificationManager.showNotification(notificationResponse));
-						}
-					}
+				if (readObject instanceof Response response) synchronized (lock) {
+					if (!(response instanceof NotificaionResponse notificationResponse)) {
+						feedbackResponse = response;
+						lock.notify();
+					} else Platform.runLater(() -> NotificationManager.showNotification(notificationResponse));
+
+				}
 			}
-			//TODO: improve catch blocks (show error message on MainGUI/Popup)
 		} catch ( SocketException e ) {
 			System.out.println("SocketException on 'listenForMessages': " + e.getMessage());
 		} catch ( ClassNotFoundException e ) {
@@ -71,15 +61,8 @@ public class SocketManager {
 	}
 
 	public void close() throws IOException {
-		if (socket != null && !socket.isClosed())
-			socket.close();
-		if (listenerThread != null && listenerThread.isAlive())
-			listenerThread.interrupt();
-	}
-
-	public boolean addObservers(ClientObserver observer) {
-		//TODO: implement this method
-		return true;
+		if (socket != null && !socket.isClosed()) socket.close();
+		if (listenerThread != null && listenerThread.isAlive()) listenerThread.interrupt();
 	}
 
 	public Response sendRequest(Request request) throws IOException, InterruptedException {
@@ -90,14 +73,5 @@ public class SocketManager {
 			lock.wait();
 			return feedbackResponse;
 		}
-	}
-
-	public boolean removeObservers(ClientObserver observer) {
-		//TODO: implement this method
-		return true;
-	}
-
-	public void notifyObservers() {
-		//TODO: implement this method
 	}
 }

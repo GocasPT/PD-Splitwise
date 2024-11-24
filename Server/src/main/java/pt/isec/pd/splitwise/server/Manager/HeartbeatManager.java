@@ -1,5 +1,6 @@
 package pt.isec.pd.splitwise.server.Manager;
 
+import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pt.isec.pd.splitwise.server.Thread.BackupServerReceiver;
@@ -16,9 +17,8 @@ public class HeartbeatManager {
 	private final MulticastSocket multicastSocket;
 	private final ServerSocket backupServerSocket;
 	private final InetAddress group = InetAddress.getByName(MULTICAST_ADDRESS);
-	private final DataBaseManager dbManager; //TODO: check if this is needed
-	private final HeartbeatSender heartbeatSender;
-	private final BackupServerReceiver backupServerReceiver;
+	@Getter private final HeartbeatSender heartbeatSender;
+	@Getter private final BackupServerReceiver backupServerReceiver;
 	private boolean isRunning;
 
 	public HeartbeatManager(boolean isRunning, DataBaseManager dbManager) throws IOException {
@@ -29,7 +29,6 @@ public class HeartbeatManager {
 				NetworkInterface.getByName(MULTICAST_ADDRESS)
 		);
 		this.backupServerSocket = new ServerSocket(0);
-		this.dbManager = dbManager;
 		heartbeatSender = new HeartbeatSender(this.isRunning, multicastSocket, group, backupServerSocket, dbManager);
 		backupServerReceiver = new BackupServerReceiver(this.isRunning, backupServerSocket, dbManager);
 	}
@@ -54,13 +53,5 @@ public class HeartbeatManager {
 		} catch ( IOException e ) {
 			logger.error(e.getMessage());
 		}
-	}
-
-	public HeartbeatSender getHeartbeatSender() {
-		return heartbeatSender;
-	}
-
-	public BackupServerReceiver getBackupServerReceiver() {
-		return backupServerReceiver;
 	}
 }

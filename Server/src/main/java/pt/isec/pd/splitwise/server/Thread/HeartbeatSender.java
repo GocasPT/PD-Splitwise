@@ -33,21 +33,22 @@ public class HeartbeatSender extends Thread implements DatabaseChangeObserver {
 		this.dbManager = dbManager;
 	}
 
-	//TODO: improve this method
 	@Override
 	public void run() {
 		try {
 			logger.info("Heartbeat sender started");
 
-			//TODO: break loop when server is stopped
 			while (isRunning) {
 				Thread.sleep(HEARTBEAT_INTERVAL * 1000);
 				sendHeartbeat(null);
 			}
 		} catch ( InterruptedException e ) {
-			logger.error("Heartbeat sender stopped"); //TODO: improve this maybe (throw?)
+			logger.error("Heartbeat sender stopped");
 		} catch ( RuntimeException e ) {
-			logger.error("RuntimeException: {}", e.getMessage()); //TODO: improve this maybe (throw?)
+			logger.error("RuntimeException: {}", e.getMessage());
+		} finally {
+			multicastSocket.close();
+			logger.info("Heartbeat sender closed");
 		}
 	}
 
@@ -60,7 +61,7 @@ public class HeartbeatSender extends Thread implements DatabaseChangeObserver {
 			                                    params);
 			out.writeObject(heartbeat);
 			out.flush();
-			logger.info("Sending heartbeat: {}", heartbeat); //TODO: info or debug?
+			logger.info("Sending heartbeat: {}", heartbeat);
 			DatagramPacket packet = new DatagramPacket(bOut.toByteArray(), bOut.size(), group,
 			                                           multicastSocket.getLocalPort());
 			multicastSocket.send(packet);

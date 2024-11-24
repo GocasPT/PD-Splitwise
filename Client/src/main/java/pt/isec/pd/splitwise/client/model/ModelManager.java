@@ -12,9 +12,7 @@ import java.net.InetAddress;
 
 public class ModelManager {
 	private final SocketManager socketManager;
-
-	@Getter
-	private final ObjectProperty<ENavBarState> navBarStateProperty;
+	@Getter private final ObjectProperty<ENavBarState> navBarStateProperty;
 
 	@Setter
 	@Getter
@@ -33,9 +31,9 @@ public class ModelManager {
 		navBarStateProperty = new SimpleObjectProperty<>(ENavBarState.NULL);
 	}
 
-	public void connect(InetAddress serverAddr, int port) {
+	public void connect(InetAddress serverAdder, int port) {
 		try {
-			socketManager.connect(serverAddr, port);
+			socketManager.connect(serverAdder, port);
 		} catch ( IOException e ) { //TODO: Improve this exception handling
 			throw new RuntimeException(e);
 		}
@@ -50,8 +48,7 @@ public class ModelManager {
 	}
 
 	//TODO: improve this method
-	// maybe should be private and add other methods for each situation?
-	// throw exceptions and handle them on GUI
+	// - throw exceptions and handle them on GUI
 	public Response sendRequest(Request request) {
 		try {
 			return socketManager.sendRequest(request);

@@ -123,8 +123,8 @@ public class UserDAO extends DAO {
 		return User.builder()
 				.id((int) row.get("id"))
 				.username((String) row.get("username"))
-				.email((String) row.get("userEmail"))
-				.phoneNumber((String) row.get("phoneNumber"))
+				.email((String) row.get("email"))
+				.phoneNumber((String) row.get("phone_number"))
 				.password((String) row.get("password"))
 				.build();
 	}
