@@ -9,7 +9,6 @@ import pt.isec.pd.splitwise.client.ui.component.dialog.EditUserDialog;
 import pt.isec.pd.splitwise.client.ui.controller.BaseController;
 import pt.isec.pd.splitwise.client.ui.manager.ViewManager;
 import pt.isec.pd.splitwise.sharedLib.database.DTO.User.DetailUserDTO;
-import pt.isec.pd.splitwise.sharedLib.network.request.Request;
 import pt.isec.pd.splitwise.sharedLib.network.request.User.EditUser;
 import pt.isec.pd.splitwise.sharedLib.network.request.User.GetUser;
 import pt.isec.pd.splitwise.sharedLib.network.response.Response;
@@ -18,42 +17,27 @@ import pt.isec.pd.splitwise.sharedLib.network.response.ValueResponse;
 import java.io.IOException;
 
 public class UserController extends BaseController {
-	@FXML
-	private BorderPane homePane;
-
-	@FXML
-	private Button btnLogout;
-
-	@FXML
-	private Text txtEmail;
-
-	@FXML
-	private Text txtPhoneNumber;
-
-	@FXML
-	private Text txtUsername;
-
-	@FXML
-	private Button btnEdit;
+	@FXML private BorderPane homePane;
+	@FXML private Button btnLogout;
+	@FXML private Text txtEmail;
+	@FXML private Text txtPhoneNumber;
+	@FXML private Text txtUsername;
+	@FXML private Button btnEdit;
 
 	public UserController(ViewManager viewManager, ModelManager modelManager) {
 		super(viewManager, modelManager);
 	}
 
-	@Override
-	protected void registerHandlers() {
+	@Override protected void registerHandlers() {
 		btnEdit.setOnAction(e -> editPopup());
 		btnLogout.setOnAction(e -> logoutPopup());
 	}
 
-	@Override
-	protected void update() {
-		GetUser request = new GetUser(modelManager.getEmailLoggedUser());
-		viewManager.sendRequestAsync(request, this::handleResponse);
+	@Override protected void update() {
+		viewManager.sendRequestAsync(new GetUser(modelManager.getEmailLoggedUser()), this::handleResponse);
 	}
 
-	@Override
-	protected void handleResponse(Response response) {
+	@Override protected void handleResponse(Response response) {
 		if (!response.isSuccess()) {
 			viewManager.showError(response.getErrorDescription());
 			return;
@@ -76,16 +60,10 @@ public class UserController extends BaseController {
 	private void editPopup() {
 		try {
 			EditUserDialog dialog = new EditUserDialog(homePane.getScene().getWindow());
-			dialog.showAndWait().ifPresent(
-					infoUserDTO -> {
-						Request request = new EditUser(
-								infoUserDTO.getUsername(),
-								infoUserDTO.getEmail(),
-								infoUserDTO.getEmail(),
-								infoUserDTO.getPassword()
-						);
-
-						viewManager.sendRequestAsync(request, (response) -> {
+			dialog.showAndWait().ifPresent(infoUserDTO -> {
+				viewManager.sendRequestAsync(
+						new EditUser(infoUserDTO.getUsername(), infoUserDTO.getEmail(), infoUserDTO.getEmail(),
+						             infoUserDTO.getPassword()), (response) -> {
 							if (!response.isSuccess()) {
 								viewManager.showError(response.getErrorDescription());
 								return; //TODO: handle error
@@ -93,7 +71,7 @@ public class UserController extends BaseController {
 
 							update();
 						});
-					});
+			});
 		} catch ( IOException e ) {
 			System.out.println("Error loading edit user popup");
 		}

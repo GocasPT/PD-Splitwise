@@ -12,25 +12,20 @@ import pt.isec.pd.splitwise.client.ui.manager.ViewManager;
 import pt.isec.pd.splitwise.sharedLib.database.DTO.Group.PreviewGroupDTO;
 import pt.isec.pd.splitwise.sharedLib.network.request.Group.CreateGroup;
 import pt.isec.pd.splitwise.sharedLib.network.request.Group.GetGroups;
-import pt.isec.pd.splitwise.sharedLib.network.request.Request;
 import pt.isec.pd.splitwise.sharedLib.network.response.ListResponse;
 import pt.isec.pd.splitwise.sharedLib.network.response.Response;
 
 import java.io.IOException;
 
 public class GroupsController extends BaseController {
-	@FXML
-	private Button btnCreateGroup;
-
-	@FXML
-	private VBox vbGroups;
+	@FXML private Button btnCreateGroup;
+	@FXML private VBox vbGroups;
 
 	public GroupsController(ViewManager viewManager, ModelManager modelManager) {
 		super(viewManager, modelManager);
 	}
 
-	@Override
-	protected void registerHandlers() {
+	@Override protected void registerHandlers() {
 		btnCreateGroup.setOnAction(e -> {
 			try {
 				createGroupPopUp();
@@ -40,13 +35,11 @@ public class GroupsController extends BaseController {
 		});
 	}
 
-	@Override
-	protected void update() {
+	@Override protected void update() {
 		fetchGroups();
 	}
 
-	@Override
-	protected void handleResponse(Response response) {
+	@Override protected void handleResponse(Response response) {
 		if (!response.isSuccess()) {
 			viewManager.showError(response.getErrorDescription());
 			return; //TODO: handle error
@@ -64,19 +57,12 @@ public class GroupsController extends BaseController {
 		PreviewGroupDTO[] groups = listResponse.getList();
 		try {
 			for (PreviewGroupDTO group : groups)
-				vbGroups.getChildren().add(
-						new Card.Builder()
-								.id("group-card")
-								.title(group.getName())
-								.subtitle(group.getMembersNumber() + " members")
-								.onMouseClicked(e -> {
-									modelManager.setGroupInViewId(group.getId());
-									viewManager.showView("group_view");
-									modelManager.getNavBarStateProperty().setValue(ENavBarState.NULL);
-								})
-								.addStyleClass("group-card")
-								.build()
-				);
+				vbGroups.getChildren().add(new Card.Builder().id("group-card").title(group.getName()).subtitle(
+						group.getMembersNumber() + " members").onMouseClicked(e -> {
+					modelManager.setGroupInViewId(group.getId());
+					viewManager.showView("group_view");
+					modelManager.getNavBarStateProperty().setValue(ENavBarState.NULL);
+				}).addStyleClass("group-card").build());
 		} catch ( IOException e ) {
 			viewManager.showError("Failed to show groups: " + e.getMessage());
 		}
@@ -88,15 +74,15 @@ public class GroupsController extends BaseController {
 			dialog.showAndWait().ifPresent(groupName -> {
 				//TODO: loading where?
 
-				Request request = new CreateGroup(groupName, modelManager.getEmailLoggedUser());
-				viewManager.sendRequestAsync(request, (response) -> {
-					if (!response.isSuccess()) {
-						viewManager.showError(response.getErrorDescription());
-						return; //TODO: handle error
-					}
+				viewManager.sendRequestAsync(new CreateGroup(groupName, modelManager.getEmailLoggedUser()),
+				                             (response) -> {
+					                             if (!response.isSuccess()) {
+						                             viewManager.showError(response.getErrorDescription());
+						                             return; //TODO: handle error
+					                             }
 
-					fetchGroups();
-				});
+					                             fetchGroups();
+				                             });
 			});
 		} catch ( IOException e ) {
 			e.printStackTrace();
@@ -105,7 +91,6 @@ public class GroupsController extends BaseController {
 	}
 
 	private void fetchGroups() {
-		GetGroups request = new GetGroups(modelManager.getEmailLoggedUser());
-		viewManager.sendRequestAsync(request, this::handleResponse);
+		viewManager.sendRequestAsync(new GetGroups(modelManager.getEmailLoggedUser()), this::handleResponse);
 	}
 }

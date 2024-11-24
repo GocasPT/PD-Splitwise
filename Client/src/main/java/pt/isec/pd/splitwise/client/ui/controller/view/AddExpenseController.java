@@ -28,95 +28,60 @@ import java.util.List;
 import java.util.Map;
 
 public class AddExpenseController extends BaseController {
-	@FXML
-	public Text txtGroupName;
-
-	@FXML
-	public TextField tfAmount;
-
-	@FXML
-	public ExpandingTextArea tfDescription;
-
-	@FXML
-	public CalendarPicker datePicker;
-
-	@FXML
-	public ComboBox<PreviewUserDTO> cbPayerUser;
-
-	@FXML
-	public CheckComboBox<PreviewUserDTO> ccbAssociatedUsers;
-
-	@FXML
-	public HBox hbBtn;
-
-	@FXML
-	public Button btnAdd;
-
-	@FXML
-	public Button btnCancel;
+	@FXML public Text txtGroupName;
+	@FXML public TextField tfAmount;
+	@FXML public ExpandingTextArea tfDescription;
+	@FXML public CalendarPicker datePicker;
+	@FXML public ComboBox<PreviewUserDTO> cbPayerUser;
+	@FXML public CheckComboBox<PreviewUserDTO> ccbAssociatedUsers;
+	@FXML public HBox hbBtn;
+	@FXML public Button btnAdd;
+	@FXML public Button btnCancel;
 
 	public AddExpenseController(ViewManager viewManager, ModelManager modelManager) {
 		super(viewManager, modelManager);
 	}
 
-	@Override
-	protected void registerHandlers() {
+	@Override protected void registerHandlers() {
 		Validator validator = new Validator();
 
-		validator.createCheck()
-				.dependsOn("amount", tfAmount.textProperty())
-				.withMethod(c -> {
-					String amountStr = c.get("amount");
-					if (amountStr == null || amountStr.isEmpty()) {
-						c.error("Amount is required");
-					} else {
-						try {
-							Double.parseDouble(amountStr);
-						} catch ( NumberFormatException e ) {
-							c.error("Amount must be a number");
-						}
-					}
-				})
-				.decorates(tfAmount)
-				.immediate();
+		validator.createCheck().dependsOn("amount", tfAmount.textProperty()).withMethod(c -> {
+			String amountStr = c.get("amount");
+			if (amountStr == null || amountStr.isEmpty()) {
+				c.error("Amount is required");
+			} else {
+				try {
+					Double.parseDouble(amountStr);
+				} catch ( NumberFormatException e ) {
+					c.error("Amount must be a number");
+				}
+			}
+		}).decorates(tfAmount).immediate();
 
-		validator.createCheck()
-				.dependsOn("description", tfDescription.textProperty())
-				.withMethod(c -> {
-					String description = c.get("description");
-					if (description == null || description.isEmpty()) {
-						c.error("Description is required");
-					}
-				})
-				.decorates(tfDescription)
-				.immediate();
+		validator.createCheck().dependsOn("description", tfDescription.textProperty()).withMethod(c -> {
+			String description = c.get("description");
+			if (description == null || description.isEmpty()) {
+				c.error("Description is required");
+			}
+		}).decorates(tfDescription).immediate();
 
-		validator.createCheck()
-				.dependsOn("date", datePicker.valueProperty())
-				.withMethod(c -> {
-					if (c.get("date") == null) {
-						c.error("Date is required");
-					}
-				})
-				.decorates(datePicker)
-				.immediate();
+		validator.createCheck().dependsOn("date", datePicker.valueProperty()).withMethod(c -> {
+			if (c.get("date") == null) {
+				c.error("Date is required");
+			}
+		}).decorates(datePicker).immediate();
 
-		validator.createCheck()
-				.dependsOn("associatedUsers", Bindings.size(ccbAssociatedUsers.getCheckModel().getCheckedItems()))
-				.withMethod(c -> {
-					int numAssociatedUsers = c.get("associatedUsers");
-					if (numAssociatedUsers == 0) {
-						c.error("At least one associated user is required");
-					}
-				})
-				.decorates(ccbAssociatedUsers)
-				.immediate();
+		validator.createCheck().dependsOn("associatedUsers", Bindings.size(
+				ccbAssociatedUsers.getCheckModel().getCheckedItems())).withMethod(c -> {
+			int numAssociatedUsers = c.get("associatedUsers");
+			if (numAssociatedUsers == 0) {
+				c.error("At least one associated user is required");
+			}
+		}).decorates(ccbAssociatedUsers).immediate();
 
-		TooltipWrapper<Button> btnAddWrapper = new TooltipWrapper<>(
-				btnAdd,
-				validator.containsErrorsProperty(),
-				Bindings.concat("Cannot sign up:\n", validator.createStringBinding())
-		);
+		TooltipWrapper<Button> btnAddWrapper = new TooltipWrapper<>(btnAdd, validator.containsErrorsProperty(),
+		                                                            Bindings.concat("Cannot sign up:\n",
+		                                                                            validator.createStringBinding()));
 		hbBtn.getChildren().addFirst(btnAddWrapper);
 
 		//TODO: fix
@@ -124,24 +89,20 @@ public class AddExpenseController extends BaseController {
 		// - show username on display
 		cbPayerUser.getItems().clear();
 		cbPayerUser.setButtonCell(new ListCell<>() {
-			@Override
-			protected void updateItem(PreviewUserDTO item, boolean empty) {
+			@Override protected void updateItem(PreviewUserDTO item, boolean empty) {
 				super.updateItem(item, empty);
 
-				if (empty || item == null)
-					setText(null);
+				if (empty || item == null) setText(null);
 				else
 					//setText(item.username() + " <" + item.userEmail() + ">");
 					setText(item.getEmail());
 			}
 		});
 		cbPayerUser.setCellFactory(param -> new ListCell<>() {
-			@Override
-			protected void updateItem(PreviewUserDTO item, boolean empty) {
+			@Override protected void updateItem(PreviewUserDTO item, boolean empty) {
 				super.updateItem(item, empty);
 
-				if (empty || item == null)
-					setText(null);
+				if (empty || item == null) setText(null);
 				else
 					//setText(item.username() + " <" + item.userEmail() + ">");
 					setText(item.getEmail());
@@ -154,14 +115,12 @@ public class AddExpenseController extends BaseController {
 		// - show username on display OR number of users when more than one (?) (e.g. "3 users")
 		ccbAssociatedUsers.getItems().clear();
 		ccbAssociatedUsers.setConverter(new StringConverter<>() {
-			@Override
-			public String toString(PreviewUserDTO object) {
+			@Override public String toString(PreviewUserDTO object) {
 				//return object.username() + " <" + object.userEmail() + ">";
 				return object.getEmail();
 			}
 
-			@Override
-			public PreviewUserDTO fromString(String string) {
+			@Override public PreviewUserDTO fromString(String string) {
 				return null;
 			}
 		});
@@ -175,8 +134,7 @@ public class AddExpenseController extends BaseController {
 		});
 
 		int groupId = modelManager.getGroupInViewId();
-		GetUsersOnGroup request = new GetUsersOnGroup(groupId);
-		viewManager.sendRequestAsync(request, (response -> {
+		viewManager.sendRequestAsync(new GetUsersOnGroup(groupId), (response -> {
 			if (!response.isSuccess()) {
 				viewManager.showError(response.getErrorDescription());
 				viewManager.showView("group_view");
@@ -196,13 +154,11 @@ public class AddExpenseController extends BaseController {
 		}));
 	}
 
-	@Override
-	protected void update() {
+	@Override protected void update() {
 
 	}
 
-	@Override
-	protected void handleResponse(Response response) {
+	@Override protected void handleResponse(Response response) {
 		if (!response.isSuccess()) {
 			viewManager.showError(response.getErrorDescription());
 			return;
@@ -221,15 +177,8 @@ public class AddExpenseController extends BaseController {
 		String[] associatedUsersEmail = ccbAssociatedUsers.getCheckModel().getCheckedItems().stream().map(
 				PreviewUserDTO::getEmail).toArray(String[]::new);
 
-		InsertExpense request = new InsertExpense(
-				modelManager.getGroupInViewId(),
-				amount,
-				description,
-				date,
-				payerEmail,
-				associatedUsersEmail
-		);
-
-		viewManager.sendRequestAsync(request, this::handleResponse);
+		viewManager.sendRequestAsync(
+				new InsertExpense(modelManager.getGroupInViewId(), amount, description, date, payerEmail,
+				                  associatedUsersEmail), this::handleResponse);
 	}
 }

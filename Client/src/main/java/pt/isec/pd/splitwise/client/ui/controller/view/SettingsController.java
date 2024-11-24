@@ -22,7 +22,6 @@ import pt.isec.pd.splitwise.sharedLib.database.DTO.User.PreviewUserDTO;
 import pt.isec.pd.splitwise.sharedLib.database.Entity.User;
 import pt.isec.pd.splitwise.sharedLib.network.request.Group.GetMembersGroup;
 import pt.isec.pd.splitwise.sharedLib.network.request.Invite.InviteUser;
-import pt.isec.pd.splitwise.sharedLib.network.request.Request;
 import pt.isec.pd.splitwise.sharedLib.network.request.User.GetUsers;
 import pt.isec.pd.splitwise.sharedLib.network.response.ListResponse;
 import pt.isec.pd.splitwise.sharedLib.network.response.Response;
@@ -30,30 +29,18 @@ import pt.isec.pd.splitwise.sharedLib.network.response.Response;
 import java.io.IOException;
 
 public class SettingsController extends BaseController {
-	@FXML
-	public Button btnClose;
-
-	@FXML
-	private Button btnInvite;
-
-	@FXML
-	private Button btnEdit;
-
-	@FXML
-	private Button btnDelete;
-
-	@FXML
-	private Button btnExit;
-
-	@FXML
-	private VBox vbMembers;
+	@FXML public Button btnClose;
+	@FXML private Button btnInvite;
+	@FXML private Button btnEdit;
+	@FXML private Button btnDelete;
+	@FXML private Button btnExit;
+	@FXML private VBox vbMembers;
 
 	public SettingsController(ViewManager viewManager, ModelManager modelManager) {
 		super(viewManager, modelManager);
 	}
 
-	@Override
-	protected void registerHandlers() {
+	@Override protected void registerHandlers() {
 		btnClose.setOnAction(e -> viewManager.showView("group_view"));
 		btnInvite.setOnAction(e -> inviteUserPopup());
 		btnEdit.setOnAction(e -> editNamePopup());
@@ -61,18 +48,15 @@ public class SettingsController extends BaseController {
 		btnExit.setOnAction(e -> exitGroupPopup());
 	}
 
-	@Override
-	protected void update() {
+	@Override protected void update() {
 		fetchMembers();
 	}
 
 	private void fetchMembers() {
-		Request request = new GetMembersGroup(modelManager.getGroupInViewId());
-		viewManager.sendRequestAsync(request, this::handleResponse);
+		viewManager.sendRequestAsync(new GetMembersGroup(modelManager.getGroupInViewId()), this::handleResponse);
 	}
 
-	@Override
-	protected void handleResponse(Response response) {
+	@Override protected void handleResponse(Response response) {
 		if (!response.isSuccess()) {
 			viewManager.showError(response.getErrorDescription());
 			return;
@@ -90,21 +74,14 @@ public class SettingsController extends BaseController {
 				try {
 					for (DetailUserDTO member : members)
 						vbMembers.getChildren().add(
-								new Card.Builder()
-										.id("member-card")
-										.title(member.getUsername())
-										.subtitle(member.getEmail())
-										.description(member.getPhoneNumber())
-										.addStyleClass("member-card")
-										.build()
-						);
+								new Card.Builder().id("member-card").title(member.getUsername()).subtitle(
+										member.getEmail()).description(member.getPhoneNumber()).addStyleClass(
+										"member-card").build());
 				} catch ( IOException e ) {
 					viewManager.showError("Failed to fetch members: " + e.getMessage());
 				}
-			} else
-				viewManager.showError("Failed to get members list");
-		} else
-			viewManager.showError("Failed to cast response to ListResponse");
+			} else viewManager.showError("Failed to get members list");
+		} else viewManager.showError("Failed to cast response to ListResponse");
 	}
 
 	private void inviteUserPopup() {
@@ -117,8 +94,7 @@ public class SettingsController extends BaseController {
 
 		ListProperty<User> members = new SimpleListProperty<>();
 
-		Request requestMembers = new GetUsers();
-		viewManager.sendRequestAsync(requestMembers, (response -> {
+		viewManager.sendRequestAsync(new GetUsers(), (response -> {
 			if (!response.isSuccess()) {
 				viewManager.showError("Failed to fetch members: " + response.getErrorDescription());
 				return;
@@ -142,12 +118,12 @@ public class SettingsController extends BaseController {
 			String email = emailField.getText();
 			if (!email.isEmpty()) {
 				String loggedUserEmail = modelManager.getEmailLoggedUser();
-				Request request = new InviteUser(modelManager.getGroupInViewId(), email, loggedUserEmail);
-				viewManager.sendRequestAsync(request, (response -> {
-					if (!response.isSuccess()) {
-						viewManager.showError(response.getErrorDescription());
-					}
-				}));
+				viewManager.sendRequestAsync(new InviteUser(modelManager.getGroupInViewId(), email, loggedUserEmail),
+				                             (response -> {
+					                             if (!response.isSuccess()) {
+						                             viewManager.showError(response.getErrorDescription());
+					                             }
+				                             }));
 
 				popupStage.close();
 			}

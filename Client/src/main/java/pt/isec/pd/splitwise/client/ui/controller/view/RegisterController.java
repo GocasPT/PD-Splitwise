@@ -22,8 +22,7 @@ public class RegisterController extends BaseController {
 		super(viewManager, modelManager);
 	}
 
-	@Override
-	protected void registerHandlers() {
+	@Override protected void registerHandlers() {
 		btnRegiste.setOnAction(e -> {
 			try {
 				handleRegister();
@@ -40,14 +39,11 @@ public class RegisterController extends BaseController {
 		});
 	}
 
-	@Override
-	protected void update() {
+	@Override protected void update() {
 	}
 
-	@Override
-	protected void handleResponse(Response response) {
-		if (response.isSuccess())
-			viewManager.showView("login_view");
+	@Override protected void handleResponse(Response response) {
+		if (response.isSuccess()) viewManager.showView("login_view");
 		else {
 			viewManager.showError(response.getErrorDescription());
 			new Alert(Alert.AlertType.ERROR, response.getErrorDescription()).showAndWait();

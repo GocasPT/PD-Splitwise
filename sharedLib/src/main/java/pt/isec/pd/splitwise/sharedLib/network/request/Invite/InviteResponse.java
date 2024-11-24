@@ -14,13 +14,13 @@ public record InviteResponse(int inviteId, boolean isAccepted) implements Reques
 
 		try {
 			if (isAccepted) {
-				List<User> members = context.getGroupUserDAO().getAllUsersFromGroup(context.getInviteDAO().getInviteById(inviteId).getGroupId());
+				List<User> members = context.getGroupUserDAO().getAllUsersFromGroup(
+						context.getInviteDAO().getInviteById(inviteId).getGroupId());
 				String guestUser = context.getInviteDAO().getInviteById(inviteId).getGuestUserEmail();
 				context.getInviteDAO().acceptInvite(inviteId);
 				for (User user : members)
 					context.triggerNotification(user.getEmail(), guestUser + " has joined the group");
-			}
-			else
+			} else
 				context.getInviteDAO().declineInvite(inviteId);
 		} catch ( Exception e ) {
 			logger.error("InviteResponse: {}", e.getMessage());

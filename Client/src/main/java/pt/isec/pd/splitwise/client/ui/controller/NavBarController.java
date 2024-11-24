@@ -11,23 +11,16 @@ import pt.isec.pd.splitwise.sharedLib.network.response.Response;
 
 public class NavBarController extends BaseController {
 	private static ObjectProperty<ENavBarState> currentButton;
-
-	@FXML
-	private Button btnGroups;
-
-	@FXML
-	private Button btnInvites;
-
-	@FXML
-	private Button btnUser;
+	@FXML private Button btnGroups;
+	@FXML private Button btnInvites;
+	@FXML private Button btnUser;
 
 	public NavBarController(ViewManager viewManager, ModelManager modelManager) {
 		super(viewManager, modelManager);
 		currentButton = new SimpleObjectProperty<>(modelManager.getNavBarState());
 	}
 
-	@Override
-	protected void registerHandlers() {
+	@Override protected void registerHandlers() {
 		modelManager.getNavBarStateProperty().addListener((obs, oldVal, newVal) -> {
 			currentButton.set(newVal);
 		});
@@ -66,12 +59,10 @@ public class NavBarController extends BaseController {
 		}
 	}
 
-	@Override
-	protected void update() {
+	@Override protected void update() {
 	}
 
-	@Override
-	protected void handleResponse(Response response) {
+	@Override protected void handleResponse(Response response) {
 
 	}
 }

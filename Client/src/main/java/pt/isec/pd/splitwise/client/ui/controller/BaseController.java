@@ -14,8 +14,7 @@ public abstract class BaseController {
 		this.modelManager = modelManager;
 	}
 
-	@FXML
-	public void initialize() {
+	@FXML public void initialize() {
 		registerHandlers();
 		update();
 	}

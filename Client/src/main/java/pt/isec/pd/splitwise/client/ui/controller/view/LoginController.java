@@ -14,17 +14,10 @@ import pt.isec.pd.splitwise.sharedLib.network.request.User.Login;
 import pt.isec.pd.splitwise.sharedLib.network.response.Response;
 
 public class LoginController extends BaseController {
-	@FXML
-	private TextField tfEmail;
-
-	@FXML
-	private TextField tfPassword;
-
-	@FXML
-	private Button btnLogin;
-
-	@FXML
-	private Hyperlink hpSignUp;
+	@FXML private TextField tfEmail;
+	@FXML private TextField tfPassword;
+	@FXML private Button btnLogin;
+	@FXML private Hyperlink hpSignUp;
 
 	public LoginController(ViewManager viewManager, ModelManager modelManager) {
 		super(viewManager, modelManager);
@@ -37,8 +30,7 @@ public class LoginController extends BaseController {
 		return leftIconWrapper;
 	}*/
 
-	@Override
-	protected void registerHandlers() {
+	@Override protected void registerHandlers() {
 		/*tfPassword = new EnhancedPasswordField();
 		((EnhancedPasswordField) tfPassword).setLeft(createIconNode(MaterialDesign.MDI_KEY));
 		tfPassword.setStyle("-fx-echo-char: '■';");
@@ -62,12 +54,10 @@ public class LoginController extends BaseController {
 		});
 	}
 
-	@Override
-	protected void update() {
+	@Override protected void update() {
 	}
 
-	@Override
-	protected void handleResponse(Response response) {
+	@Override protected void handleResponse(Response response) {
 		if (response.isSuccess()) {
 			modelManager.setEmailLoggedUser(tfEmail.getText());
 
@@ -92,7 +82,6 @@ public class LoginController extends BaseController {
 			return;
 		}
 
-		Login loginRequest = new Login(username, password);
-		viewManager.sendRequestAsync(loginRequest, this::handleResponse);
+		viewManager.sendRequestAsync(new Login(username, password), this::handleResponse);
 	}
 }
