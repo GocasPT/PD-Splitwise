@@ -24,12 +24,20 @@ public class BackupServerApp {
 	private DataBaseManager dbManager;
 
 	public BackupServerApp(String dbPath) {
-		dbDirectory = new File(dbPath);
+		logger.debug("Database path: {}", dbPath);
+
+		dbDirectory = new File(Paths.get(dbPath).toAbsolutePath().toString());
+
+		logger.debug("Database directory path: {}", dbDirectory.getAbsolutePath());
+
 		if (!dbDirectory.isDirectory()) {
 			throw new IllegalArgumentException("Directory does not exist");
 		}
 
 		String[] files = dbDirectory.getAbsoluteFile().list();
+
+		logger.debug("Database directory files: {}", (Object) files);
+
 		if (files == null) return;
 		if (files.length > 0)
 			throw new IllegalArgumentException("Directory is not empty");
@@ -117,7 +125,6 @@ public class BackupServerApp {
 		}
 	}
 
-	//TODO: get database file name from server
 	private boolean downloadDBFile(InetAddress tcpAddress, int tcpPort) {
 		try (
 				Socket tcpSocket = new Socket(tcpAddress, tcpPort);
@@ -139,7 +146,7 @@ public class BackupServerApp {
 			long totalBytesRead = 0;
 
 			while (totalBytesRead < fileSize &&
-					(bytesRead = dataIn.read(buffer)) != -1) {
+			       (bytesRead = dataIn.read(buffer)) != -1) {
 				fileOut.write(buffer, 0, bytesRead);
 				totalBytesRead += bytesRead;
 				logger.info(printProgress(totalBytesRead, fileSize));
@@ -175,7 +182,15 @@ public class BackupServerApp {
 	private void processHeartbeat(Heartbeat heartbeat) throws SQLException {
 		if (heartbeat.version() != dbManager.getVersion())
 			if (heartbeat.query() != null)
-				dbManager.executeWrite(heartbeat.query(), heartbeat.params());
+				try {
+					dbManager.executeWriteWithId(heartbeat.query(), heartbeat.params());
+				} catch ( SQLException e ) {
+					//TODO: if error is "QUERY DOES NOT RETURN ID" then executeWrite
+					if (e.getErrorCode() == 0)
+						dbManager.executeWrite(heartbeat.query(), heartbeat.params());
+					else
+						throw new RuntimeException(e);
+				}
 			else
 				throw new RuntimeException("Version mismatch but no update query provided");
 		else if (heartbeat.query() != null)
