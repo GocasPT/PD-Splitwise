@@ -7,8 +7,11 @@ Trabalho prático feita por:
 - Guilherme Camacho
 
 Nota:
+- Meta 1:
+- Meta 2:
 
 ## Funções em falta
 
--   [ ] Nada :)
+-   [ ] GUI 100 funcional (tá 85% no momento)
+-   [ ] Correções nos requests
 
