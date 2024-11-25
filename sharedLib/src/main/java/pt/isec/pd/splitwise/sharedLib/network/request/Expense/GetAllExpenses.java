@@ -9,7 +9,7 @@ import pt.isec.pd.splitwise.sharedLib.network.response.Response;
 import java.util.ArrayList;
 import java.util.List;
 
-public record GetHistory(int groupID) implements Request {
+public record GetAllExpenses(int groupID) implements Request {
 	@Override
 	public Response execute(DataBaseManager context) {
 		logger.debug("Getting history of group {}", groupID);
@@ -30,7 +30,7 @@ public record GetHistory(int groupID) implements Request {
 				);
 			});
 		} catch ( Exception e ) {
-			logger.error("GetHistory: {}", e.getMessage());
+			logger.error("GetAllExpenses: {}", e.getMessage());
 			return new ListResponse<>("Failed to get expense history");
 		}
 

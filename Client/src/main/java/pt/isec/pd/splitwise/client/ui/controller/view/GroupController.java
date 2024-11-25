@@ -20,10 +20,12 @@ import pt.isec.pd.splitwise.sharedLib.database.DTO.Balance.DetailBalanceDTO;
 import pt.isec.pd.splitwise.sharedLib.database.DTO.Balance.PreviewBalanceDTO;
 import pt.isec.pd.splitwise.sharedLib.database.DTO.Expense.DetailExpenseDTO;
 import pt.isec.pd.splitwise.sharedLib.database.DTO.Group.PreviewGroupDTO;
+import pt.isec.pd.splitwise.sharedLib.database.DTO.Payment.PreviewPaymentDTO;
 import pt.isec.pd.splitwise.sharedLib.network.request.Expense.ExportCSV;
-import pt.isec.pd.splitwise.sharedLib.network.request.Expense.GetHistory;
+import pt.isec.pd.splitwise.sharedLib.network.request.Expense.GetAllExpenses;
 import pt.isec.pd.splitwise.sharedLib.network.request.Expense.GetTotalExpenses;
 import pt.isec.pd.splitwise.sharedLib.network.request.Group.GetGroup;
+import pt.isec.pd.splitwise.sharedLib.network.request.Payment.GetAllPayments;
 import pt.isec.pd.splitwise.sharedLib.network.request.Payment.ViewBalance;
 import pt.isec.pd.splitwise.sharedLib.network.response.ListResponse;
 import pt.isec.pd.splitwise.sharedLib.network.response.Response;
@@ -37,10 +39,10 @@ import java.util.Map;
 
 public class GroupController extends BaseController {
 	private final ObjectProperty<EGroupView> groupViewState;
+	private final Button btnAdd;
 	@FXML public Button btnSettings;
-	@FXML public Button btnAddExpense;
-	@FXML private Button btnExpenses;
 	@FXML private Text txtGroupName;
+	@FXML private Button btnExpenses;
 	@FXML private Button btnPay;
 	@FXML private Button btnBalance;
 	@FXML private Button btnTotalSpend;
@@ -50,6 +52,7 @@ public class GroupController extends BaseController {
 	public GroupController(ViewManager viewManager, ModelManager modelManager) {
 		super(viewManager, modelManager);
 		groupViewState = new SimpleObjectProperty<>(EGroupView.EXPENSES);
+		btnAdd = new Button("+");
 	}
 
 	@Override protected void registerHandlers() {
@@ -62,23 +65,7 @@ public class GroupController extends BaseController {
 		});
 
 		btnExpenses.setOnAction(e -> groupViewState.set(EGroupView.EXPENSES));
-
-		btnAddExpense.setOnAction(e -> {
-			try {
-				viewManager.showView("add_expense_view");
-			} catch ( Exception ex ) {
-				viewManager.showError("Failed to show add expense: " + ex.getMessage());
-			}
-		});
-
-		btnPay.setOnAction(e -> {
-			try {
-				viewManager.showView("payment_view");
-			} catch ( Exception ex ) {
-				viewManager.showError("Failed to show add expense: " + ex.getMessage());
-			}
-		});
-
+		btnPay.setOnAction(e -> groupViewState.set(EGroupView.PAYMENTS));
 		btnBalance.setOnAction(e -> groupViewState.set(EGroupView.BALANCE));
 		btnTotalSpend.setOnAction(e -> groupViewState.set(EGroupView.TOTAL_SPEND));
 		btnExport.setOnAction(e -> exportPopup());
@@ -89,6 +76,7 @@ public class GroupController extends BaseController {
 			//TODO: style buttons
 			switch (newValue) {
 				case EXPENSES -> fetchExpenses();
+				case PAYMENTS -> fetchPayments();
 				case BALANCE -> fetchBalance();
 				case TOTAL_SPEND -> fetchTotalSpend();
 			}
@@ -103,7 +91,7 @@ public class GroupController extends BaseController {
 				return;
 			}
 
-			if (response instanceof ValueResponse valueResponse) {
+			if (response instanceof ValueResponse<?> valueResponse) {
 				if (valueResponse.getValue() instanceof PreviewGroupDTO group) {
 					txtGroupName.setText(group.getName());
 				} else {
@@ -133,7 +121,7 @@ public class GroupController extends BaseController {
 				}
 
 				//TODO: get CSV file
-				if (response instanceof ValueResponse valueResponse) {
+				if (response instanceof ValueResponse<?> valueResponse) {
 					if (valueResponse.getValue() instanceof File file) {
 						File outputFile = new File(outputFolder, file.getName());
 						//TODO: write file in folder
@@ -144,7 +132,7 @@ public class GroupController extends BaseController {
 	}
 
 	private void fetchExpenses() {
-		viewManager.sendRequestAsync(new GetHistory(modelManager.getGroupInViewId()), (response -> {
+		viewManager.sendRequestAsync(new GetAllExpenses(modelManager.getGroupInViewId()), (response -> {
 			if (!response.isSuccess()) {
 				viewManager.showError(response.getErrorDescription());
 				viewManager.showView("groups_view");
@@ -153,21 +141,32 @@ public class GroupController extends BaseController {
 
 			vbInfo.getChildren().clear();
 
-			if (response instanceof ListResponse listResponse) {
+			btnAdd.setOnAction(e -> {
+				try {
+					viewManager.showView("add_expense_view");
+				} catch ( Exception ex ) {
+					viewManager.showError("Failed to show add expense: " + ex.getMessage());
+				}
+			});
+			vbInfo.getChildren().add(btnAdd);
+
+			if (response instanceof ListResponse<?> listResponse) {
 				if (listResponse.isEmpty()) {
 					vbInfo.getChildren().add(new Label("No expenses on this group"));
 					return;
 				}
 
 				if (listResponse.getList() instanceof DetailExpenseDTO[] expenses) {
-
 					try {
 						for (DetailExpenseDTO expense : expenses)
 							//TODO: add month separator (new month → new separator)
 							vbInfo.getChildren().add(
-									new Card.Builder().id("expense-card").title(expense.getTitle()).subtitle(
-											expense.getAmount() + "€").description(
-											expense.getDate().toString() + " - " + expense.getPayerUser()).onMouseClicked(
+									new Card.Builder()
+											.id("expense-card")
+											.title(expense.getAmount() + "€")
+											.subtitle(expense.getTitle())
+											.description(expense.getDate().toString() + " - " + expense.getPayerUser())
+											.onMouseClicked(
 											e -> {
 												try {
 													modelManager.setExpenseInViewId(expense.getId());
@@ -188,6 +187,61 @@ public class GroupController extends BaseController {
 		}));
 	}
 
+	//TODO: fetch payments
+	private void fetchPayments() {
+		viewManager.sendRequestAsync(new GetAllPayments(modelManager.getGroupInViewId()), (response -> {
+			if (!response.isSuccess()) {
+				viewManager.showError(response.getErrorDescription());
+				return;
+			}
+
+			vbInfo.getChildren().clear();
+
+			btnAdd.setOnAction(e -> {
+				try {
+					viewManager.showView("add_payment_view");
+				} catch ( Exception ex ) {
+					viewManager.showError("Failed to show add payment: " + ex.getMessage());
+				}
+			});
+			vbInfo.getChildren().add(btnAdd);
+
+			//TODO: list all payments
+			if (response instanceof ListResponse<?> listResponse) {
+				if (listResponse.isEmpty()) {
+					vbInfo.getChildren().add(new Label("No payments on this group"));
+					return;
+				}
+
+				if (listResponse.getList() instanceof PreviewPaymentDTO[] payments) {
+					try {
+						for (PreviewPaymentDTO payment : payments)
+							vbInfo.getChildren().add(
+									new Card.Builder().id("payment-card")
+											.title(payment.getAmount() + "€")
+											.subtitle(payment.getReceiverUser() + " -> " + payment.getPayerUser())
+											.description(payment.getDate().toString())
+											.onMouseClicked(
+													e -> {
+														try {
+															modelManager.setExpenseInViewId(payment.getId());
+															viewManager.showView("payment_view");
+														} catch ( Exception ex ) {
+															viewManager.showError(
+																	"Failed to show expense: " + ex.getMessage());
+														}
+													}).addStyleClass("payment-card")
+											.build());
+					} catch ( IOException e ) {
+						viewManager.showError("Failed to create card: " + e.getMessage());
+					}
+				} else
+					viewManager.showError("Failed to get payments list");
+			} else
+				viewManager.showError("Failed to cast response to ListResponse");
+		}));
+	}
+
 	private void fetchBalance() {
 		viewManager.sendRequestAsync(new GetTotalExpenses(modelManager.getGroupInViewId()), (response -> {
 			if (!response.isSuccess()) {
@@ -201,7 +255,7 @@ public class GroupController extends BaseController {
 			pieChart.setLabelsVisible(false);
 			Label caption = new Label("");
 
-			if (response instanceof ValueResponse valueResponse)
+			if (response instanceof ValueResponse<?> valueResponse)
 				if (valueResponse.getValue() instanceof PreviewBalanceDTO balance) {
 					for (Map.Entry<String, Double> entry : balance.getUsersBalance().entrySet())
 						pieChart.getData().add(new PieChart.Data(entry.getKey(),
@@ -233,45 +287,50 @@ public class GroupController extends BaseController {
 				return;
 			}
 
-			if (response instanceof ValueResponse valueResponse) {
-				Map<String, DetailBalanceDTO> balance = (Map<String, DetailBalanceDTO>) valueResponse.getValue();
+			if (response instanceof ValueResponse<?> valueResponse)
+				if (valueResponse.getValue() instanceof Map<?, ?> balance) {
+					vbInfo.getChildren().clear();
 
-				vbInfo.getChildren().clear();
-				for (Map.Entry<String, DetailBalanceDTO> entry : balance.entrySet()) {
-					String userEmail = entry.getKey();
-					DetailBalanceDTO userBalance = entry.getValue();
-					List<Map<String, Double>> debts = new ArrayList<>();
-					List<Map<String, Double>> receive = new ArrayList<>();
+					for (Map.Entry<String, DetailBalanceDTO> entry : ((Map<String, DetailBalanceDTO>) balance).entrySet()) {
+						String userEmail = entry.getKey();
+						DetailBalanceDTO userBalance = entry.getValue();
+						List<Map<String, Double>> debts = new ArrayList<>();
+						List<Map<String, Double>> receive = new ArrayList<>();
 
-					userBalance.getDebtList().forEach((k, v) -> debts.add(Map.of(k, v)));
-					userBalance.getReceiveList().forEach((k, v) -> receive.add(Map.of(k, v)));
+						userBalance.getDebtList().forEach((k, v) -> debts.add(Map.of(k, v)));
+						userBalance.getReceiveList().forEach((k, v) -> receive.add(Map.of(k, v)));
 
-					try {
-						Card userCard = new Card.Builder().id("user-expense-card").title(userEmail).subtitle(
-								"Total expense: " + userBalance.getTotalExpended() + "€").addContent(
-								//TODO: style this (red)
-								new VBox(new Label("Debts"),
-								         new Label("Total debts: " + userBalance.getTotalDebt() + "€"), new Label(
-										(debts.isEmpty() ? "No debts :)" : StringUtils //TODO: add bullets points (see if can be improved)
-												.join(debts.stream().map(Map::entrySet).map(set -> set.stream().map(
-														e -> "•" + e.getKey() + ": " + e.getValue() + "€").findFirst().orElse(
-														"")).toList(), "\n"))))).addContent(
-								//TODO: style this (green)
-								new VBox(new Label("Receive"),
-								         new Label("Total receive: " + userBalance.getTotalReceive() + "€"), new Label(
-										(receive.isEmpty() ? "No receives :(" : StringUtils //TODO: add bullets points (see if can be improved)
-												.join(receive.stream().map(Map::entrySet).map(set -> set.stream().map(
-														e -> "•" + e.getKey() + ": " + e.getValue() + "€").findFirst().orElse(
-														"")).toList(), "\n"))))).build();
+						try {
+							Card userCard = new Card.Builder().id("user-expense-card").title(userEmail).subtitle(
+									"Total expense: " + userBalance.getTotalExpended() + "€").addContent(
+									//TODO: style this (red)
+									new VBox(new Label("Debts"),
+									         new Label("Total debts: " + userBalance.getTotalDebt() + "€"), new Label(
+											(debts.isEmpty() ? "No debts :)" : StringUtils //TODO: add bullets points (see if can be improved)
+													.join(debts.stream().map(Map::entrySet).map(set -> set.stream().map(
+															e -> "•" + e.getKey() + ": " + e.getValue() + "€").findFirst().orElse(
+															"")).toList(), "\n"))))).addContent(
+									//TODO: style this (green)
+									new VBox(new Label("Receive"),
+									         new Label("Total receive: " + userBalance.getTotalReceive() + "€"),
+									         new Label(
+											         (receive.isEmpty() ? "No receives :(" : StringUtils //TODO: add bullets points (see if can be improved)
+													         .join(receive.stream().map(Map::entrySet).map(
+															         set -> set.stream().map(
+																	         e -> "•" + e.getKey() + ": " + e.getValue() + "€").findFirst().orElse(
+																	         "")).toList(), "\n"))))).build();
 
-						vbInfo.getChildren().add(userCard);
-					} catch ( IOException e ) {
-						viewManager.showError("Fail to create user card: " + e.getMessage());
+							vbInfo.getChildren().add(userCard);
+						} catch ( IOException e ) {
+							viewManager.showError("Fail to create user card: " + e.getMessage());
+						}
 					}
-				}
-			}
+				} else
+					viewManager.showError("Failed to get balance value");
+			else
+				viewManager.showError("Failed to cast response to ValueResponse");
 		}));
 	}
 
-	private enum EGroupView {EXPENSES, BALANCE, TOTAL_SPEND}
+	private enum EGroupView {EXPENSES, PAYMENTS, BALANCE, TOTAL_SPEND}
 }

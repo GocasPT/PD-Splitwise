@@ -4,22 +4,26 @@ import pt.isec.pd.splitwise.sharedLib.database.DataBaseManager;
 import pt.isec.pd.splitwise.sharedLib.network.request.Request;
 import pt.isec.pd.splitwise.sharedLib.network.response.Response;
 
-public record InsertPayment(int groupID, double amount, String userPayerEmail,
+import java.time.LocalDate;
+
+public record InsertPayment(int groupID, double amount, LocalDate date, String userPayerEmail,
                             String userReceiverEmail) implements Request {
 	@Override
 	public Response execute(DataBaseManager context) {
 		logger.debug("""
 		             Inserting payment on group {}
-		             \tamout: {}
+		             \tamount: {}
+		             \tdate: {}
 		             \tpayer: {}
 		             \treceiver: {}""",
-		             groupID, amount, userPayerEmail, userReceiverEmail);
+		             groupID, amount, date, userPayerEmail, userReceiverEmail);
 
 		try {
 			context.getPaymentDAO().createPayment(
+					groupID,
 					context.getUserDAO().getUserByEmail(userPayerEmail).getId(),
 					context.getUserDAO().getUserByEmail(userReceiverEmail).getId(),
-					amount
+					amount, date
 			);
 		} catch ( Exception e ) {
 			logger.error("InsertPayment: {}", e.getMessage());

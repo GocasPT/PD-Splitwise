@@ -13,7 +13,10 @@ public class ControllerFactory {
 			case "GroupsController" -> new GroupsController(viewManager, modelManager);
 			case "InvitesController" -> new InvitesController(viewManager, modelManager);
 			case "GroupController" -> new GroupController(viewManager, modelManager);
+			case "ExpenseController" -> new ExpenseController(viewManager, modelManager);
 			case "AddExpenseController" -> new AddExpenseController(viewManager, modelManager);
+			case "PaymentController" -> new PaymentController(viewManager, modelManager);
+			case "AddPaymentController" -> new AddPaymentController(viewManager, modelManager);
 			case "UserController" -> new UserController(viewManager, modelManager);
 			case "SettingsController" -> new SettingsController(viewManager, modelManager);
 			//TODO: add all controllers

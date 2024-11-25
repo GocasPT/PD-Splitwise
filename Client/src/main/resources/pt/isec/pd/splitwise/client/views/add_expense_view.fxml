@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.dlsc.gemsfx.CalendarPicker?>
-<?import com.dlsc.gemsfx.ExpandingTextArea?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
@@ -44,7 +43,6 @@
                         <Font size="14.0"/>
                     </font>
                 </Label>
-                <ExpandingTextArea fx:id="tfDescription" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS"/>
             </HBox>
             <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="208.0" spacing="8.0">
                 <Label minHeight="-Infinity" minWidth="-Infinity" text="Date:">

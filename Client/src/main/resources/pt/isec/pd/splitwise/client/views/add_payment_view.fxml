@@ -1,22 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.dlsc.gemsfx.CalendarPicker?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pt.isec.pd.splitwise.client.ui.controller.view.ExpenseController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pt.isec.pd.splitwise.client.ui.controller.view.AddPaymentController">
     <top>
         <VBox alignment="TOP_CENTER" spacing="8.0" BorderPane.alignment="CENTER">
             <padding>
                 <Insets top="8.0" />
             </padding>
-            <Text fx:id="txtGroupName" strokeType="OUTSIDE" strokeWidth="0.0" text="Expense" textAlignment="CENTER">
+            <Text fx:id="txtGroupName" strokeType="OUTSIDE" strokeWidth="0.0" text="[GROUP NAME]" textAlignment="CENTER">
                 <font>
                     <Font name="System Bold" size="18.0" />
                 </font>
@@ -35,15 +38,7 @@
                         <Font size="14.0" />
                     </font>
                 </Label>
-                <Text fx:id="tfAmount" HBox.hgrow="ALWAYS" />
-            </HBox>
-            <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="254.0" spacing="8.0">
-                <Label minHeight="-Infinity" minWidth="-Infinity" text="Description:" HBox.hgrow="ALWAYS">
-                    <font>
-                        <Font size="14.0" />
-                    </font>
-                </Label>
-                <Text fx:id="tfDescription" HBox.hgrow="ALWAYS" />
+                <TextField fx:id="tfAmount" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
             </HBox>
             <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="208.0" spacing="8.0">
                 <Label minHeight="-Infinity" minWidth="-Infinity" text="Date:">
@@ -51,23 +46,23 @@
                         <Font size="14.0" />
                     </font>
                 </Label>
-                <Text fx:id="tfDate" HBox.hgrow="ALWAYS" />
+                <CalendarPicker fx:id="datePicker" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
             </HBox>
             <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="350.0" spacing="8.0">
-                <Label minHeight="-Infinity" minWidth="-Infinity" text="Payer:">
+                <Label minHeight="-Infinity" minWidth="-Infinity" text="From">
                     <font>
                         <Font size="14.0" />
                     </font>
                 </Label>
-                <Text fx:id="tfPayerUser" HBox.hgrow="ALWAYS" />
+                <ComboBox fx:id="cbFromUser" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
             </HBox>
-            <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="369.0" spacing="8.0">
-                <Label minHeight="-Infinity" minWidth="-Infinity" text="User associated:">
+            <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="141.0" spacing="8.0">
+                <Label minHeight="-Infinity" minWidth="-Infinity" text="To">
                     <font>
-                        <Font size="14.0" />
+                        <Font size="14.0"/>
                     </font>
                 </Label>
-                <Text fx:id="tfAssociatedUsers" HBox.hgrow="ALWAYS" />
+                <ComboBox fx:id="cbToUser" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS"/>
             </HBox>
             <BorderPane.margin>
                 <Insets left="64.0" right="64.0" />
@@ -84,12 +79,12 @@
             </padding>
             <Separator prefWidth="200.0" />
             <HBox fx:id="hbBtn" alignment="BOTTOM_CENTER" spacing="12.0">
-                <Button fx:id="btnEdit" mnemonicParsing="false" text="Edit">
+                <Button fx:id="btnAdd" mnemonicParsing="false" text="Add">
                     <font>
                         <Font size="14.0" />
                     </font>
                 </Button>
-                <Button fx:id="btnBack" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" text="Back">
+                <Button fx:id="btnCancel" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" text="Cancel">
                     <font>
                         <Font size="14.0" />
                     </font>

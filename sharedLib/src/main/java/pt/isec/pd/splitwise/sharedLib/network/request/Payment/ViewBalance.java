@@ -56,6 +56,7 @@ public record ViewBalance(int groupID) implements Request {
 			                              "\n"
 			             ));
 
+			//TODO: round doubles to 2 decimal places
 			for (Expense expense : expensesList) {
 				String buyerEmail = expense.getPayerUser();
 				double amount = expense.getAmount();

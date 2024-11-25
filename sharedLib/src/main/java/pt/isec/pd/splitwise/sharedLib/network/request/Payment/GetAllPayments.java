@@ -9,7 +9,7 @@ import pt.isec.pd.splitwise.sharedLib.network.response.Response;
 import java.util.ArrayList;
 import java.util.List;
 
-public record GetPayments(int groupID) implements Request {
+public record GetAllPayments(int groupID) implements Request {
 	@Override
 	public Response execute(DataBaseManager context) {
 		logger.debug("Getting payments from group {}", groupID);
@@ -28,11 +28,11 @@ public record GetPayments(int groupID) implements Request {
 					)
 			);
 		} catch ( Exception e ) {
-			logger.error("GetPayments: {}", e.getMessage());
+			logger.error("GetAllPayments: {}", e.getMessage());
 			return new ListResponse<>("Fault to get payments");
 		}
 
-		return new ListResponse<>(payments.toArray());
+		return new ListResponse<>(payments.toArray(PreviewPaymentDTO[]::new));
 	}
 
 	@Override

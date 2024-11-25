@@ -38,13 +38,13 @@ public class ExpenseDAO extends DAO {
 	 * @return the int
 	 * @throws SQLException the sql exception
 	 */
-	public int createExpense(int groupId, double amount, String description, LocalDate date, int userPayerId, int[] usersInvolvedId) throws SQLException {
+	public int createExpense(int groupId, double amount, String description, LocalDate date, int userInserterId, int userPayerId, int[] usersInvolvedId) throws SQLException {
 		logger.debug("Creating expense for group {} with amount {} by user {}", groupId, amount, userPayerId);
 
 		//language=SQLite
-		String queryInsert = "INSERT INTO expenses (group_id, amount, description, date, paid_by_user_id) VALUES (?, ?, ?, ?, ?) RETURNING id";
+		String queryInsert = "INSERT INTO expenses (group_id, amount, description, date, paid_by_user_id, inserted_by_user_id) VALUES (?, ?, ?, ?, ?, ?) RETURNING id";
 
-		int id = dbManager.executeWriteWithId(queryInsert, groupId, amount, description, date, userPayerId);
+		int id = dbManager.executeWriteWithId(queryInsert, groupId, amount, description, date, userPayerId, userInserterId);
 		for (int userId : usersInvolvedId)
 			dbManager.getExpenseUserDAO().createRelation(id, userId);
 

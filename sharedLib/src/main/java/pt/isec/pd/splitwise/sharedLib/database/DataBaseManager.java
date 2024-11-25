@@ -21,21 +21,13 @@ public class DataBaseManager {
 	private final String dbPath;
 	private final Connection conn;
 	private final NotificationObserver notificationObserver;
-
 	@Getter private final DatabaseSyncManager syncManager;
-
 	@Getter private final UserDAO userDAO;
-
 	@Getter private final GroupDAO groupDAO;
-
 	@Getter private final GroupUserDAO groupUserDAO;
-
 	@Getter private final InviteDAO inviteDAO;
-
 	@Getter private final ExpenseDAO expenseDAO;
-
 	@Getter private final ExpenseUserDAO expenseUserDAO;
-
 	@Getter private final PaymentDAO paymentDAO;
 	private DatabaseChangeObserver databaseChangeObserver;
 
@@ -81,8 +73,7 @@ public class DataBaseManager {
 			                   INSERT INTO version (value)
 			                   SELECT 0
 			                   WHERE NOT EXISTS (SELECT 1 FROM version);
-			                   """
-			);
+			                   """);
 
 			//language=SQLite
 			stmt.executeUpdate("""
@@ -94,8 +85,7 @@ public class DataBaseManager {
 			                   	password 		TEXT NOT NULL,
 			                   	phone_number 	TEXT NOT NULL
 			                   )
-			                   """
-			);
+			                   """);
 
 			//language=SQLite
 			stmt.executeUpdate("""
@@ -104,8 +94,7 @@ public class DataBaseManager {
 			                   	id 		INTEGER PRIMARY KEY AUTOINCREMENT,
 			                   	name 	TEXT NOT NULL
 			                   )
-			                   """
-			);
+			                   """);
 
 			//language=SQLite
 			stmt.executeUpdate("""
@@ -117,8 +106,7 @@ public class DataBaseManager {
 			                   	FOREIGN KEY (group_id) REFERENCES groups (id),
 			                   	FOREIGN KEY (user_id) REFERENCES users (id)
 			                   )
-			                   """
-			);
+			                   """);
 
 			//language=SQLite
 			stmt.executeUpdate("""
@@ -132,26 +120,24 @@ public class DataBaseManager {
 			                   	FOREIGN KEY (guest_user_id) REFERENCES users (id),
 			                   	FOREIGN KEY (inviter_user_id) REFERENCES users (id)
 			                   )
-			                   """
-			);
+			                   """);
 
 			//language=SQLite
 			stmt.executeUpdate("""
 			                   CREATE TABLE IF NOT EXISTS expenses
-			                   (
-			                   	id 				INTEGER PRIMARY KEY AUTOINCREMENT,
-			                   	group_id 		INTEGER NOT NULL,
-			                   	amount 			REAL NOT NULL,
-			                   	description 	TEXT NOT NULL,
-			                   	date 			TEXT NOT NULL,
-			                   	paid_by_user_id INTEGER NOT NULL,
-			                   	inserted_by_user_id INTEGER NOT NULL,
-			                   	FOREIGN KEY (group_id) REFERENCES groups (id),
-			                   	FOREIGN KEY (paid_by_user_id) REFERENCES users (id),
-			                   	FOREIGN KEY (inserted_by_user_id) REFERENCES users (id)
-			                   )
-			                   """
-			);
+		                       (
+		                          id                    INTEGER PRIMARY KEY AUTOINCREMENT,
+		                          group_id              INTEGER NOT NULL,
+		                          amount                REAL    NOT NULL,
+		                          description           TEXT    NOT NULL,
+		                          date                  TEXT    NOT NULL,
+		                          paid_by_user_id       INTEGER NOT NULL,
+		                          inserted_by_user_id   INTEGER NOT NULL,
+		                          FOREIGN KEY (group_id) REFERENCES groups (id),
+		                          FOREIGN KEY (paid_by_user_id) REFERENCES users (id),
+		                          FOREIGN KEY (inserted_by_user_id) REFERENCES users (id)
+		                       )
+			                   """);
 
 			//language=SQLite
 			stmt.executeUpdate("""
@@ -161,16 +147,13 @@ public class DataBaseManager {
 			                       group_id     INTEGER NOT NULL,
 			                       amount       REAL    NOT NULL,
 			                       date         TEXT    NOT NULL,
-			                       inserted_by_user_id INTEGER NOT NULL,
 			                       from_user_id INTEGER NOT NULL,
 			                       for_user_id  INTEGER NOT NULL,
 			                       FOREIGN KEY (group_id) REFERENCES groups (id),
-			                       FOREIGN KEY (inserted_by_user_id) REFERENCES users (id),
 			                       FOREIGN KEY (from_user_id) REFERENCES users (id),
 			                       FOREIGN KEY (for_user_id) REFERENCES users (id)
 			                   )
-			                   """
-			);
+			                   """);
 
 			//language=SQLite
 			stmt.executeUpdate("""
@@ -182,8 +165,7 @@ public class DataBaseManager {
 			                   	FOREIGN KEY (expense_id) REFERENCES expenses (id),
 			                   	FOREIGN KEY (user_id) REFERENCES users (id)
 			                   )
-			                   """
-			);
+			                   """);
 		}
 	}
 
