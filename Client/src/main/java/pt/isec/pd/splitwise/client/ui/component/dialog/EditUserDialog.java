@@ -15,25 +15,14 @@ import pt.isec.pd.splitwise.sharedLib.database.DTO.User.InfoUserDTO;
 import java.io.IOException;
 
 public class EditUserDialog extends Dialog<InfoUserDTO> {
-	@FXML
-	private TextField tfName;
-
-	@FXML
-	private TextField tfEmail;
-
-	@FXML
-	private TextField tfPhoneNumber;
-
-	@FXML
-	private TextField tfPassword;
-
-	@FXML
-	private ButtonType btnFinish;
+	@FXML private TextField tfName;
+	@FXML private TextField tfEmail;
+	@FXML private TextField tfPhoneNumber;
+	@FXML private TextField tfPassword;
+	@FXML private ButtonType btnFinish;
 
 	public EditUserDialog(Window owner) throws IOException {
-		FXMLLoader loader = new FXMLLoader(
-				ClientApp.class.getResource("components/dialogs/edit_user_dialog.fxml")
-		);
+		FXMLLoader loader = new FXMLLoader(ClientApp.class.getResource("components/dialogs/edit_user_dialog.fxml"));
 		loader.setController(this);
 
 		DialogPane dialogPane = loader.load();
@@ -43,19 +32,12 @@ public class EditUserDialog extends Dialog<InfoUserDTO> {
 		setTitle("Edit user");
 		setDialogPane(dialogPane);
 		setResultConverter(buttonType -> {
-			if (buttonType == null)
-				return null;
+			if (buttonType == null) return null;
 
 			if (buttonType.equals(btnFinish))
-				return new InfoUserDTO(
-						0,
-						tfName.getText(),
-						tfEmail.getText(),
-						tfPhoneNumber.getText(),
-						tfPassword.getText()
-				);
-			else
-				return null;
+				return new InfoUserDTO(0, tfName.getText(), tfEmail.getText(), tfPhoneNumber.getText(),
+				                       tfPassword.getText());
+			else return null;
 		});
 
 		setOnShowing(dialogEvent -> Platform.runLater(() -> tfName.requestFocus()));

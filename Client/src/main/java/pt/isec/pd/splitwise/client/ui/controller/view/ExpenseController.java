@@ -4,13 +4,20 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
+import org.apache.commons.lang3.StringUtils;
 import pt.isec.pd.splitwise.client.model.ModelManager;
+import pt.isec.pd.splitwise.client.ui.component.dialog.EditExpenseDialog;
+import pt.isec.pd.splitwise.client.ui.component.dialog.EditUserDialog;
 import pt.isec.pd.splitwise.client.ui.controller.BaseController;
 import pt.isec.pd.splitwise.client.ui.manager.ViewManager;
 import pt.isec.pd.splitwise.sharedLib.database.DTO.Expense.DetailExpenseDTO;
+import pt.isec.pd.splitwise.sharedLib.network.request.Expense.EditExpense;
 import pt.isec.pd.splitwise.sharedLib.network.request.Expense.GetExpense;
+import pt.isec.pd.splitwise.sharedLib.network.request.User.EditUser;
 import pt.isec.pd.splitwise.sharedLib.network.response.Response;
 import pt.isec.pd.splitwise.sharedLib.network.response.ValueResponse;
+
+import java.io.IOException;
 
 public class ExpenseController extends BaseController {
 	@FXML public Text txtGroupName;
@@ -28,7 +35,7 @@ public class ExpenseController extends BaseController {
 	}
 
 	@Override protected void registerHandlers() {
-		btnEdit.setOnAction(e -> viewManager.showView("edit_expense_view"));
+		btnEdit.setOnAction(e -> editPopup());
 		btnBack.setOnAction(e -> viewManager.showView("group_view"));
 	}
 
@@ -47,11 +54,42 @@ public class ExpenseController extends BaseController {
 				tfAmount.setText(String.valueOf(expense.getAmount()));
 				tfDescription.setText(expense.getTitle());
 				tfDate.setText(expense.getDate().toString());
-				tfPayerUser.setText(expense.getPayerUser());
-				tfAssociatedUsers.setText(expense.getAssociatedUsersList().toString()); //TODO: maybe improve this
+				tfPayerUser.setText(expense.getPayerUser() == null ? "'Sem pagador'" : expense.getPayerUser());
+				tfAssociatedUsers.setText(
+						StringUtils.join(
+								expense.getAssociatedUsersList().stream().map(u -> u == null ? "'Sem utilizador'" : "-"+u).toArray(),
+								",\n"
+						)
+				);
 			} else
 				viewManager.showError("Failed to get expense: Invalid response value");
 		else
 			viewManager.showError("Failed to get expense: Invalid response type");
+	}
+
+	private void editPopup() {
+		try {
+			EditExpenseDialog dialog = new EditExpenseDialog(txtGroupName.getScene().getWindow());
+			dialog.showAndWait().ifPresent(detailExpenseDTO -> {
+				viewManager.sendRequestAsync(
+						new EditExpense(
+								modelManager.getExpenseInViewId(),
+								detailExpenseDTO.getAmount(),
+								detailExpenseDTO.getTitle(),
+								detailExpenseDTO.getDate(),
+								detailExpenseDTO.getPayerUser(),
+								detailExpenseDTO.getAssociatedUsersList().toArray(String[]::new)
+						), (response) -> {
+							if (!response.isSuccess()) {
+								viewManager.showError(response.getErrorDescription());
+								return; //TODO: handle error
+							}
+
+							update();
+						});
+			});
+		} catch ( IOException e ) {
+			viewManager.showError("Error loading edit expense popup");
+		}
 	}
 }

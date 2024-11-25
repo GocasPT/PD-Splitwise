@@ -66,6 +66,7 @@ public class ExpenseDAO extends DAO {
 		               SELECT
 		                   expenses.id AS expense_id,
 		                   expenses.amount AS expense_amount,
+		                   expenses.description AS expense_description,
 		                   expenses.date AS expense_date,
 		                   payer.email AS payer_email
 		               FROM expenses
@@ -77,6 +78,7 @@ public class ExpenseDAO extends DAO {
 		return Expense.builder()
 				.id((int) result.get("expense_id"))
 				.amount((double) result.get("expense_amount"))
+				.title((String) result.get("expense_description"))
 				.date(LocalDate.parse(
 						(String) result.get("expense_date"),
 						DateTimeFormatter.ISO_DATE
@@ -100,6 +102,7 @@ public class ExpenseDAO extends DAO {
 		               SELECT
 		                   expenses.id AS expense_id,
 		                   expenses.amount AS expense_amount,
+		                   expenses.description AS expense_description,
 		                   expenses.date AS expense_date,
 		                   payer.email AS payer_email
 		               FROM expenses
@@ -117,6 +120,7 @@ public class ExpenseDAO extends DAO {
 					Expense.builder()
 							.id((int) row.get("expense_id"))
 							.amount((double) row.get("expense_amount"))
+							.title((String) row.get("expense_description"))
 							.date(LocalDate.parse(
 									(String) row.get("expense_date"),
 									DateTimeFormatter.ISO_DATE

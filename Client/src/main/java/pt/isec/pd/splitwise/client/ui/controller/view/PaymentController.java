@@ -19,7 +19,6 @@ public class PaymentController extends BaseController {
 	@FXML public Text tfFromUser;
 	@FXML public Text tfToUser;
 	@FXML public HBox hbBtn;
-	@FXML public Button btnEdit;
 	@FXML public Button btnBack;
 
 	public PaymentController(ViewManager viewManager, ModelManager modelManager) {
@@ -27,7 +26,6 @@ public class PaymentController extends BaseController {
 	}
 
 	@Override protected void registerHandlers() {
-		btnEdit.setOnAction(e -> viewManager.showView("edit_payment_view"));
 		btnBack.setOnAction(e -> viewManager.showView("group_view"));
 	}
 

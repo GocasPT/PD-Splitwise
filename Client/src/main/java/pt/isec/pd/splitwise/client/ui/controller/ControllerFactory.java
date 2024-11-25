@@ -19,7 +19,6 @@ public class ControllerFactory {
 			case "AddPaymentController" -> new AddPaymentController(viewManager, modelManager);
 			case "UserController" -> new UserController(viewManager, modelManager);
 			case "SettingsController" -> new SettingsController(viewManager, modelManager);
-			//TODO: add all controllers
 			default -> throw new IllegalArgumentException("Unknown controller type: " + controllerType.getName());
 		};
 	}

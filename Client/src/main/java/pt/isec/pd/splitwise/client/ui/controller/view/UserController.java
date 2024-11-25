@@ -73,7 +73,7 @@ public class UserController extends BaseController {
 						});
 			});
 		} catch ( IOException e ) {
-			System.out.println("Error loading edit user popup");
+			viewManager.showError("Error loading edit user popup");
 		}
 	}
 
