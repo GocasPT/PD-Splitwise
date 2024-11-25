@@ -32,7 +32,10 @@ import pt.isec.pd.splitwise.sharedLib.network.response.Response;
 import pt.isec.pd.splitwise.sharedLib.network.response.ValueResponse;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -120,11 +123,18 @@ public class GroupController extends BaseController {
 					return;
 				}
 
-				//TODO: get CSV file
 				if (response instanceof ValueResponse<?> valueResponse) {
 					if (valueResponse.getValue() instanceof File file) {
+						System.out.println("File: " + file.getAbsolutePath());
+						System.out.println("Output: " + outputFolder.getAbsolutePath());
+						System.out.println("Conent: " + file.getName());
+
 						File outputFile = new File(outputFolder, file.getName());
-						//TODO: write file in folder
+						try {
+							Files.copy(file.toPath(), outputFile.toPath());
+						} catch (IOException e) {
+							viewManager.showError("Failed to save CSV file: " + e);
+						}
 					}
 				}
 			}));
@@ -187,7 +197,6 @@ public class GroupController extends BaseController {
 		}));
 	}
 
-	//TODO: fetch payments
 	private void fetchPayments() {
 		viewManager.sendRequestAsync(new GetAllPayments(modelManager.getGroupInViewId()), (response -> {
 			if (!response.isSuccess()) {
@@ -206,7 +215,6 @@ public class GroupController extends BaseController {
 			});
 			vbInfo.getChildren().add(btnAdd);
 
-			//TODO: list all payments
 			if (response instanceof ListResponse<?> listResponse) {
 				if (listResponse.isEmpty()) {
 					vbInfo.getChildren().add(new Label("No payments on this group"));

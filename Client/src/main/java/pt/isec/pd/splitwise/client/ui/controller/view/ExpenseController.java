@@ -7,13 +7,11 @@ import javafx.scene.text.Text;
 import org.apache.commons.lang3.StringUtils;
 import pt.isec.pd.splitwise.client.model.ModelManager;
 import pt.isec.pd.splitwise.client.ui.component.dialog.EditExpenseDialog;
-import pt.isec.pd.splitwise.client.ui.component.dialog.EditUserDialog;
 import pt.isec.pd.splitwise.client.ui.controller.BaseController;
 import pt.isec.pd.splitwise.client.ui.manager.ViewManager;
 import pt.isec.pd.splitwise.sharedLib.database.DTO.Expense.DetailExpenseDTO;
 import pt.isec.pd.splitwise.sharedLib.network.request.Expense.EditExpense;
 import pt.isec.pd.splitwise.sharedLib.network.request.Expense.GetExpense;
-import pt.isec.pd.splitwise.sharedLib.network.request.User.EditUser;
 import pt.isec.pd.splitwise.sharedLib.network.response.Response;
 import pt.isec.pd.splitwise.sharedLib.network.response.ValueResponse;
 
@@ -57,7 +55,8 @@ public class ExpenseController extends BaseController {
 				tfPayerUser.setText(expense.getPayerUser() == null ? "'Sem pagador'" : expense.getPayerUser());
 				tfAssociatedUsers.setText(
 						StringUtils.join(
-								expense.getAssociatedUsersList().stream().map(u -> u == null ? "'Sem utilizador'" : "-"+u).toArray(),
+								expense.getAssociatedUsersList().stream().map(
+										u -> u == null ? "'Sem utilizador'" : "-" + u).toArray(),
 								",\n"
 						)
 				);
