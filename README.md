@@ -6,7 +6,7 @@ Trabalho prático feita por:
 
 - Guilherme Camacho
 
-Nota:
+Nota: 95%
 
 ## Funções em falta
 
